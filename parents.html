@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictAI — Розширений батьківський контроль (Parent Control Hub)</title>
+  <meta name="description" content="Батьківський кабінет платформи StrictAI: прозорий контроль підготовки дитини до НМТ, предиктивний прогноз балів, монітор дисципліни, освітній контракт та налаштування строгості репетитора.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+</head>
+<body>
+
+  <!-- Global Header Navigation Rendered by StrictComponents -->
+  <header id="app-header"></header>
+
+  <!-- Focus Alert Notification Banner -->
+  <div id="focus-alert-banner" class="focus-alert-banner"></div>
+
+  <main>
+    <!-- ==================== 1. PIN-CODE AUTH SCREEN ==================== -->
+    <section id="pin-auth-screen" class="strict-container" style="display: block; padding: 40px 16px;">
+      <div class="pin-auth-wrapper">
+        <div class="pin-auth-icon">🔒</div>
+        
+        <h1 style="font-size: 1.75rem; margin-bottom: 8px;">Батьківський контроль</h1>
+        <p style="color: var(--text-secondary); font-size: 0.92rem;">
+          Вхід захищено PIN-кодом для збереження конфіденційності налаштувань та аналітики.
+        </p>
+
+        <!-- 4-Dot Indicators -->
+        <div class="pin-dots-row" id="pin-dots-row">
+          <div class="pin-dot-indicator" data-index="0"></div>
+          <div class="pin-dot-indicator" data-index="1"></div>
+          <div class="pin-dot-indicator" data-index="2"></div>
+          <div class="pin-dot-indicator" data-index="3"></div>
+        </div>
+
+        <!-- Tactile Keypad -->
+        <div class="pin-keypad-grid" id="pin-keypad">
+          <button type="button" class="pin-key-btn" data-key="1">1</button>
+          <button type="button" class="pin-key-btn" data-key="2">2</button>
+          <button type="button" class="pin-key-btn" data-key="3">3</button>
+          <button type="button" class="pin-key-btn" data-key="4">4</button>
+          <button type="button" class="pin-key-btn" data-key="5">5</button>
+          <button type="button" class="pin-key-btn" data-key="6">6</button>
+          <button type="button" class="pin-key-btn" data-key="7">7</button>
+          <button type="button" class="pin-key-btn" data-key="8">8</button>
+          <button type="button" class="pin-key-btn" data-key="9">9</button>
+          <button type="button" class="pin-key-btn" data-key="clear" style="font-size: 1.05rem; color: var(--text-muted);">C</button>
+          <button type="button" class="pin-key-btn" data-key="0">0</button>
+          <button type="button" class="pin-key-btn" data-key="backspace" style="font-size: 1.2rem;">⌫</button>
+        </div>
+
+        <!-- Demo Hint & 1-Click Autofill -->
+        <div class="pin-demo-hint-box">
+          <div>
+            <div style="font-weight: 700; color: var(--accent-primary);">Демо-доступ для перевірки:</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">За замовчуванням PIN: <strong>1234</strong></div>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="pin-autofill-btn" style="padding: 6px 14px; font-size: 0.82rem;">
+            ⚡ Ввести 1234
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. MAIN PARENT DASHBOARD ==================== -->
+    <section id="parent-dashboard-content" class="strict-container" style="display: none; padding-bottom: 60px;">
+      
+      <!-- Top Dashboard Header Bar -->
+      <div class="parent-dashboard-header">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-full); color: var(--accent-success); font-size: 0.84rem; font-weight: 700; margin-bottom: 8px;">
+            <span>🛡️</span>
+            <span>Авторизовано • Батьківський кабінет</span>
+          </div>
+          <h1 style="font-size: 2.1rem; margin-bottom: 4px;">Аналітичний дашборд успішності</h1>
+          <p style="color: var(--text-secondary); font-size: 0.98rem;">
+            Об'єктивна картина підготовки без гіперопіки та сварок: прогрес за темами НМТ, час фокусу та спільний освітній контракт.
+          </p>
+        </div>
+
+        <!-- Student Profile Chip & Actions -->
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <div class="parent-student-chip">
+            <span style="font-size: 1.5rem;">👨‍🎓</span>
+            <div>
+              <div style="font-weight: 700; font-size: 0.92rem;" id="dash-student-name">Олександр Коваленко</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);" id="dash-student-grade">11 клас • Випускник НМТ</div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-outline btn-sm" id="change-pin-btn" title="Змінити PIN-код доступу">
+            🔑 Змінити PIN
+          </button>
+
+          <button type="button" class="btn btn-secondary btn-sm" id="lock-dashboard-btn" title="Заблокувати кабінет та вийти">
+            🔒 Вийти
+          </button>
+        </div>
+      </div>
+
+      <!-- Bento Grid 1: Analytics & Diagnosis (3 Cards) -->
+      <div class="bento-grid" style="margin-bottom: 28px;">
+        
+        <!-- CARD 1: NMT Readiness & Prediction -->
+        <div class="bento-card bento-col-4">
+          <div class="bento-header">
+            <div>
+              <span class="bento-badge orange">Предиктивний прогноз</span>
+              <h2 style="font-size: 1.25rem; margin-top: 6px;">Готовність до НМТ 2025</h2>
+            </div>
+            <div style="font-size: 1.6rem;">🎓</div>
+          </div>
+
+          <div style="display: flex; align-items: baseline; gap: 8px; margin: 12px 0 6px;">
+            <span style="font-size: 3.2rem; font-weight: 800; font-family: var(--font-mono); color: var(--accent-primary); line-height: 1;" id="predicted-score-total">
+              174
+            </span>
+            <span style="font-size: 1.2rem; color: var(--text-muted); font-weight: 700;">/ 200 балів</span>
+          </div>
+
+          <!-- Target University Comparison -->
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 18px;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">Обрана мета вступу:</div>
+            <div style="font-weight: 700; font-size: 0.92rem;" id="target-uni-text">КПІ ім. Ігоря Сікорського (ПЗ)</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.82rem;">
+              <span>Прохідний бал: <strong>184</strong></span>
+              <span class="bento-badge orange" style="font-size: 0.76rem; padding: 2px 8px;">Дельта: -10 б.</span>
+            </div>
+          </div>
+
+          <!-- Subject Progress Bars -->
+          <div style="font-weight: 700; font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 8px;">
+            Прогноз за предметами:
+          </div>
+          <div class="nmt-subject-list" id="nmt-subjects-bars">
+            <!-- Rendered by parents.js -->
+          </div>
+        </div>
+
+        <!-- CARD 2: Discipline Index & Focus Analytics -->
+        <div class="bento-card bento-col-4">
+          <div class="bento-header">
+            <div>
+              <span class="bento-badge purple">Фокус & Самоконтроль</span>
+              <h2 style="font-size: 1.25rem; margin-top: 6px;">Індекс дисципліни</h2>
+            </div>
+            <div style="font-size: 1.6rem;">📊</div>
+          </div>
+
+          <div style="display: flex; align-items: baseline; gap: 8px; margin: 12px 0 6px;">
+            <span style="font-size: 3.2rem; font-weight: 800; font-family: var(--font-mono); color: var(--accent-success); line-height: 1;" id="discipline-index-percent">
+              94%
+            </span>
+            <span style="font-size: 0.95rem; color: var(--accent-success); font-weight: 700;">Зразкова увага</span>
+          </div>
+
+          <!-- Quick Metrics List -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 16px;">
+            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 10px;">
+              <div style="font-size: 0.78rem; color: var(--text-muted);">Чистий час сьогодні</div>
+              <div style="font-size: 1.25rem; font-weight: 800; font-family: var(--font-mono);" id="parent-focus-today">65 хв</div>
+            </div>
+            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 10px;">
+              <div style="font-size: 0.78rem; color: var(--text-muted);">Чистий час за тиждень</div>
+              <div style="font-size: 1.25rem; font-weight: 800; font-family: var(--font-mono);" id="parent-focus-week">515 хв</div>
+            </div>
+          </div>
+
+          <!-- Tab Switches Today vs Limit -->
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.88rem; font-weight: 600;">Перемикань вкладок сьогодні:</span>
+              <strong style="font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent-warning);" id="parent-tab-switches-text">2 з 3</strong>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">
+              Порушень не зафіксовано. Ліміт не перевищено.
+            </div>
+          </div>
+
+          <!-- Active Practice vs Passive Pauses Ratio -->
+          <div class="ratio-bar-wrapper">
+            <div style="font-size: 0.84rem; font-weight: 600; margin-bottom: 6px;">
+              Співвідношення практики до пауз:
+            </div>
+            <div class="ratio-bar">
+              <div class="ratio-bar-active" style="width: 82%;" title="82% активний фокус"></div>
+              <div class="ratio-bar-pause" style="width: 18%;" title="18% короткі перерви"></div>
+            </div>
+            <div class="ratio-legend">
+              <span style="color: var(--accent-success);">● 82% активний фокус</span>
+              <span style="color: var(--accent-warning);">● 18% пауз</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: AI Weak Topics Diagnosis & Panda Lessons -->
+        <div class="bento-card bento-col-4">
+          <div class="bento-header">
+            <div>
+              <span class="bento-badge blue">ШІ-Діагностика</span>
+              <h2 style="font-size: 1.25rem; margin-top: 6px;">Слабкі теми учня</h2>
+            </div>
+            <div style="font-size: 1.6rem;">🔍</div>
+          </div>
+
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 14px;">
+            Аналіз тестів та відповідей у чаті виявив 3 критичні теми з найбільшою кількістю помилок:
+          </p>
+
+          <!-- List of Weak Topics -->
+          <div id="weak-topics-container" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Rendered by parents.js -->
+          </div>
+
+          <div style="margin-top: 14px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+            💡 Кнопка «Призначити урок» створює пріоритетне навчальне завдання в кабінеті дитини.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bento Grid 2: Strictness Controls & Educational Contract -->
+      <div class="bento-grid">
+        
+        <!-- MODULE: Strictness & Parental Controls -->
+        <div class="bento-card bento-col-6">
+          <div class="bento-header">
+            <div>
+              <span class="bento-badge orange">Дисципліна & Налаштування</span>
+              <h2 style="font-size: 1.35rem; margin-top: 6px;">Панель контролю строгості</h2>
+            </div>
+            <div style="font-size: 1.6rem;">🎛️</div>
+          </div>
+
+          <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 20px;">
+            Керуйте параметрами нагляду за дитиною. Зміни застосовуються миттєво для всіх модулів платформи.
+          </p>
+
+          <!-- Toggle 1: Forced Strict Teacher Persona -->
+          <div class="strict-toggle-row">
+            <div style="flex: 1;">
+              <div style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                <span>🔒 Примусовий режим «Суворий викладач»</span>
+                <span class="bento-badge orange" style="font-size: 0.72rem; padding: 2px 6px;">Рекомендовано</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">
+                Блокує можливість дитини змінити характер репетитора на занадто м'який або жартівливий перед НМТ.
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-strict-lock">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- Slider 1: Daily Study Norm (30 - 180 min) -->
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-weight: 700; font-size: 0.94rem;">Денна норма фокусу:</span>
+              <span style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-primary); font-size: 1.1rem;" id="slider-goal-value">
+                90 хв / день
+              </span>
+            </div>
+            <input type="range" id="slider-daily-goal" class="form-range" min="30" max="180" step="15" value="90">
+            <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); margin-top: 6px;">
+              <span>30 хв (мінімум)</span>
+              <span>90 хв (стандарт)</span>
+              <span>180 хв (інтенсив)</span>
+            </div>
+          </div>
+
+          <!-- Slider 2: Max Allowed Tab Switches (1 - 10) -->
+          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-weight: 700; font-size: 0.94rem;">Ліміт відволікань вкладки під час сесії:</span>
+              <span style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-warning); font-size: 1.1rem;" id="slider-switches-value">
+                3 рази
+              </span>
+            </div>
+            <input type="range" id="slider-max-switches" class="form-range" min="1" max="10" step="1" value="3">
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 6px;">
+              При перевищенні ліміту Панда активує звукове попередження та відправляє сповіщення батькам.
+            </div>
+          </div>
+
+          <!-- Toggle 2: Sound Warning Alert -->
+          <div class="strict-toggle-row">
+            <div style="flex: 1;">
+              <div style="font-weight: 700; font-size: 0.95rem;">
+                🔊 Звуковий сигнал при втраті фокусу
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
+                Гучний попереджувальний сигнал через динаміки, якщо дитина відкриває YouTube або ігри під час уроку.
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-sound-alert" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- Toggle 3: Telegram Weekly Digest -->
+          <div class="strict-toggle-row">
+            <div style="flex: 1;">
+              <div style="font-weight: 700; font-size: 0.95rem;">
+                📱 Щотижневі дайджести в Telegram
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
+                Щонеділі о 20:00 бот надсилає структурований звіт про бали, хвилини фокусу та теми, що потребують уваги.
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-telegram-notify" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- Preview Weekly Report Button -->
+          <div style="margin-top: 18px;">
+            <button type="button" class="btn btn-secondary" id="preview-weekly-report-btn" style="width: 100%;">
+              <span>📨</span>
+              <span>Переглянути приклад тижневого звіту для батьків</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- MODULE: Educational Contract (Motivation System) -->
+        <div class="bento-card bento-col-6" id="contract">
+          <div class="bento-header">
+            <div>
+              <span class="bento-badge green">Система домовленостей</span>
+              <h2 style="font-size: 1.35rem; margin-top: 6px;">Освітній контракт</h2>
+            </div>
+            <div style="font-size: 1.6rem;">🤝</div>
+          </div>
+
+          <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Контракт замінює моралізаторство прозорою угодою: ви фіксуєте мету та бажану винагороду дитини, а StrictAI фіксує прогрес виконання.
+          </p>
+
+          <div class="contract-form-box">
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Назва контракту / Спринт:</label>
+              <input type="text" id="contract-title-input" class="form-input" value="Тижневий спринт підготовки до НМТ 2025">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Ціль фокусу (хв/тиждень):</label>
+                <input type="number" id="contract-target-mins" class="form-input" value="450" min="100" max="2000" step="50">
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Цільовий сер. бал НМТ:</label>
+                <input type="number" id="contract-target-score" class="form-input" value="175" min="100" max="200">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 18px;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">🎁 Винагорода від батьків за виконання:</label>
+              <input type="text" id="contract-reward-input" class="form-input" value="Нова гра у Steam або похід у кіно з друзями на вихідних">
+            </div>
+
+            <!-- Current Progress Visualization -->
+            <div class="contract-progress-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: 700; font-size: 0.9rem;">Поточний прогрес виконання:</span>
+                <span style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-primary); font-size: 1.1rem;" id="contract-progress-text">
+                  78% (351 / 450 хв)
+                </span>
+              </div>
+              <div style="height: 12px; background: var(--bg-surface); border-radius: var(--radius-full); overflow: hidden; border: 1px solid var(--border-subtle);">
+                <div id="contract-progress-fill" style="width: 78%; height: 100%; background: var(--accent-gradient); transition: width 0.8s ease;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+                <span>Статус: <strong>Впевнений темп</strong></span>
+                <span>Залишилося: <strong>99 хв до неділі</strong></span>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+              <button type="button" class="btn btn-primary" id="save-contract-btn" style="width: 100%;">
+                <span>💾</span>
+                <span>Зберегти умови контракту</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ==================== MODAL: Telegram Weekly Report Preview ==================== -->
+  <div id="telegram-preview-modal" class="strict-modal-backdrop">
+    <div class="strict-modal" style="max-width: 580px;">
+      <div class="modal-header">
+        <div class="modal-title">📱 Прев'ю тижневого дайджесту для батьків</div>
+        <div class="modal-close-btn" id="close-tg-modal-btn">&times;</div>
+      </div>
+      <div class="modal-body" style="background: #0E1621; padding: 24px;">
+        <div class="tg-preview-container">
+          <div class="tg-bot-header">
+            <div class="tg-bot-avatar">🐼</div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.98rem;">StrictAI Parent Bot 🤖</div>
+              <div style="font-size: 0.76rem; color: #7F8C99;">бот • офіційне сповіщення</div>
+            </div>
+          </div>
+
+          <div class="tg-message-bubble">
+            <div style="font-weight: 700; color: #F2994A; margin-bottom: 8px;">
+              📊 Тижневий звіт успішності учня: Олександр Коваленко
+            </div>
+            <div style="margin-bottom: 6px;">
+              📅 <strong>Період:</strong> 04.11 – 10.11.2024 (11 клас)
+            </div>
+            <div style="margin-bottom: 6px;">
+              ⏱ <strong>Чистий час у фокусі:</strong> 515 хвилин (Норма 450 хв перевищена на 14%!)
+            </div>
+            <div style="margin-bottom: 6px;">
+              👁 <strong>Дисципліна вкладок:</strong> 2 відволікання за тиждень (Індекс: 94% — відмінно).
+            </div>
+            <div style="margin-bottom: 6px;">
+              🎯 <strong>Поточний прогнозований бал НМТ:</strong> 174 / 200 балів
+            </div>
+            <div style="margin-bottom: 10px;">
+              🎋 <strong>Зароблено бамбук-коїнів:</strong> +185 🎋
+            </div>
+
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 8px; margin-top: 8px;">
+              <strong>🔍 Слабкі зони, що потребують уваги:</strong><br>
+              • Математика: <em>Рівняння з параметром (Завдання 22)</em><br>
+              • Укр. мова: <em>Складні наголоси УЦОЯО</em>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 8px; margin-top: 8px; font-style: italic; color: #C8B6E2;">
+              🐼 <strong>Порада від Панди:</strong> «Олександр показує чудову старанність! На вихідних варто підтвердити обіцяну винагороду за контрактом — це закріпить звичку до самодисципліни.»
+            </div>
+
+            <div class="tg-message-time">Сьогодні о 20:00 • Надіслано через Telegram Bot</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="background: #17212B; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <button type="button" class="btn btn-secondary btn-sm" id="copy-tg-report-btn">
+          📋 Скопіювати текст звіту
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" id="confirm-tg-modal-btn">
+          Зрозуміло
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: Change PIN Code ==================== -->
+  <div id="change-pin-modal" class="strict-modal-backdrop">
+    <div class="strict-modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <div class="modal-title">🔑 Зміна PIN-коду батьківського кабінету</div>
+        <div class="modal-close-btn" id="close-pin-modal-btn">&times;</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Поточний PIN-код:</label>
+          <input type="password" id="current-pin-input" class="form-input" maxlength="4" placeholder="••••" style="letter-spacing: 0.3em; font-size: 1.2rem; text-align: center;">
+        </div>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Новий 4-значний PIN-код:</label>
+          <input type="password" id="new-pin-input" class="form-input" maxlength="4" placeholder="••••" style="letter-spacing: 0.3em; font-size: 1.2rem; text-align: center;">
+        </div>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Підтвердження нового PIN-коду:</label>
+          <input type="password" id="confirm-pin-input" class="form-input" maxlength="4" placeholder="••••" style="letter-spacing: 0.3em; font-size: 1.2rem; text-align: center;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" id="cancel-change-pin-btn">Скасувати</button>
+        <button type="button" class="btn btn-primary btn-sm" id="save-new-pin-btn">Зберегти новий PIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Footer -->
+  <footer class="strict-footer">
+    <div class="strict-container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="nav-brand" style="margin-bottom: 14px;">
+            <div class="nav-brand-badge">🐼</div>
+            <div>Strict<span class="nav-brand-highlight">AI</span></div>
+          </a>
+          <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;">
+            Батьківський контроль без гіперопіки. Довіра, підкріплена фактами, об'єктивною діагностикою знань та повагою до зусиль дитини.
+          </p>
+        </div>
+        <div>
+          <div class="footer-col-title">Модулі навчання</div>
+          <ul class="footer-links">
+            <li><a href="tutor.html">AI-Репетитор з Пандою</a></li>
+            <li><a href="nmt.html">Тренажер завдань НМТ</a></li>
+            <li><a href="tracker.html">Програма-Трекер (Strict Focus)</a></li>
+            <li><a href="knowledge.html">Карта знань та теми</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Контроль & Прозорість</div>
+          <ul class="footer-links">
+            <li><a href="parents.html">Батьківський кабінет</a></li>
+            <li><a href="parents.html#contract">Освітній контракт</a></li>
+            <li><a href="tracker.html">Анти-чит моніторинг</a></li>
+            <li><a href="parents.html">Зміна PIN-коду</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Стандарти & Довіра</div>
+          <ul class="footer-links">
+            <li><a href="index.html#comparison">Чому StrictAI кращий за ChatGPT</a></li>
+            <li><a href="https://testportal.gov.ua" target="_blank" rel="noopener">Програма УЦОЯО 2025</a></li>
+            <li><a href="javascript:void(0)" onclick="window.StrictComponents.openApiKeyModal()">Налаштувати AI-ключ</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <span>Parent Control Hub v1.4</span>
+          <span>•</span>
+          <span>PIN Protected</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core Scripts -->
+  <script src="js/store.js"></script>
+  <script src="js/panda-avatar.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/parents.js"></script>
+</body>
+</html>

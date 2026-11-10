@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панда-репетитор — StrictAI | ШІ-Студія вивчення мов та підготовки до НМТ</title>
+  <meta name="description" content="Інтерактивний AI-репетитор Червона Панда для вивчення іноземних мов, шкільних предметів та підготовки до НМТ 2025 за сократівським методом.">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐼</text></svg>">
+
+  <!-- Core & Tutor Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/tutor.css">
+</head>
+<body>
+
+  <!-- Global Shared Platform Header -->
+  <header id="app-header" class="strict-navbar"></header>
+
+  <!-- Main Content Container -->
+  <div class="strict-container">
+    
+    <!-- Hero / Title Section -->
+    <section class="tutor-hero">
+      <div class="tutor-hero-inner">
+        <div class="tutor-hero-badge">🐼</div>
+        <div class="tutor-hero-text">
+          <h1>
+            <span>Панда-репетитор</span>
+            <span class="tutor-hero-tag">AI Studio</span>
+          </h1>
+          <p>Вчіть мови, шкільні предмети та готуйтесь до НМТ у розмові з AI-репетитором</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two-Column Tutor Layout from Mockup -->
+    <div class="tutor-layout">
+      
+      <!-- ==========================================
+           LEFT COLUMN: Панель налаштувань репетитора
+           ========================================== -->
+      <aside class="tutor-sidebar" aria-label="Панель налаштувань репетитора">
+        
+        <!-- 1. Режим навчання: Мови | Предмети НМТ та Школа -->
+        <div class="tutor-mode-tabs" role="tablist">
+          <button class="tutor-mode-tab active" data-mode="languages" id="tab-mode-languages" role="tab" aria-selected="true">
+            <span>🌍</span>
+            <span>Мови</span>
+          </button>
+          <button class="tutor-mode-tab" data-mode="school" id="tab-mode-school" role="tab" aria-selected="false">
+            <span>🎓</span>
+            <span>Предмети НМТ та Школа</span>
+          </button>
+        </div>
+
+        <!-- 2A. Блок налаштувань: МОВи (Active by default) -->
+        <div class="tutor-setting-section" id="section-languages-config">
+          <div class="tutor-section-header">
+            <h3 class="tutor-section-title">
+              <span>Мова</span>
+              <span class="section-badge" id="active-lang-badge">English</span>
+            </h3>
+          </div>
+          <div class="tutor-pills-wrap" id="language-pills-wrap">
+            <button class="pill-btn active" data-lang="english" data-lang-name="English">English</button>
+            <button class="pill-btn" data-lang="deutsch" data-lang-name="Deutsch">Deutsch</button>
+            <button class="pill-btn" data-lang="espanol" data-lang-name="Español">Español</button>
+            <button class="pill-btn" data-lang="chinese" data-lang-name="中文">中文</button>
+            <button class="pill-btn" data-lang="ukrainian" data-lang-name="Українська">Українська</button>
+          </div>
+
+          <!-- Рівень мови -->
+          <div class="tutor-section-header" style="margin-top: 10px;">
+            <h3 class="tutor-section-title">
+              <span>Рівень</span>
+              <span class="section-badge" id="active-level-badge">A1</span>
+            </h3>
+          </div>
+          <div class="tutor-levels-grid" id="language-levels-grid">
+            <button class="circle-level-btn active" data-level="A1" title="A1 — Початківець">A1</button>
+            <button class="circle-level-btn" data-level="A2" title="A2 — Елементарний">A2</button>
+            <button class="circle-level-btn" data-level="B1" title="B1 — Середній">B1</button>
+            <button class="circle-level-btn" data-level="B2" title="B2 — Впевнений">B2</button>
+            <button class="circle-level-btn" data-level="C1" title="C1 — Просунутий">C1</button>
+            <button class="circle-level-btn" data-level="C2" title="C2 — Досконалий">C2</button>
+          </div>
+          <div class="tutor-level-desc-box" id="language-level-desc">
+            <b>Рівень A1:</b> Початківець: перші слова й прості фрази для щоденного знайомства.
+          </div>
+        </div>
+
+        <!-- 2B. Блок налаштувань: ПРЕДМЕТИ НМТ ТА ШКОЛА (Hidden by default) -->
+        <div class="tutor-setting-section" id="section-school-config" style="display: none;">
+          <div class="tutor-section-header">
+            <h3 class="tutor-section-title">
+              <span>Предмет</span>
+              <span class="section-badge" id="active-subject-badge">Математика</span>
+            </h3>
+          </div>
+          <div class="tutor-pills-wrap" id="school-pills-wrap">
+            <button class="pill-btn active" data-subject="math" data-subject-name="Математика">Математика</button>
+            <button class="pill-btn" data-subject="ukr-lang" data-subject-name="Українська мова">Українська мова</button>
+            <button class="pill-btn" data-subject="history" data-subject-name="Історія України">Історія України</button>
+            <button class="pill-btn" data-subject="eng-nmt" data-subject-name="Англійська (НМТ)">Англійська (НМТ)</button>
+            <button class="pill-btn" data-subject="physics" data-subject-name="Фізика">Фізика</button>
+            <button class="pill-btn" data-subject="biology" data-subject-name="Біологія">Біологія</button>
+          </div>
+
+          <!-- Клас / Мета -->
+          <div class="tutor-section-header" style="margin-top: 10px;">
+            <h3 class="tutor-section-title">
+              <span>Клас / Мета</span>
+              <span class="section-badge" id="active-goal-badge">НМТ 200!</span>
+            </h3>
+          </div>
+          <div class="tutor-pills-wrap" id="school-goals-wrap">
+            <button class="pill-btn" data-goal="grade-5-7">5-7 клас</button>
+            <button class="pill-btn" data-goal="grade-8-9">8-9 клас</button>
+            <button class="pill-btn" data-goal="grade-10-11">10-11 клас</button>
+            <button class="pill-btn active" data-goal="nmt-200">НМТ 200!</button>
+          </div>
+          <div class="tutor-level-desc-box" id="school-goal-desc">
+            <b>Мета НМТ 200!:</b> Цільове відпрацювання пасток УЦОЯО, таймінг та розбір помилок.
+          </div>
+        </div>
+
+        <!-- 3. Характер репетитора (Усі 5 карточок зі скриншоту) -->
+        <div class="tutor-setting-section">
+          <div class="persona-section-header">
+            <h3 class="persona-section-title">Характер репетитора</h3>
+            <p class="persona-section-subtitle">Оберіть, як саме вас навчатимуть</p>
+          </div>
+
+          <!-- Батьківське блокування (якщо ввімкнено) -->
+          <div class="persona-locked-banner" id="persona-locked-banner" style="display: none;">
+            <span>🔒</span>
+            <span>Зафіксовано батьківським контролем: <b>Суворий викладач</b></span>
+          </div>
+
+          <div class="persona-grid" id="persona-selector-grid">
+            <!-- 1. Добрий друг (active by default) -->
+            <div class="persona-card active" data-persona="friend">
+              <div class="persona-avatar-mini">🐼</div>
+              <div class="persona-info">
+                <div class="persona-title">Добрий друг</div>
+                <div class="persona-desc">Підтримує й хвалить за кожен крок</div>
+              </div>
+              <span class="persona-badge">Терплячий</span>
+            </div>
+
+            <!-- 2. Суворий викладач -->
+            <div class="persona-card" data-persona="strict">
+              <div class="persona-avatar-mini">🧐</div>
+              <div class="persona-info">
+                <div class="persona-title">Суворий викладач</div>
+                <div class="persona-desc">Вимогливий, виправляє кожну помилку</div>
+              </div>
+              <span class="persona-badge">Без поблажок</span>
+            </div>
+
+            <!-- 3. Жартівник -->
+            <div class="persona-card" data-persona="joker">
+              <div class="persona-avatar-mini">😜</div>
+              <div class="persona-info">
+                <div class="persona-title">Жартівник</div>
+                <div class="persona-desc">Пояснює з гумором і жартами</div>
+              </div>
+              <span class="persona-badge">З гумором</span>
+            </div>
+
+            <!-- 4. Мотиватор -->
+            <div class="persona-card" data-persona="motivator">
+              <div class="persona-avatar-mini">🔥</div>
+              <div class="persona-info">
+                <div class="persona-title">Мотиватор</div>
+                <div class="persona-desc">Дає виклики й святкує успіхи</div>
+              </div>
+              <span class="persona-badge">Драйв 200</span>
+            </div>
+
+            <!-- 5. Спокійний ментор -->
+            <div class="persona-card" data-persona="calm">
+              <div class="persona-avatar-mini">🧘</div>
+              <div class="persona-info">
+                <div class="persona-title">Спокійний ментор</div>
+                <div class="persona-desc">Терпляче, крок за кроком, без поспіху</div>
+              </div>
+              <span class="persona-badge">Дзен</span>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+
+      <!-- ==========================================
+           RIGHT COLUMN: Робоча студія репетитора
+           ========================================== -->
+      <main class="tutor-workspace" id="tutor-workspace-root">
+        
+        <!-- Верхня панель аватара та керування (Header картки чату) -->
+        <div class="tutor-workspace-header">
+          <div class="tutor-header-left">
+            <div class="tutor-header-avatar-wrap" id="header-avatar-wrap" title="Червона Панда — твій живий AI-репетитор">
+              <div id="tutor-panda-avatar"></div>
+            </div>
+            <div class="tutor-header-meta">
+              <div class="tutor-status-title" id="tutor-status-title">
+                <span id="status-subject-text">Англійська</span>, 
+                <span id="status-level-text">A1</span>, 
+                <span id="status-persona-text">Добрий друг</span>
+                <span class="tutor-status-badge" id="status-mode-badge">Мови</span>
+              </div>
+              <div class="tutor-status-sub">
+                <span id="tutor-presence-dot" class="voice-dot" style="background: var(--accent-success);"></span>
+                <span id="tutor-presence-text">Панда готова до уроку</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ряд таблеточних кнопок керування зі скриншота -->
+          <div class="tutor-header-controls">
+            <!-- Озвучення (Вкл/Викл) -->
+            <button class="control-pill-btn btn-voice active" id="btn-toggle-voice" title="Увімкнути/вимкнути автоозвучення реплік Панди">
+              <span class="voice-dot"></span>
+              <span>Озвучення</span>
+            </button>
+
+            <!-- Вибір голосу (Жіночий / Чоловічий) -->
+            <button class="control-pill-btn active" id="btn-voice-female" title="Жіночий голос синтезу">Жіночий голос</button>
+            <button class="control-pill-btn" id="btn-voice-male" title="Чоловічий голос синтезу">Чоловічий голос</button>
+
+            <!-- Новий урок -->
+            <button class="control-pill-btn" id="btn-new-lesson" title="Очистити чат та розпочати новий урок з початкового вітання">
+              <span>🔄</span>
+              <span>Новий урок</span>
+            </button>
+
+            <!-- Дошка / Чернетка -->
+            <button class="control-pill-btn" id="btn-toggle-whiteboard" title="Відкрити дошку з формулами та блокнот для чернетки">
+              <span>📋</span>
+              <span>Дошка / Чернетка</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Центральна область уроку та діалогу -->
+        <div class="tutor-chat-viewport" id="tutor-chat-viewport">
+          
+          <!-- Початковий екран привітання (за скриншотом користувача) -->
+          <div class="tutor-welcome-screen" id="tutor-welcome-screen">
+            <div class="welcome-panda-badge">🐼</div>
+            <h2 class="welcome-title">Готові до продуктивного уроку?</h2>
+            <p class="welcome-desc">
+              Оберіть мову або предмет, рівень і характер у лівій панелі, а потім натисніть кнопку, щоб розпочати живе навчання з Пандою!
+            </p>
+            <button class="welcome-start-btn" id="start-lesson-btn">
+              <span>Почати урок</span>
+              <span>🚀</span>
+            </button>
+            <div class="welcome-features">
+              <span class="welcome-feat-pill">✨ Сократівський метод</span>
+              <span class="welcome-feat-pill">🎤 Голосовий ввід</span>
+              <span class="welcome-feat-pill">🎋 Бамбук-винагороди</span>
+              <span class="welcome-feat-pill">🔒 Без відволікань</span>
+            </div>
+          </div>
+
+          <!-- Лента повідомлень чату (приховується до початку уроку) -->
+          <div class="tutor-messages-list" id="tutor-messages-list" style="display: none;"></div>
+
+        </div>
+
+        <!-- Панель швидких дій (Quick Action Chips над вводом) -->
+        <div class="tutor-chips-bar" id="tutor-chips-bar">
+          <button class="chip-btn" data-action="exercise" title="Отримати інтерактивну тестову вправу з варіантами">
+            <span>📝</span>
+            <span>Дай вправу</span>
+          </button>
+          <button class="chip-btn" data-action="explain_rule" title="Зрозуміле пояснення правила з прикладами та мнемонікою">
+            <span>📖</span>
+            <span>Поясни правило</span>
+          </button>
+          <button class="chip-btn" data-action="conversation" title="Розмовна практика та діалог у форматі ситуації">
+            <span>💬</span>
+            <span>Поговорімо</span>
+          </button>
+          <button class="chip-btn" data-action="check_text" title="Перевірити ваше речення, розв'язок або твір на помилки">
+            <span>🔍</span>
+            <span>Перевір текст</span>
+          </button>
+          <button class="chip-btn" data-action="blitz" title="Швидке бліц-питання на час для перевірки реакції">
+            <span>⚡</span>
+            <span>Бліц до НМТ</span>
+          </button>
+          <button class="chip-btn" data-action="socratic_hint" title="Навідна підказка без прямої видачі розв'язку">
+            <span>💡</span>
+            <span>Підказка (Сократ)</span>
+          </button>
+        </div>
+
+        <!-- Нижня панель вводу -->
+        <div class="tutor-input-bar">
+          <!-- Мікрофон (Голосовий ввід) -->
+          <button class="voice-record-btn" id="voice-input-btn" title="Голосовий ввід (натисніть і говоріть)">
+            🎤
+          </button>
+          
+          <!-- Текстове поле -->
+          <div class="tutor-input-wrap">
+            <input 
+              type="text" 
+              id="tutor-user-input" 
+              class="tutor-input-field" 
+              placeholder="Напишіть відповідь або натисніть швидку дію вище..." 
+              autocomplete="off"
+            >
+          </div>
+
+          <!-- Кнопка «Надіслати» -->
+          <button class="tutor-send-btn" id="send-message-btn">
+            <span>Надіслати</span>
+            <span>➤</span>
+          </button>
+        </div>
+
+        <!-- ==========================================
+             Висувна Дошка / Чернетка (Whiteboard Drawer)
+             ========================================== -->
+        <div class="tutor-whiteboard-drawer" id="tutor-whiteboard">
+          <div class="whiteboard-header">
+            <h4 class="whiteboard-title">
+              <span>📋</span>
+              <span>Дошка знань та чернетка</span>
+            </h4>
+            <button class="whiteboard-close-btn" id="btn-close-whiteboard" aria-label="Закрити дошку">✕</button>
+          </div>
+          
+          <div class="whiteboard-body">
+            <!-- Блок формул та шпаргалок для активної дисципліни -->
+            <div class="whiteboard-card">
+              <h5 id="whiteboard-subject-title">📐 Формули: Математика</h5>
+              <div class="formula-list" id="whiteboard-formulas-list"></div>
+            </div>
+
+            <!-- Інтерактивна Чернетка для розрахунків студента -->
+            <div class="whiteboard-card">
+              <h5>📝 Твоя чернетка до завдання</h5>
+              <div class="scratchpad-wrap">
+                <textarea 
+                  class="scratchpad-textarea" 
+                  id="scratchpad-text" 
+                  placeholder="Занотовуйте сюди проміжні розрахунки, тези есе або чернеткові варіанти відповідей..."
+                ></textarea>
+                <div class="scratchpad-actions">
+                  <button class="scratchpad-btn" id="btn-clear-scratchpad">Очистити чернетку</button>
+                  <button class="scratchpad-btn" id="btn-copy-scratchpad">Копіювати в чат</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Scripts in dependency order -->
+  <script src="js/store.js"></script>
+  <script src="js/panda-avatar.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/tutor-data.js"></script>
+  <script src="js/tutor.js"></script>
+</body>
+</html>

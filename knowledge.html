@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictAI — Карта знань та Профіль учня | Панда-репетитор</title>
+  <meta name="description" content="Інтерактивна Карта знань та Дерево навичок НМТ: відстежуй рівень засвоєння кожної теми, кастомізуй цифрового аватара в Додзьо Панди та працюй над помилками.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐼</text></svg>">
+</head>
+<body>
+
+  <!-- Global Header Navigation Rendered by StrictComponents -->
+  <header id="app-header"></header>
+
+  <!-- Focus Alert Notification Banner -->
+  <div id="focus-alert-banner" class="focus-alert-banner"></div>
+
+  <main class="knowledge-page-wrapper strict-container">
+
+    <!-- ==========================================
+         SECTION 1: STUDENT PROFILE & GOAL HERO
+         ========================================== -->
+    <section class="profile-hero-card">
+      <!-- Avatar Preview with quick link to Dojo -->
+      <div class="profile-avatar-container" id="profile-panda-avatar" title="Натисніть, щоб відкрити Додзьо кастомізації">
+        <!-- Rendered by window.PandaAvatar -->
+      </div>
+
+      <!-- Student Credentials & Information -->
+      <div class="profile-info-block">
+        <div class="student-meta-badges">
+          <span class="badge-tag" style="background: rgba(242,153,74,0.15); color: var(--accent-primary);">
+            🎓 <span id="prof-grade-badge">11 клас (Випускник — НМТ)</span>
+          </span>
+          <span class="badge-tag" style="background: rgba(34,197,94,0.15); color: var(--bamboo-green);">
+            🎋 <span id="prof-coins-badge">340 бамбук-коїнів</span>
+          </span>
+          <span class="badge-tag" style="background: rgba(249,115,22,0.15); color: #FFA500;">
+            🔥 <span id="prof-streak-badge">12 днів стріку</span>
+          </span>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <h1 id="prof-student-name" style="font-size: 2.1rem; line-height: 1.2;">Олександр Коваленко</h1>
+          <button class="btn btn-secondary btn-sm" id="btn-edit-profile" title="Редагувати цілі вступу">
+            ✏️ Редагувати профіль
+          </button>
+        </div>
+
+        <p style="font-size: 0.96rem; margin-top: -4px;">
+          Цільовий ЗВО: <strong style="color: var(--text-primary);" id="prof-target-uni">КПІ ім. Ігоря Сікорського</strong> •
+          Спеціальність: <span id="prof-target-spec">121 Інженерія програмного забезпечення</span>
+        </p>
+
+        <!-- Predicted Scores Mini Pills -->
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
+          <div class="badge-tag" style="background: var(--bg-input);">
+            📚 Укр. мова: <strong style="color: var(--accent-success); margin-left: 4px;" id="pred-ukr">176</strong>
+          </div>
+          <div class="badge-tag" style="background: var(--bg-input);">
+            📐 Математика: <strong style="color: var(--accent-primary); margin-left: 4px;" id="pred-math">172</strong>
+          </div>
+          <div class="badge-tag" style="background: var(--bg-input);">
+            🏛️ Історія: <strong style="color: #F59E0B; margin-left: 4px;" id="pred-hist">168</strong>
+          </div>
+          <div class="badge-tag" style="background: var(--bg-input);">
+            🇬🇧 Англійська: <strong style="color: var(--accent-info); margin-left: 4px;" id="pred-eng">181</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Target Score Progress Card -->
+      <div class="profile-target-box">
+        <div class="target-header-row">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+            Ціль на НМТ 2025
+          </span>
+          <span class="target-score-badge" id="prof-target-score">184 бали</span>
+        </div>
+
+        <div class="score-progress-track">
+          <div class="score-progress-bar" id="prof-target-progress-bar" style="width: 82%;"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-muted);">
+          <span>Поточний середній: <b style="color: var(--text-primary);" id="prof-current-avg">174.3</b></span>
+          <span>Залишилося: <b style="color: var(--accent-primary);" id="prof-gap-score">+9.7 б.</b></span>
+        </div>
+
+        <button class="btn btn-outline btn-sm" id="btn-open-dojo" style="margin-top: 6px; width: 100%;">
+          <span>🎋</span>
+          <span>Додзьо Панди (Магазин скінів)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 2: SKILL TREE / KNOWLEDGE MAP
+         ========================================== -->
+    <section>
+      <!-- Subheader with Filter & Search Controls -->
+      <div class="knowledge-nav-bar">
+        <div>
+          <h2 style="font-size: 1.45rem;">Інтерактивна Карта знань</h2>
+          <p style="font-size: 0.9rem;">Дерево тем шкільної програми та обов'язкових модулів НМТ УЦОЯО</p>
+        </div>
+
+        <!-- Search Input -->
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <input type="text" id="topic-search-input" placeholder="🔍 Пошук за назвою теми чи правилом..." 
+                 style="padding: 10px 18px; border-radius: var(--radius-full); background: var(--bg-input); border: 1px solid var(--border-subtle); font-size: 0.9rem; min-width: 280px;" />
+        </div>
+      </div>
+
+      <!-- Summary Statistics Bar -->
+      <div class="results-stats-row" style="margin-bottom: 24px;">
+        <div class="stat-metric-card">
+          <span class="stat-metric-title">Загальне засвоєння програми</span>
+          <span class="stat-metric-val" id="map-total-mastery" style="color: var(--accent-primary);">76.4%</span>
+        </div>
+        <div class="stat-metric-card">
+          <span class="stat-metric-title">Опановані теми (🟢)</span>
+          <span class="stat-metric-val" id="map-count-mastered" style="color: var(--accent-success);">8 тем</span>
+        </div>
+        <div class="stat-metric-card">
+          <span class="stat-metric-title">В процесі вивчення (🟡)</span>
+          <span class="stat-metric-val" id="map-count-progress" style="color: #F59E0B;">4 теми</span>
+        </div>
+        <div class="stat-metric-card">
+          <span class="stat-metric-title">Потребують уваги (🔴)</span>
+          <span class="stat-metric-val" id="map-count-attention" style="color: var(--accent-danger);">4 теми</span>
+        </div>
+      </div>
+
+      <!-- Subject & Status Filter Pills -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+        <!-- Subject Filter -->
+        <div class="filter-pills-group" id="map-subject-filters">
+          <button class="filter-pill active" data-subject="all">Всі предмети (16)</button>
+          <button class="filter-pill" data-subject="Математика">📐 Математика</button>
+          <button class="filter-pill" data-subject="Українська мова">📚 Українська мова</button>
+          <button class="filter-pill" data-subject="Історія України">🏛️ Історія України</button>
+          <button class="filter-pill" data-subject="Англійська мова">🇬🇧 Англійська мова</button>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-pills-group" id="map-status-filters">
+          <button class="filter-pill active" data-status="all">Всі рівні</button>
+          <button class="filter-pill" data-status="mastered">🟢 Опановано</button>
+          <button class="filter-pill" data-status="progress">🟡 В процесі</button>
+          <button class="filter-pill" data-status="attention">🔴 Потребує уваги</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Skill Tree Grid -->
+      <div class="skill-tree-grid" id="skill-tree-container">
+        <!-- Rendered dynamically from window.StrictStore.knowledge.topics -->
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 3: MISTAKES JOURNAL (РОБОТА НАД ПОМИЛКАМИ)
+         ========================================== -->
+    <section class="mistakes-journal-box" style="margin-top: 48px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <div class="badge-tag" style="background: rgba(244,63,94,0.15); color: var(--accent-danger); margin-bottom: 8px;">
+            <span>🛡️</span>
+            <span>Банк проблемних завдань</span>
+          </div>
+          <h2>Журнал помилок (Робота над помилками)</h2>
+          <p style="font-size: 0.94rem;">Усі завдання, де траплялися неточності під час тестувань, зібрані тут для повторення з Пандою.</p>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" id="btn-clear-mistakes-journal">
+          🗑️ Очистити засвоєні
+        </button>
+      </div>
+
+      <div id="journal-mistakes-container" class="mistakes-breakdown-section">
+        <!-- Populated dynamically from window.StrictStore.nmt.mistakesQueue -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       MODAL 1: PANDA DOJO (AVATAR CUSTOMIZATION SHOP)
+       ========================================== -->
+  <div class="drawer-backdrop" id="dojo-shop-modal">
+    <div class="drawer-modal-card" style="max-width: 900px;">
+      <div class="drawer-modal-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 1.6rem;">🎋</span>
+          <div>
+            <h3 style="font-size: 1.25rem;">Додзьо Панди — Гардероб аватара</h3>
+            <span style="font-size: 0.82rem; color: var(--text-muted);">Купуй унікальні аксесуари за чесно зароблені бамбук-коїни</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div class="nav-badge bamboo" style="font-size: 0.95rem;">
+            <span>🎋</span>
+            <span id="dojo-coins-balance">340</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-close-dojo" style="padding: 6px 12px;">✖</button>
+        </div>
+      </div>
+
+      <div class="drawer-modal-body" style="padding: 28px;">
+        <!-- Live Avatar Preview Deck -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 28px; padding: 20px; background: var(--bg-input); border-radius: var(--radius-xl); margin-bottom: 24px;">
+          <div style="width: 140px; height: 140px;" id="dojo-preview-avatar"></div>
+          <div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Поточний образ Панди:</div>
+            <div style="font-size: 1.35rem; font-weight: 800; color: var(--accent-primary);" id="dojo-current-skin-name">Окуляри професора</div>
+            <p style="font-size: 0.88rem; max-width: 380px; margin-top: 4px;" id="dojo-current-skin-desc">
+              Класичні круглі окуляри вченого. Допомагають помічати навіть найдрібніші каверзи у завданнях на ОДЗ.
+            </p>
+          </div>
+        </div>
+
+        <!-- Shop Grid -->
+        <h4 style="font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px;">
+          Каталог спорядження:
+        </h4>
+        <div class="dojo-shop-grid" id="dojo-items-container">
+          <!-- Dynamically populated accessory items -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: EDIT PROFILE & TARGET MODAL
+       ========================================== -->
+  <div class="drawer-backdrop" id="edit-profile-modal">
+    <div class="drawer-modal-card" style="max-width: 580px;">
+      <div class="drawer-modal-header">
+        <h3 style="font-size: 1.15rem;">Редагування цілей та даних учня</h3>
+        <button class="btn btn-secondary btn-sm" id="btn-close-edit-modal">✖</button>
+      </div>
+
+      <div class="drawer-modal-body" style="display: flex; flex-direction: column; gap: 18px;">
+        <div>
+          <label style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Прізвище та ім'я учня:</label>
+          <input type="text" id="input-edit-name" class="numeric-input-field" style="text-align: left; font-size: 1rem; padding: 12px 16px;" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Клас або навчальний заклад:</label>
+          <input type="text" id="input-edit-grade" class="numeric-input-field" style="text-align: left; font-size: 1rem; padding: 12px 16px;" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Цільовий університет (ЗВО):</label>
+          <input type="text" id="input-edit-uni" class="numeric-input-field" style="text-align: left; font-size: 1rem; padding: 12px 16px;" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Спеціальність мрії:</label>
+          <input type="text" id="input-edit-spec" class="numeric-input-field" style="text-align: left; font-size: 1rem; padding: 12px 16px;" />
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px;">Цільовий бал НМТ (100–200):</label>
+          <input type="number" id="input-edit-score" min="100" max="200" class="numeric-input-field" style="text-align: left; font-size: 1.1rem; padding: 12px 16px;" />
+        </div>
+
+        <button class="btn btn-primary" id="btn-save-profile" style="margin-top: 10px;">
+          <span>💾</span>
+          <span>Зберегти зміни</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standard StrictAI Footer -->
+  <footer class="strict-footer" style="margin-top: 64px;">
+    <div class="strict-container">
+      <div class="footer-grid">
+        <div class="footer-col" style="grid-column: span 2;">
+          <div class="nav-brand" style="margin-bottom: 14px;">
+            <div class="nav-brand-badge">🐼</div>
+            <div>Strict<span class="nav-brand-highlight">AI</span></div>
+          </div>
+          <p style="font-size: 0.95rem; max-width: 440px; margin-bottom: 16px;">
+            Панда-репетитор: адаптивна підготовка до НМТ 2025 за програмою УЦОЯО, гейміфікація та залізна концентрація уваги.
+          </p>
+          <div class="ua-badge">
+            <span>🇺🇦</span>
+            <span>Розроблено для українських випускників</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Навігація</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Головна</a></li>
+            <li><a href="tutor.html">AI-Репетитор</a></li>
+            <li><a href="nmt.html">Симулятор НМТ</a></li>
+            <li><a href="tracker.html">Контроль фокусу</a></li>
+            <li><a href="knowledge.html">Карта знань</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Матеріали</h4>
+          <ul class="footer-links">
+            <li><a href="nmt.html">📝 Тренажер НМТ 2025</a></li>
+            <li><a href="parents.html">🛡 Батьківський кабінет</a></li>
+            <li><a href="javascript:StrictKnowledgeController.openDojoShop()">🎋 Додзьо Панди</a></li>
+            <li><a href="index.html#calc">📊 Калькулятор коефіцієнтів</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.</div>
+        <div>Аутентичні стандарти УЦОЯО та МОН України</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts: Store -> Avatar -> Components -> Knowledge Logic -->
+  <script src="js/store.js"></script>
+  <script src="js/panda-avatar.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/knowledge.js"></script>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictAI — Симулятор НМТ 2025 | Офіційні стандарти УЦОЯО</title>
+  <meta name="description" content="Аутентичний тренажер НМТ за стандартами УЦОЯО: українська мова, математика, історія України, англійська. Офіційна шкала 100-200, довідкові формули та розбір помилок із ШІ-репетитором.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐼</text></svg>">
+</head>
+<body>
+
+  <!-- Global Header Navigation Rendered by StrictComponents -->
+  <header id="app-header"></header>
+
+  <!-- Focus Alert Notification Banner -->
+  <div id="focus-alert-banner" class="focus-alert-banner"></div>
+
+  <main class="nmt-page-wrapper strict-container">
+
+    <!-- ==========================================
+         VIEW 1: SETUP & MODE SELECTOR
+         ========================================== -->
+    <section id="nmt-setup-view" class="nmt-view-section">
+      <div class="nmt-header-card">
+        <div class="badge-tag badge-points" style="margin-bottom: 12px;">
+          <span>🎯</span>
+          <span>Офіційна сертифікація УЦОЯО</span>
+        </div>
+        <h1>Симулятор НМТ та Іспитів</h1>
+        <p style="font-size: 1.08rem; max-width: 820px; margin-top: 8px;">
+          Перевір свій рівень у бойових умовах, максимально наближених до реального національного мультипредметного тесту. Завдання оновлено за чинними програмами МОН, включено офіційні довідкові матеріали та переведення у <b>шкалу 100–200 балів</b>.
+        </p>
+
+        <!-- Mode Selector Pills -->
+        <div style="margin-top: 24px;">
+          <h4 style="margin-bottom: 12px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
+            1. Оберіть формат тестування:
+          </h4>
+          <div class="nmt-mode-selector" id="nmt-mode-pills">
+            <button class="mode-pill-btn active" data-mode="full">
+              <span>⏱️</span>
+              <span>Повний блок НМТ (120 хв)</span>
+            </button>
+            <button class="mode-pill-btn" data-mode="subject">
+              <span>📚</span>
+              <span>Предметний тренажер (15–30 хв)</span>
+            </button>
+            <button class="mode-pill-btn" data-mode="express">
+              <span>⚡</span>
+              <span>Експрес-діагностика (5 завдань)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Subject Selector (for subject & express modes) -->
+        <div id="nmt-subject-select-row" style="margin-top: 24px;">
+          <h4 style="margin-bottom: 12px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
+            2. Оберіть навчальний предмет:
+          </h4>
+          <div class="nmt-subject-pills" id="nmt-subject-pills">
+            <button class="subject-badge-pill active" data-subject="all">
+              <span>🌐</span>
+              <span>Всі предмети (Комплексний)</span>
+            </button>
+            <button class="subject-badge-pill" data-subject="ukrainian">
+              <span>📚</span>
+              <span>Українська мова</span>
+            </button>
+            <button class="subject-badge-pill" data-subject="math">
+              <span>📐</span>
+              <span>Математика</span>
+            </button>
+            <button class="subject-badge-pill" data-subject="history">
+              <span>🏛️</span>
+              <span>Історія України</span>
+            </button>
+            <button class="subject-badge-pill" data-subject="english">
+              <span>🇬🇧</span>
+              <span>Англійська мова</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Anti-stress Timer Ergonomics Selector -->
+        <div style="margin-top: 24px;">
+          <h4 style="margin-bottom: 12px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
+            3. Режим контролю часу (Антистрес-ергономіка):
+          </h4>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <label class="option-card-label timer-choice selected" style="padding: 12px 18px; margin: 0; flex: 1; min-width: 220px;" data-timer-mode="classic">
+              <input type="radio" name="timer-setting" value="classic" checked style="display: none;">
+              <span style="font-size: 1.3rem;">⏱️</span>
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem;">Класичний таймер</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Зворотний відлік хвилин і секунд</div>
+              </div>
+            </label>
+
+            <label class="option-card-label timer-choice" style="padding: 12px 18px; margin: 0; flex: 1; min-width: 220px;" data-timer-mode="zen">
+              <input type="radio" name="timer-setting" value="zen" style="display: none;">
+              <span style="font-size: 1.3rem;">🌿</span>
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem;">Прихована лінія (Zen)</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Жодних панічних секунд — спокійний фокус</div>
+              </div>
+            </label>
+
+            <label class="option-card-label timer-choice" style="padding: 12px 18px; margin: 0; flex: 1; min-width: 220px;" data-timer-mode="strict">
+              <input type="radio" name="timer-setting" value="strict" style="display: none;">
+              <span style="font-size: 1.3rem;">🧐</span>
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem;">Суворий екзаменатор</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Аудіо-тіки та контроль кожної хвилини</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Launch Exam Button -->
+        <div style="margin-top: 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 0.92rem;">
+            <span>ℹ️</span>
+            <span>Під час тестування доступні офіційні довідкові матеріали УЦОЯО (Alt+F).</span>
+          </div>
+          <button class="btn btn-primary btn-lg" id="btn-start-exam" style="min-width: 260px;">
+            <span>🚀</span>
+            <span>Розпочати тестування</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Past Completed Exams History -->
+      <div class="nmt-workspace-card" style="min-height: auto; margin-top: 28px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+          <h3>Історія твоїх спроб НМТ</h3>
+          <span style="font-size: 0.88rem; color: var(--text-muted);">Дані синхронізовано з профілем</span>
+        </div>
+        <div id="past-exams-list" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 2: ACTIVE EXAM SIMULATOR
+         ========================================== -->
+    <section id="nmt-exam-view" class="nmt-view-section" style="display: none;">
+      <!-- Ergonomic Controls Bar -->
+      <div class="nmt-controls-bar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="nav-brand-badge" style="width: 32px; height: 32px; font-size: 1rem;">📝</div>
+          <div>
+            <div style="font-weight: 700; font-size: 1.05rem;" id="exam-active-title">НМТ-2025: Тренувальний тест</div>
+            <div style="font-size: 0.82rem; color: var(--text-muted);" id="exam-active-subtitle">Повний блок (Українська, Математика, Історія, Англійська)</div>
+          </div>
+        </div>
+
+        <!-- Timer Area -->
+        <div class="nmt-timer-widget" id="exam-timer-container">
+          <span>⏱</span>
+          <span class="timer-digits" id="exam-timer-display">120:00</span>
+          <button class="timer-mode-btn" id="btn-toggle-timer-zen" title="Перемкнути вигляд таймера (секунди / Zen-лінія)">
+            Режим Zen
+          </button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="btn btn-secondary btn-sm" id="btn-open-ref-top" title="Відкрити довідкові матеріали">
+            <span>📐</span>
+            <span>Формули (Alt+F)</span>
+          </button>
+          <button class="btn btn-outline btn-sm" id="btn-exit-exam" style="color: var(--accent-danger); border-color: rgba(244,63,94,0.3);">
+            <span>✖</span>
+            <span>Завершити</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Zen hairline progress line -->
+      <div class="zen-progress-bar" id="exam-zen-progress" style="display: none;">
+        <div class="zen-progress-fill" id="exam-zen-fill"></div>
+      </div>
+
+      <!-- Main Exam Bento Grid -->
+      <div class="nmt-bento-layout">
+        <!-- Question Workspace (70%) -->
+        <div class="nmt-workspace-card" id="nmt-workspace-container">
+          <div class="nmt-workspace-header">
+            <div class="nmt-question-meta">
+              <span class="badge-tag" id="q-counter-badge">Завдання 1 з 34</span>
+              <span class="badge-tag" id="q-subject-badge">📚 Українська мова</span>
+              <span class="badge-tag" id="q-topic-badge">Наголос</span>
+              <span class="badge-tag badge-points" id="q-points-badge">1 бал</span>
+            </div>
+
+            <button class="flag-btn" id="q-flag-btn" title="Позначити прапорцем, щоб повернутися пізніше">
+              <span>🚩</span>
+              <span id="flag-btn-text">Позначити прапорцем</span>
+            </button>
+          </div>
+
+          <!-- Question Statement Box -->
+          <div class="question-statement-box">
+            <div class="question-statement-text" id="q-statement-text">
+              Завантаження завдання...
+            </div>
+          </div>
+
+          <!-- Interactive Question Input Body -->
+          <div id="q-input-dynamic-area">
+            <!-- Rendered dynamically for single, matching, or numeric -->
+          </div>
+
+          <!-- Bottom Footer Navigation Toolbar -->
+          <div class="nmt-workspace-footer">
+            <button class="btn btn-secondary" id="btn-prev-q">
+              <span>←</span>
+              <span>Попереднє</span>
+            </button>
+
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <button class="btn btn-outline" id="btn-clear-choice">
+                <span>Очистити вибір</span>
+              </button>
+
+              <button class="btn btn-primary" id="btn-next-q">
+                <span>Наступне</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Control Sidebar (30%) -->
+        <div class="nmt-sidebar-card">
+          <!-- Panda Mini Tutor Card -->
+          <div class="nmt-panda-mini-card">
+            <div class="panda-mini-avatar-slot" id="nmt-mini-panda-avatar"></div>
+            <div class="panda-mini-speech-box">
+              <div class="panda-mini-name">Панда-інструктор</div>
+              <div class="panda-mini-text" id="panda-exam-hint">
+                Уважно читай умову! Не залишай жодного питання без відповіді — на НМТ немає штрафних балів.
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Matrix Card -->
+          <div class="nmt-nav-matrix-card">
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+              <span>Карта завдань</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);" id="matrix-progress-text">0 / 34</span>
+            </div>
+
+            <div class="matrix-legend-row">
+              <div class="legend-item"><span class="legend-dot answered"></span><span>Дано відповідь</span></div>
+              <div class="legend-item"><span class="legend-dot flagged"></span><span>Прапорець 🚩</span></div>
+              <div class="legend-item"><span class="legend-dot skipped"></span><span>Пропущено</span></div>
+            </div>
+
+            <div class="question-bubbles-grid" id="question-bubbles-container">
+              <!-- Dynamically populated buttons 1..N -->
+            </div>
+
+            <button class="btn btn-accent-gradient" id="btn-submit-exam-sidebar" style="width: 100%;">
+              <span>🏁</span>
+              <span>Завершити тест та отримати бал</span>
+            </button>
+          </div>
+
+          <!-- Sidebar Tools Box -->
+          <div class="sidebar-tools-box">
+            <button class="tool-action-btn" id="btn-open-ref-drawer">
+              <span>📐</span>
+              <div>
+                <div>Довідкові матеріали УЦОЯО</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">Формули та правила (Alt+F)</div>
+              </div>
+            </button>
+
+            <button class="tool-action-btn" id="btn-open-scratchpad">
+              <span>📝</span>
+              <div>
+                <div>Інтерактивна чернетка</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">Чернетковий блокнот для обчислень</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 3: DETAILED RESULTS & MISTAKES REVIEW
+         ========================================== -->
+    <section id="nmt-results-view" class="nmt-view-section" style="display: none;">
+      <div class="results-screen-card">
+        <div class="results-hero-grid">
+          <div class="results-avatar-wrap" id="results-panda-avatar"></div>
+
+          <div>
+            <div class="badge-tag badge-points" id="results-verdict-badge" style="margin-bottom: 10px;">
+              <span>🎉</span>
+              <span>Поріг успішно подолано!</span>
+            </div>
+            <h1 id="results-headline">Вітаємо із завершенням тесту!</h1>
+            <p id="results-subtext" style="margin-top: 8px;">
+              Результат збережено у твоєму персональному профілі. Переглянь розгорнуту аналітику та розбери кожну проблемну тему з ШІ-репетитором.
+            </p>
+          </div>
+
+          <!-- Scaled 100-200 Dial -->
+          <div class="results-score-dial">
+            <div class="scaled-score-label">Рейтинговий бал НМТ</div>
+            <div class="scaled-score-number" id="results-scaled-score">184</div>
+            <div style="font-size: 0.88rem; color: var(--text-muted);" id="results-raw-score">
+              28 / 32 первинних балів
+            </div>
+          </div>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="results-stats-row">
+          <div class="stat-metric-card">
+            <span class="stat-metric-title">Точність відповідей</span>
+            <span class="stat-metric-val" id="metric-accuracy" style="color: var(--accent-success);">87.5%</span>
+          </div>
+          <div class="stat-metric-card">
+            <span class="stat-metric-title">Кількість помилок</span>
+            <span class="stat-metric-val" id="metric-mistakes" style="color: var(--accent-danger);">4</span>
+          </div>
+          <div class="stat-metric-card">
+            <span class="stat-metric-title">Витрачений час</span>
+            <span class="stat-metric-val" id="metric-time">42 хв</span>
+          </div>
+          <div class="stat-metric-card">
+            <span class="stat-metric-title">Зароблено бамбук-коїнів</span>
+            <span class="stat-metric-val" id="metric-coins" style="color: var(--bamboo-green);">+50 🎋</span>
+          </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px;">
+          <button class="btn btn-primary" id="btn-retake-exam">
+            <span>🔄</span>
+            <span>Скласти інший варіант</span>
+          </button>
+          <a href="knowledge.html" class="btn btn-secondary">
+            <span>🗺️</span>
+            <span>Переглянути Карту знань</span>
+          </a>
+          <a href="tutor.html" class="btn btn-secondary">
+            <span>🐼</span>
+            <span>Перейти до AI-Репетитора</span>
+          </a>
+        </div>
+
+        <!-- Mistakes Breakdown Section -->
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+            <div>
+              <h3>Детальний розбір відповідей</h3>
+              <p style="font-size: 0.92rem;">Кожна помилка містить посилання на правила та можливість миттєвого опрацювання з Пандою</p>
+            </div>
+
+            <!-- Filter buttons -->
+            <div class="filter-pills-group" id="results-filter-pills">
+              <button class="filter-pill active" data-filter="all">Всі завдання</button>
+              <button class="filter-pill" data-filter="mistakes">Лише помилки ❌</button>
+              <button class="filter-pill" data-filter="correct">Правильні ✅</button>
+            </div>
+          </div>
+
+          <div class="mistakes-breakdown-section" id="results-cards-container">
+            <!-- Dynamically populated mistake cards with direct bridge to tutor.html -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       DRAWER 1: REFERENCE MATERIALS (ALT+F)
+       ========================================== -->
+  <div class="drawer-backdrop" id="ref-materials-drawer">
+    <div class="drawer-modal-card">
+      <div class="drawer-modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.3rem;">📐</span>
+          <div>
+            <h3 style="font-size: 1.15rem;">Офіційні довідкові матеріали УЦОЯО</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Дозволені формули та довідники для сертифікаційної роботи</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="btn-close-ref-drawer" style="padding: 6px 12px;">✖ Закрити</button>
+      </div>
+
+      <div class="drawer-tabs-row" id="ref-subject-tabs">
+        <button class="drawer-tab-btn active" data-ref-subject="math">📐 Математика</button>
+        <button class="drawer-tab-btn" data-ref-subject="ukrainian">📚 Українська мова</button>
+        <button class="drawer-tab-btn" data-ref-subject="history">🏛️ Історія України</button>
+        <button class="drawer-tab-btn" data-ref-subject="english">🇬🇧 Англійська мова</button>
+      </div>
+
+      <div class="drawer-modal-body" id="ref-content-body">
+        <!-- Rendered dynamically from window.StrictNMTBank.referenceMaterials -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       DRAWER 2: INTERACTIVE SCRATCHPAD
+       ========================================== -->
+  <div class="drawer-backdrop" id="scratchpad-drawer">
+    <div class="drawer-modal-card">
+      <div class="drawer-modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.3rem;">📝</span>
+          <div>
+            <h3 style="font-size: 1.15rem;">Інтерактивна чернетка для розв'язків</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Твої чорнові нотатки та проміжні обчислення</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="btn-close-scratchpad" style="padding: 6px 12px;">✖ Закрити</button>
+      </div>
+
+      <div class="drawer-modal-body">
+        <textarea class="scratchpad-textarea" id="scratchpad-text" placeholder="Тут можна записувати проміжні викладки, ОДЗ рівнянь, дати чи чернетки думок..."></textarea>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Чернетка автоматично зберігається в пам'яті браузера.</span>
+          <button class="btn btn-secondary btn-sm" id="btn-clear-scratchpad">
+            <span>🗑️</span>
+            <span>Очистити</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standard StrictAI Footer -->
+  <footer class="strict-footer" style="margin-top: 64px;">
+    <div class="strict-container">
+      <div class="footer-grid">
+        <div class="footer-col" style="grid-column: span 2;">
+          <div class="nav-brand" style="margin-bottom: 14px;">
+            <div class="nav-brand-badge">🐼</div>
+            <div>Strict<span class="nav-brand-highlight">AI</span></div>
+          </div>
+          <p style="font-size: 0.95rem; max-width: 440px; margin-bottom: 16px;">
+            Панда-репетитор: адаптивна підготовка до НМТ 2025 за програмою УЦОЯО, гейміфікація та залізна концентрація уваги.
+          </p>
+          <div class="ua-badge">
+            <span>🇺🇦</span>
+            <span>Розроблено для українських випускників</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Навігація</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Головна</a></li>
+            <li><a href="tutor.html">AI-Репетитор</a></li>
+            <li><a href="nmt.html">Симулятор НМТ</a></li>
+            <li><a href="tracker.html">Контроль фокусу</a></li>
+            <li><a href="knowledge.html">Карта знань</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Матеріали</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:StrictNMTController.openRefMaterials('math')">📐 Формули з математики</a></li>
+            <li><a href="javascript:StrictNMTController.openRefMaterials('ukrainian')">📚 Наголоси УЦОЯО</a></li>
+            <li><a href="javascript:StrictNMTController.openRefMaterials('history')">🏛️ Дати історії України</a></li>
+            <li><a href="parents.html">🛡 Батьківський кабінет</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.</div>
+        <div>Аутентичні стандарти УЦОЯО та МОН України</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts: Store -> Avatar -> Components -> NMT Bank -> NMT Logic -->
+  <script src="js/store.js"></script>
+  <script src="js/panda-avatar.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/nmt-questions.js"></script>
+  <script src="js/nmt.js"></script>
+</body>
+</html>

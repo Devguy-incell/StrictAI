@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictAI — Трекер концентрації та фокус-сесій (Strict Focus)</title>
+  <meta name="description" content="Таймер фокус-сесій Помодоро з контролем відволікань, анти-чит монітором вкладок браузера, живим аватаром Панди та щоденними квестами підготовки до НМТ.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏱</text></svg>">
+</head>
+<body>
+
+  <!-- Global Header Navigation Rendered by StrictComponents -->
+  <header id="app-header"></header>
+
+  <!-- Focus Alert Notification Banner -->
+  <div id="focus-alert-banner" class="focus-alert-banner"></div>
+
+  <main>
+    <!-- Tracker Hero Top Bar -->
+    <section class="tracker-hero-banner">
+      <div class="strict-container">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(242, 153, 74, 0.15); border: 1px solid rgba(242, 153, 74, 0.3); border-radius: var(--radius-full); color: var(--accent-primary); font-size: 0.84rem; font-weight: 700; margin-bottom: 10px;">
+              <span>🛡️</span>
+              <span>Strict Focus Protocol • Анти-чит контроль</span>
+            </div>
+            <h1 style="font-size: 2.2rem; margin-bottom: 6px;">Програма-Трекер навчального процесу</h1>
+            <p style="color: var(--text-secondary); font-size: 1.05rem; max-width: 650px;">
+              Залізна концентрація на уроці: розумний таймер блокує відволікання, фіксує кожен вихід зі вкладки та автоматично нараховує бамбук-коїни за чесну роботу.
+            </p>
+          </div>
+
+          <!-- Quick Metrics Bar -->
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <div class="metric-box" style="min-width: 140px; padding: 12px 16px;">
+              <span class="metric-box-sub">Фокус сьогодні</span>
+              <span class="metric-box-val" id="top-focus-time">65 / 90 хв</span>
+              <span class="metric-box-badge">⏱</span>
+            </div>
+            <div class="metric-box" style="min-width: 140px; padding: 12px 16px;">
+              <span class="metric-box-sub">Зміна вкладок</span>
+              <span class="metric-box-val" id="top-tab-switches" style="color: var(--accent-warning);">2 / 3</span>
+              <span class="metric-box-badge">👁️</span>
+            </div>
+            <div class="metric-box" style="min-width: 140px; padding: 12px 16px;">
+              <span class="metric-box-sub">Коїни за сесії</span>
+              <span class="metric-box-val" id="top-coins" style="color: var(--bamboo-green);">+35 🎋</span>
+              <span class="metric-box-badge">🎋</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Workspace Bento Layout -->
+    <section class="strict-container" style="padding-bottom: 60px;">
+      <div class="tracker-layout-grid">
+        
+        <!-- ==================== LEFT COLUMN: Focus Session Module ==================== -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          
+          <!-- Central Interactive Timer Card -->
+          <div class="bento-card" style="padding: 32px;">
+            <div class="bento-header">
+              <div>
+                <span class="bento-badge orange">Strict Focus Engine</span>
+                <h2 style="font-size: 1.45rem; margin-top: 6px;">Центральний модуль сесії</h2>
+              </div>
+              <div id="session-status-badge" class="bento-badge purple" style="font-size: 0.82rem;">
+                Готовий до старту
+              </div>
+            </div>
+
+            <!-- 1. Session Duration Mode Selection -->
+            <div style="margin-bottom: 20px;">
+              <label class="form-label" style="margin-bottom: 10px; display: block; font-weight: 700;">
+                1. Оберіть режим фокус-сесії:
+              </label>
+              <div class="mode-card-grid">
+                <button type="button" class="mode-card-btn active" data-mode="pomodoro25" data-seconds="1500">
+                  <span class="mode-card-icon">🍅</span>
+                  <span class="mode-card-title">Помодоро Спринт</span>
+                  <span class="mode-card-time">25 хвилин</span>
+                </button>
+                <button type="button" class="mode-card-btn" data-mode="deep45" data-seconds="2700">
+                  <span class="mode-card-icon">🧠</span>
+                  <span class="mode-card-title">Глибоке занурення</span>
+                  <span class="mode-card-time">45 хвилин</span>
+                </button>
+                <button type="button" class="mode-card-btn" data-mode="exam60" data-seconds="3600">
+                  <span class="mode-card-icon">🎯</span>
+                  <span class="mode-card-title">Марафон НМТ</span>
+                  <span class="mode-card-time">60 хвилин</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. Subject Selection -->
+            <div style="margin-bottom: 24px;">
+              <label class="form-label" style="margin-bottom: 10px; display: block; font-weight: 700;">
+                2. Оберіть навчальний предмет:
+              </label>
+              <div class="subject-pill-row" id="subject-selector">
+                <button type="button" class="subject-pill active" data-subject="Математика">📐 Математика</button>
+                <button type="button" class="subject-pill" data-subject="Українська мова">🇺🇦 Українська мова</button>
+                <button type="button" class="subject-pill" data-subject="Історія України">📜 Історія України</button>
+                <button type="button" class="subject-pill" data-subject="Англійська мова">🇬🇧 Англійська мова</button>
+                <button type="button" class="subject-pill" data-subject="Домашнє завдання">📚 Домашнє завдання</button>
+              </div>
+            </div>
+
+            <!-- 3. Big Circular / Digital Timer Display -->
+            <div class="timer-center-box">
+              <div class="timer-ring-container">
+                <svg class="timer-svg" viewBox="0 0 280 280">
+                  <!-- Background Gray Circle -->
+                  <circle class="timer-circle-bg" cx="140" cy="140" r="120" />
+                  <!-- Progress Animated Ring (2 * PI * 120 = 753.98) -->
+                  <circle id="timer-progress-ring" class="timer-circle-progress" cx="140" cy="140" r="120"
+                          stroke-dasharray="753.98" stroke-dashoffset="0" />
+                </svg>
+
+                <div class="timer-inner-content">
+                  <div class="timer-digits" id="timer-display-digits">25:00</div>
+                  <div class="timer-subject-badge" id="timer-active-subject">
+                    <span>📐</span>
+                    <span>Математика</span>
+                  </div>
+                  <div class="timer-state-label" id="timer-state-desc">Готовий до запуску</div>
+                </div>
+              </div>
+
+              <!-- Action Control Buttons -->
+              <div class="timer-action-bar">
+                <button type="button" class="btn btn-primary btn-timer-primary" id="timer-start-toggle-btn">
+                  <span>▶</span>
+                  <span id="start-btn-label">Почати фокус-сесію</span>
+                </button>
+                
+                <button type="button" class="btn btn-secondary" id="timer-reset-btn" title="Скинути або завершити поточну сесію">
+                  <span>⏹</span>
+                  <span>Завершити та зберегти</span>
+                </button>
+
+                <button type="button" class="btn btn-timer-sim" id="timer-simulate-blur-btn" title="Тестування реакції системи на ухід зі вкладки">
+                  <span>⚡</span>
+                  <span>Тест детектора відволікання</span>
+                </button>
+              </div>
+
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 14px; text-align: center;">
+                💡 <em>Примітка:</em> Система автоматично фіксує перемикання вкладки через <code>visibilitychange</code> та <code>window.blur</code>. Кнопка «Тест детектора» дозволяє перевірити спрацювання сповіщення в 1 клік.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Daily Quests & Activity Schedule Checklist -->
+          <div class="bento-card" style="padding: 28px;">
+            <div class="bento-header">
+              <div>
+                <span class="bento-badge green">Гейміфікація & Дисципліна</span>
+                <h3 style="font-size: 1.3rem; margin-top: 6px;">Щоденний план та Квести</h3>
+              </div>
+              <div style="font-size: 0.88rem; color: var(--text-muted);">
+                Виконуй завдання та збирай бамбук 🎋
+              </div>
+            </div>
+
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 14px;">
+              Закривай щоденні блоки підготовки. Кожен виконаний пункт прокачує готовність до НМТ і додає бонусні коїни в твою скарбничку!
+            </p>
+
+            <!-- Quest List Container -->
+            <div class="quest-list-container" id="quest-items-list">
+              <!-- Dynamically populated by tracker.js -->
+            </div>
+
+            <!-- Add Custom Goal Form -->
+            <div class="quest-add-box">
+              <input type="text" id="new-quest-input" class="form-input" placeholder="Додати власну навчальну ціль на сьогодні (наприклад: розв'язати 10 задач з геометрії)..." style="flex: 1;">
+              <button type="button" class="btn btn-secondary btn-sm" id="add-quest-btn">
+                <span>➕</span>
+                <span>Додати квест</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ==================== RIGHT COLUMN: Panda Supervisor & Live Anti-Distraction Feed ==================== -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          
+          <!-- Red Panda Focus Supervisor Card -->
+          <div class="bento-card" style="padding: 26px; text-align: center;">
+            <div class="bento-header" style="justify-content: center; margin-bottom: 12px;">
+              <span class="bento-badge orange">Живий наглядач уроку</span>
+            </div>
+
+            <!-- Avatar Container -->
+            <div id="tracker-panda-container" style="margin: 10px auto;"></div>
+
+            <!-- Speech Bubble from Panda -->
+            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 16px 18px; margin-top: 16px; position: relative; text-align: left;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                <span style="font-weight: 700; font-size: 0.95rem; color: var(--accent-primary);" id="panda-supervisor-name">
+                  Панда-наставник
+                </span>
+                <button type="button" id="panda-speak-voice-btn" class="btn btn-outline btn-sm" style="padding: 3px 8px; font-size: 0.78rem;" title="Озвучити голосом репетитора">
+                  🔊 Озвучити
+                </button>
+              </div>
+              <p id="panda-supervisor-quote" style="font-size: 0.9rem; line-height: 1.5; color: var(--text-primary); margin: 0;">
+                «Я уважно стежу за твоїм фокусом! Увімкни таймер, закрий зайві вкладки з іграми чи соцмережами — і покажи свій максимум!»
+              </p>
+            </div>
+
+            <!-- Strict Mode Status Indicator -->
+            <div id="strict-persona-lock-banner" style="display: none; margin-top: 14px; padding: 10px 14px; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: var(--radius-md); font-size: 0.84rem; color: #FDA4AF; text-align: left;">
+              🔒 <strong>Батьківський контроль активний:</strong> Увімкнено примусовий режим «Суворий викладач». Послаблення контролю заблоковано батьками.
+            </div>
+          </div>
+
+          <!-- Anti-Distraction Live Log -->
+          <div class="bento-card" style="padding: 24px;">
+            <div class="bento-header">
+              <div>
+                <span class="bento-badge purple">Anti-Distraction Log</span>
+                <h3 style="font-size: 1.15rem; margin-top: 6px;">Журнал дисципліни сесії</h3>
+              </div>
+              <button type="button" id="clear-session-log-btn" class="btn btn-outline btn-sm" style="font-size: 0.78rem; padding: 4px 10px;">
+                Очистити
+              </button>
+            </div>
+
+            <div class="anti-distraction-box" style="margin-top: 10px;">
+              <div class="log-feed-container" id="tracker-events-feed">
+                <!-- Dynamically populated events -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 7-Day Activity Chart with Daily Norm Threshold -->
+          <div class="bento-card" style="padding: 24px;">
+            <div class="bento-header">
+              <div>
+                <span class="bento-badge blue">Тижнева активність</span>
+                <h3 style="font-size: 1.15rem; margin-top: 6px;">Графік за 7 днів (Пн–Нд)</h3>
+              </div>
+              <span id="chart-daily-norm-label" style="font-size: 0.82rem; font-family: var(--font-mono); color: var(--accent-primary);">
+                Норма: 90 хв/день
+              </span>
+            </div>
+
+            <div class="activity-chart-wrapper">
+              <div class="chart-header-row">
+                <span style="font-size: 0.82rem; color: var(--text-muted);">Хвилини щоденного фокусу:</span>
+                <div class="chart-target-legend">
+                  <span style="display: inline-block; width: 14px; height: 2px; border-top: 2px dashed var(--accent-primary);"></span>
+                  <span>Цільова норма</span>
+                </div>
+              </div>
+
+              <div class="chart-bars-container" id="weekly-chart-bars">
+                <!-- Injected via tracker.js -->
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; font-size: 0.84rem; color: var(--text-secondary);">
+              <span>Всього за тиждень: <strong id="weekly-total-mins" style="color: var(--text-primary); font-family: var(--font-mono);">515 хв</strong></span>
+              <a href="parents.html" style="color: var(--accent-primary); font-weight: 600;">
+                Детальний звіт у кабінеті батьків ↗
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="strict-footer">
+    <div class="strict-container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="nav-brand" style="margin-bottom: 14px;">
+            <div class="nav-brand-badge">🐼</div>
+            <div>Strict<span class="nav-brand-highlight">AI</span></div>
+          </a>
+          <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;">
+            Панда-репетитор — перша українська освітня платформа із залізною дисципліною, живим аватаром та підготовкою до НМТ 2025 без відволікань.
+          </p>
+        </div>
+        <div>
+          <div class="footer-col-title">Модулі навчання</div>
+          <ul class="footer-links">
+            <li><a href="tutor.html">AI-Репетитор з Пандою</a></li>
+            <li><a href="nmt.html">Тренажер завдань НМТ</a></li>
+            <li><a href="tracker.html">Програма-Трекер (Strict Focus)</a></li>
+            <li><a href="knowledge.html">Карта знань та теми</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Контроль & Прозорість</div>
+          <ul class="footer-links">
+            <li><a href="parents.html">Батьківський кабінет</a></li>
+            <li><a href="parents.html#contract">Освітній контракт</a></li>
+            <li><a href="parents.html#weak-topics">Діагностика слабких тем</a></li>
+            <li><a href="tracker.html">Анти-чит моніторинг</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Стандарти & Довіра</div>
+          <ul class="footer-links">
+            <li><a href="index.html#comparison">Чому StrictAI кращий за ChatGPT</a></li>
+            <li><a href="https://testportal.gov.ua" target="_blank" rel="noopener">Програма УЦОЯО 2025</a></li>
+            <li><a href="javascript:void(0)" onclick="window.StrictComponents.openApiKeyModal()">Налаштувати AI-ключ</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <span>Strict Focus Engine v1.4</span>
+          <span>•</span>
+          <span>Anti-Distraction Guard Active</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core Scripts -->
+  <script src="js/store.js"></script>
+  <script src="js/panda-avatar.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/tracker.js"></script>
+</body>
+</html>

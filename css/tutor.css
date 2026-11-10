@@ -1,0 +1,1206 @@
+/* ==========================================================================
+   StrictAI — Tutor Studio Styles ("Панда-репетитор")
+   Tactile, Human-Centric EdTech Design System
+   ========================================================================== */
+
+/* Page Hero Section */
+.tutor-hero {
+  padding: 32px 0 20px;
+}
+
+.tutor-hero-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.tutor-hero-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: radial-gradient(circle at 40% 30%, #3D226B 0%, #201138 100%);
+  border: 2px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  box-shadow: 0 8px 24px rgba(10, 4, 20, 0.4);
+  flex-shrink: 0;
+  animation: hero-badge-float 4s ease-in-out infinite alternate;
+}
+
+@keyframes hero-badge-float {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-4px) rotate(3deg); }
+}
+
+.tutor-hero-text h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tutor-hero-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(242, 153, 74, 0.18);
+  color: var(--accent-primary);
+  border: 1px solid rgba(242, 153, 74, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tutor-hero-text p {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+}
+
+/* Two-Column Layout Enhancement */
+.tutor-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  min-height: calc(100vh - 180px);
+  padding: 0 0 48px;
+}
+
+/* Sidebar Settings Card */
+.tutor-sidebar {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-shadow: var(--shadow-card);
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 108px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-subtle) transparent;
+}
+
+.tutor-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.tutor-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-full);
+}
+
+/* Mode Switch Tabs */
+.tutor-mode-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: var(--bg-input);
+  padding: 5px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  gap: 4px;
+}
+
+.tutor-mode-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.tutor-mode-tab:hover {
+  color: var(--text-primary);
+}
+
+.tutor-mode-tab.active {
+  background-color: var(--pill-active-bg);
+  color: var(--pill-active-text);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Settings Group & Headings */
+.tutor-setting-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tutor-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tutor-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tutor-section-title .section-badge {
+  font-size: 0.75rem;
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* Pill Grid for Languages & Subjects */
+.tutor-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tutor-pills-wrap .pill-btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.tutor-pills-wrap .pill-btn.active {
+  background-color: var(--pill-active-bg);
+  color: var(--pill-active-text);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+/* Circle Level Grid */
+.tutor-levels-grid {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tutor-level-desc-box {
+  padding: 10px 14px;
+  background-color: var(--bg-surface-elevated);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  transition: all var(--transition-fast);
+}
+
+.tutor-level-desc-box b {
+  color: var(--accent-primary);
+}
+
+/* Persona Section & Parental Lock */
+.persona-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.persona-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.persona-section-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.persona-locked-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  border-radius: var(--radius-md);
+  color: #FFA5B4;
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* Persona Cards Custom Details */
+.persona-card.locked-inactive {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.persona-card.locked-inactive:hover {
+  transform: none;
+  background-color: var(--bg-surface);
+}
+
+/* ==========================================================================
+   Tutor Studio (Right Column Workspace)
+   ========================================================================== */
+.tutor-workspace {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  height: calc(100vh - 180px);
+  min-height: 640px;
+}
+
+/* Workspace Top Navigation / Avatar Header */
+.tutor-workspace-header {
+  padding: 16px 24px;
+  background-color: var(--bg-surface-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  z-index: 10;
+}
+
+.tutor-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Mini Panda Avatar in Workspace Header */
+.tutor-header-avatar-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.tutor-header-avatar-wrap:hover {
+  transform: scale(1.06);
+}
+
+#tutor-panda-avatar {
+  width: 52px;
+  height: 52px;
+}
+
+#tutor-panda-avatar .panda-circle-frame {
+  width: 52px !important;
+  height: 52px !important;
+  border-width: 2px !important;
+}
+
+#tutor-panda-avatar .panda-svg {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+#tutor-panda-avatar .voice-wave {
+  display: none !important; /* Hide inline wave in mini circle, handled by badge */
+}
+
+.tutor-header-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tutor-status-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tutor-status-badge {
+  font-size: 0.74rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(242, 153, 74, 0.2);
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.tutor-status-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Workspace Header Action Controls */
+.tutor-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.control-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.control-pill-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+}
+
+.control-pill-btn.active {
+  background-color: var(--pill-active-bg);
+  color: var(--pill-active-text);
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.control-pill-btn.btn-voice.active {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--accent-success);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.control-pill-btn.btn-voice.active .voice-dot {
+  background: var(--accent-success);
+  box-shadow: 0 0 8px var(--accent-success);
+}
+
+.voice-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  display: inline-block;
+  transition: all var(--transition-fast);
+}
+
+/* ==========================================================================
+   Central Lesson Viewport
+   ========================================================================== */
+.tutor-chat-viewport {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  scroll-behavior: smooth;
+  background-color: var(--bg-surface);
+}
+
+/* Initial Welcome Hero Screen */
+.tutor-welcome-screen {
+  margin: auto;
+  max-width: 540px;
+  text-align: center;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.welcome-panda-badge {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #3D226B 0%, #201138 100%);
+  border: 3px solid var(--accent-primary);
+  box-shadow: 0 0 35px rgba(242, 153, 74, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.8rem;
+  animation: pulse-avatar 3s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-avatar {
+  0% { transform: scale(1); box-shadow: 0 0 25px rgba(242, 153, 74, 0.3); }
+  100% { transform: scale(1.05); box-shadow: 0 0 45px rgba(242, 153, 74, 0.55); }
+}
+
+.welcome-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.welcome-desc {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.welcome-start-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 40px;
+  border-radius: var(--radius-full);
+  background: var(--accent-gradient);
+  color: #FFFFFF;
+  font-size: 1.15rem;
+  font-weight: 800;
+  box-shadow: 0 6px 24px rgba(242, 153, 74, 0.45);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+}
+
+.welcome-start-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(242, 153, 74, 0.65);
+}
+
+.welcome-features {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.welcome-feat-pill {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   Chat Messages List
+   ========================================================================== */
+.tutor-messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.chat-message-row {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  max-width: 90%;
+  animation: message-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes message-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-message-row.tutor {
+  align-self: flex-start;
+}
+
+.chat-message-row.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+/* Message Avatars */
+.message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.chat-message-row.tutor .message-avatar {
+  background: radial-gradient(circle at 40% 30%, #3D226B 0%, #201138 100%);
+  border-color: rgba(242, 153, 74, 0.4);
+}
+
+.chat-message-row.user .message-avatar {
+  background: var(--accent-gradient-purple);
+  color: #FFFFFF;
+}
+
+/* Message Bubble */
+.message-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: calc(100% - 54px);
+}
+
+.chat-message-row.user .message-bubble-wrap {
+  align-items: flex-end;
+}
+
+.message-meta-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.message-sender-name {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.message-bubble {
+  padding: 16px 20px;
+  border-radius: 20px;
+  font-size: 0.96rem;
+  line-height: 1.6;
+  position: relative;
+  word-break: break-word;
+}
+
+.chat-message-row.tutor .message-bubble {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-top-left-radius: 6px;
+  box-shadow: var(--shadow-sm);
+}
+
+.chat-message-row.user .message-bubble {
+  background: var(--accent-primary);
+  color: #1E1035;
+  border-top-right-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(242, 153, 74, 0.25);
+}
+
+/* Tutor Message Formatting Elements */
+.message-bubble h4 {
+  font-size: 1.1rem;
+  color: var(--accent-primary);
+  margin-bottom: 8px;
+}
+
+.message-bubble p {
+  color: inherit;
+  margin-bottom: 10px;
+}
+.message-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.message-bubble ul, .message-bubble ol {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.message-bubble li {
+  margin-bottom: 6px;
+}
+
+.message-bubble code {
+  font-family: var(--font-mono);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: var(--accent-primary);
+}
+
+/* Audio Readout Button */
+.btn-speak-msg {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-fast);
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+.btn-speak-msg:hover {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+/* ==========================================================================
+   Interactive Quiz Card inside Chat
+   ========================================================================== */
+.quiz-card {
+  margin-top: 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quiz-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.quiz-tag {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(242, 153, 74, 0.15);
+  color: var(--accent-primary);
+  text-transform: uppercase;
+}
+
+.quiz-reward-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--bamboo-green);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quiz-question {
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.quiz-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.quiz-option-btn:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  background: var(--bg-hover);
+  transform: translateX(4px);
+}
+
+.quiz-opt-letter {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.quiz-option-btn.correct {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: var(--accent-success) !important;
+  color: #FFFFFF;
+}
+.quiz-option-btn.correct .quiz-opt-letter {
+  background: var(--accent-success);
+  color: #FFFFFF;
+}
+
+.quiz-option-btn.wrong {
+  background: rgba(244, 63, 94, 0.2) !important;
+  border-color: var(--accent-danger) !important;
+  color: #FFA5B4;
+}
+.quiz-option-btn.wrong .quiz-opt-letter {
+  background: var(--accent-danger);
+  color: #FFFFFF;
+}
+
+.quiz-feedback-box {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: fade-in-up 0.2s ease-out;
+}
+
+.quiz-feedback-box.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--accent-success);
+  color: #D1FAE5;
+}
+
+.quiz-feedback-box.wrong {
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid var(--accent-danger);
+  color: #FFE4E6;
+}
+
+/* Mistake Review Card inside chat */
+.mistake-card {
+  margin-top: 10px;
+  background: rgba(244, 63, 94, 0.08);
+  border: 1.5px solid rgba(244, 63, 94, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mistake-card-title {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: #FFA5B4;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mistake-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 0.86rem;
+}
+
+.mistake-box-user {
+  background: rgba(244, 63, 94, 0.15);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent-danger);
+}
+
+.mistake-box-correct {
+  background: rgba(16, 185, 129, 0.15);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent-success);
+}
+
+/* Educational Rule Box inside chat */
+.rule-card {
+  margin-top: 12px;
+  background: var(--bg-surface);
+  border-left: 4px solid var(--accent-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 14px 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.rule-card-title {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  margin-bottom: 6px;
+}
+
+/* ==========================================================================
+   Quick Action Chips Bar (над вводом)
+   ========================================================================== */
+.tutor-chips-bar {
+  padding: 10px 24px;
+  background-color: var(--bg-surface-elevated);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.tutor-chips-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.chip-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.chip-btn:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Bottom Input Bar
+   ========================================================================== */
+.tutor-input-bar {
+  padding: 16px 24px;
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.voice-record-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: var(--bg-input);
+  border: 1.5px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.voice-record-btn:hover {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  background-color: var(--bg-hover);
+}
+
+.voice-record-btn.recording {
+  background-color: var(--accent-danger);
+  color: #FFFFFF;
+  border-color: var(--accent-danger);
+  animation: pulse-mic 1s infinite alternate;
+}
+
+@keyframes pulse-mic {
+  0% { transform: scale(1); box-shadow: 0 0 10px rgba(244, 63, 94, 0.4); }
+  100% { transform: scale(1.1); box-shadow: 0 0 25px rgba(244, 63, 94, 0.8); }
+}
+
+.tutor-input-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tutor-input-field {
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.96rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.tutor-input-field:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(242, 153, 74, 0.2);
+  background-color: var(--bg-surface-elevated);
+}
+
+.tutor-send-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: var(--radius-full);
+  background: var(--accent-gradient);
+  color: #FFFFFF;
+  font-size: 0.96rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 16px rgba(242, 153, 74, 0.35);
+  flex-shrink: 0;
+}
+
+.tutor-send-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(242, 153, 74, 0.55);
+}
+
+.tutor-send-btn:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Collapsible Interactive Whiteboard / Notepad Drawer
+   ========================================================================== */
+.tutor-whiteboard-drawer {
+  position: absolute;
+  top: 68px;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  background-color: var(--bg-surface-elevated);
+  border-left: 1px solid var(--border-subtle);
+  box-shadow: -8px 0 32px rgba(10, 4, 20, 0.5);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 20;
+}
+
+.tutor-whiteboard-drawer.open {
+  transform: translateX(0);
+}
+
+.whiteboard-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.whiteboard-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.whiteboard-close-btn {
+  font-size: 1.3rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+  transition: color var(--transition-fast);
+}
+
+.whiteboard-close-btn:hover {
+  color: var(--text-primary);
+}
+
+.whiteboard-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.whiteboard-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.whiteboard-card h5 {
+  font-size: 0.92rem;
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.formula-list {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.formula-item {
+  background: var(--bg-input);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--accent-primary);
+}
+
+/* Scratchpad Canvas / Notes Area */
+.scratchpad-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scratchpad-textarea {
+  width: 100%;
+  height: 180px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+}
+
+.scratchpad-textarea:focus {
+  border-color: var(--accent-primary);
+}
+
+.scratchpad-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scratchpad-btn {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.scratchpad-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+  .tutor-layout {
+    grid-template-columns: 1fr;
+  }
+  .tutor-sidebar {
+    position: static;
+    max-height: none;
+  }
+  .tutor-workspace {
+    height: 700px;
+  }
+  .tutor-whiteboard-drawer {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .tutor-hero h1 {
+    font-size: 1.7rem;
+  }
+  .tutor-hero-badge {
+    width: 48px;
+    height: 48px;
+    font-size: 1.6rem;
+  }
+  .tutor-workspace-header {
+    padding: 12px 16px;
+  }
+  .tutor-status-title {
+    font-size: 1rem;
+  }
+  .tutor-chat-viewport {
+    padding: 16px;
+  }
+  .chat-message-row {
+    max-width: 100%;
+  }
+  .tutor-chips-bar {
+    padding: 8px 16px;
+  }
+  .tutor-input-bar {
+    padding: 12px 16px;
+  }
+  .tutor-send-btn {
+    padding: 12px 18px;
+  }
+}

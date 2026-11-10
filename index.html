@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictAI — Панда-репетитор | ШІ-підготовка до НМТ та шкільної програми</title>
+  <meta name="description" content="Платформа StrictAI: персоналізований ШІ-репетитор у вигляді цифрового аватара Червоної Панди. 5 характерів, залізний контроль відволікань, підготовка до НМТ 2025 та батьківський кабінет.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐼</text></svg>">
+</head>
+<body>
+
+  <!-- Global Header Navigation Rendered by StrictComponents -->
+  <header id="app-header"></header>
+
+  <!-- Focus Alert Notification Banner -->
+  <div id="focus-alert-banner" class="focus-alert-banner"></div>
+
+  <main>
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="hero-section">
+      <div class="hero-glow-bg"></div>
+      <div class="strict-container hero-grid">
+        <!-- Hero Left: Typography & CTAs -->
+        <div class="hero-content">
+          <div class="hero-badge-pill">
+            <span>🐼</span>
+            <span>ШІ-репетитор нового покоління</span>
+          </div>
+
+          <h1 class="hero-title">
+            Твій персональний репетитор із <span>залізною дисципліною</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Ми — перший український освітній ШІ-сервіс із власним живим цифровим аватаром Червоної Панди. Панда підлаштовується під твій характер, покроково пояснює кожну помилку за програмою УЦОЯО та не дає прокрастинувати під час уроку.
+          </p>
+
+          <div class="hero-actions">
+            <a href="tutor.html" class="btn btn-primary btn-lg">
+              <span>🚀</span>
+              <span>Почати урок з Пандою</span>
+            </a>
+            <a href="nmt.html" class="btn btn-secondary btn-lg">
+              <span>📝</span>
+              <span>Тренажер НМТ 2025</span>
+            </a>
+          </div>
+
+          <!-- Trust & Performance Metrics Bar -->
+          <div class="hero-stats-row">
+            <div class="hero-stat-item">
+              <span class="hero-stat-val">184.2</span>
+              <span class="hero-stat-lbl">Сер. прогнозований бал</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-val">98.4%</span>
+              <span class="hero-stat-lbl">Вступників на бюджет</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-val">0</span>
+              <span class="hero-stat-lbl">Шансів списати у соцмережах</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-val">5</span>
+              <span class="hero-stat-lbl">Унікальних характерів ШІ</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Right: Interactive Red Panda Avatar Showcase -->
+        <div class="hero-avatar-showcase">
+          <div class="hero-avatar-bubble" id="hero-panda-bubble">
+            «Привіт! Я поруч, щоб допомогти тобі скласти НМТ на омріяні 190+ без стресу. Обери мій характер або натисни кнопку нижче!»
+          </div>
+
+          <div id="hero-panda-mount" class="panda-avatar-container">
+            <!-- Rendered by window.PandaAvatar -->
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 18px;">
+            <button class="btn btn-secondary btn-sm" id="hero-voice-btn" title="Прослухати голос Червоної Панди">
+              <span>🔊</span>
+              <span>Послухати голос Панди</span>
+            </button>
+            <a href="tutor.html" class="btn btn-primary btn-sm">
+              <span>💬</span>
+              <span>Відкрити чат</span>
+            </a>
+          </div>
+
+          <!-- 5 Persona Switcher Pills from Mockup -->
+          <div class="persona-switcher-pills" id="hero-persona-pills">
+            <button class="persona-switcher-btn active" data-persona="friend">🐼 Добрий друг</button>
+            <button class="persona-switcher-btn" data-persona="strict">🧐 Суворий викладач</button>
+            <button class="persona-switcher-btn" data-persona="joker">😜 Жартівник</button>
+            <button class="persona-switcher-btn" data-persona="motivator">🔥 Мотиватор</button>
+            <button class="persona-switcher-btn" data-persona="calm">🧘 Спокійний ментор</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== NMT ADMISSION CALCULATOR SECTION ==================== -->
+    <section class="section" style="padding: 60px 0;">
+      <div class="strict-container">
+        <div class="calc-card">
+          <div style="text-align: center; max-width: 680px; margin: 0 auto;">
+            <div class="bento-badge orange" style="margin-bottom: 12px;">📊 Офіційні коефіцієнти УЦОЯО 2024–2025</div>
+            <h2>Калькулятор шансів вступу та прогнозу НМТ</h2>
+            <p style="margin-top: 8px;">
+              Дізнайся свій точний конкурсний бал для топових університетів України. Пересувай повзунки балів та дивись розрахунок шансів на бюджет у реальному часі.
+            </p>
+          </div>
+
+          <div class="calc-grid">
+            <!-- Left: Settings & Sliders -->
+            <div class="calc-controls">
+              <div class="form-group">
+                <label class="form-label" for="calc-uni-select">Цільовий університет:</label>
+                <select class="form-select" id="calc-uni-select">
+                  <option value="kpi" selected>КПІ ім. Ігоря Сікорського (Київ) — Прохідний ~180-186</option>
+                  <option value="knu">КНУ ім. Тараса Шевченка (Київ) — Прохідний ~182-188</option>
+                  <option value="ukma">НаУКМА (Києво-Могилянська академія) — Прохідний ~185-192</option>
+                  <option value="lnu">ЛНУ ім. Івана Франка (Львів) — Прохідний ~176-184</option>
+                  <option value="khnu">ХНУ ім. В. Н. Каразіна (Харків) — Прохідний ~172-180</option>
+                  <option value="nmu">НМУ ім. О. О. Богомольця (Київ) — Прохідний ~178-185</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="calc-spec-select">Спеціальність (Коефіцієнти):</label>
+                <select class="form-select" id="calc-spec-select">
+                  <option value="121" selected>121 Інженерія програмного забезпечення (Матем: 0.5, Мова: 0.3, Історія: 0.2)</option>
+                  <option value="122">122 Комп’ютерні науки (Матем: 0.5, Мова: 0.3, Історія: 0.2)</option>
+                  <option value="081">081 Право (Мова: 0.35, Історія: 0.4, Матем: 0.25)</option>
+                  <option value="222">222 Медицина (Мова: 0.35, Матем: 0.4, Біологія: 0.5)</option>
+                  <option value="073">073 Менеджмент (Мова: 0.35, Матем: 0.35, Історія: 0.3)</option>
+                  <option value="035">035 Філологія (Мова: 0.45, Англійська: 0.4, Історія: 0.25)</option>
+                </select>
+              </div>
+
+              <!-- Subject Sliders -->
+              <div class="form-group">
+                <div class="form-label">
+                  <span>🇺🇦 Українська мова:</span>
+                  <span class="form-label-val" id="val-ukr">176</span>
+                </div>
+                <input type="range" class="form-range" id="range-ukr" min="100" max="200" value="176">
+              </div>
+
+              <div class="form-group">
+                <div class="form-label">
+                  <span>📐 Математика:</span>
+                  <span class="form-label-val" id="val-math">172</span>
+                </div>
+                <input type="range" class="form-range" id="range-math" min="100" max="200" value="172">
+              </div>
+
+              <div class="form-group">
+                <div class="form-label">
+                  <span>🏛 Історія України:</span>
+                  <span class="form-label-val" id="val-hist">168</span>
+                </div>
+                <input type="range" class="form-range" id="range-hist" min="100" max="200" value="168">
+              </div>
+
+              <div class="form-group">
+                <div class="form-label">
+                  <span id="label-fourth-subject">🇬🇧 Англійська мова (4-й предмет):</span>
+                  <span class="form-label-val" id="val-fourth">181</span>
+                </div>
+                <input type="range" class="form-range" id="range-fourth" min="100" max="200" value="181">
+              </div>
+            </div>
+
+            <!-- Right: Live Result Box -->
+            <div class="calc-result-panel">
+              <div>
+                <div style="font-size: 0.88rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">
+                  Прогнозований конкурсний бал (КБ)
+                </div>
+                <div class="calc-score-display">
+                  <div class="calc-big-num" id="calc-kb-result">174.6</div>
+                  <div class="calc-score-sub" id="calc-kb-sub">з урахуванням коефіцієнтів обраної спеціальності</div>
+                </div>
+
+                <div style="margin-top: 14px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600;">
+                    <span>Шанс потрапляння на бюджет:</span>
+                    <span id="calc-chance-pct" style="color: var(--accent-primary); font-family: var(--font-mono);">76%</span>
+                  </div>
+                  <div class="chance-meter-bar">
+                    <div class="chance-meter-fill" id="calc-chance-fill" style="width: 76%;"></div>
+                  </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 14px;">
+                  <span class="chance-badge-status" id="calc-status-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-success);">
+                    ⚡ Високий шанс на бюджет КПІ
+                  </span>
+                </div>
+
+                <p id="calc-recommendation-text" style="font-size: 0.86rem; color: var(--text-secondary); margin-top: 14px; text-align: center; line-height: 1.45;">
+                  Для 100% гарантії бюджету рекомендуємо підтягнути <strong>Історію України</strong> на +8 балів за допомогою тренажера помилок.
+                </p>
+              </div>
+
+              <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-primary" id="calc-save-target-btn">
+                  <span>🎯</span>
+                  <span>Зберегти як ціль та скласти план з Пандою</span>
+                </button>
+                <a href="nmt.html" class="btn btn-secondary btn-sm" style="text-align: center;">
+                  Пройти повний пробний тест НМТ →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PLATFORM ARCHITECTURE BENTO GRID ==================== -->
+    <section class="section" style="padding: 60px 0;">
+      <div class="strict-container">
+        <div style="text-align: center; max-width: 680px; margin: 0 auto 40px;">
+          <div class="bento-badge purple" style="margin-bottom: 12px;">🏛 Повноцінна екосистема навчання</div>
+          <h2>5 інтегрованих модулів StrictAI</h2>
+          <p style="margin-top: 8px;">
+            Жодних розрізнених додатків чи хаотичних чатів. Кожен модуль взаємодіє зі спільним профілем учня та базою знань.
+          </p>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Card 1: AI Tutor (Span 8) -->
+          <div class="bento-card bento-col-8">
+            <div class="bento-header">
+              <div class="bento-badge orange">Основний робочий модуль</div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">tutor.html</span>
+            </div>
+            <div class="bento-icon">🐼</div>
+            <h3 class="bento-title">AI-Репетитор Червона Панда</h3>
+            <p class="bento-desc">
+              5 унікальних характерів під будь-який настрій. Панда не видає готові відповіді для списування — вона використовує сократичний діалог, направляє запитаннями та пояснює кожен крок розв’язку. Голосове введення, озвучення та жива міміка.
+            </p>
+            <div class="bento-footer">
+              <div style="font-size: 0.88rem; color: var(--accent-primary); font-weight: 600;">
+                Обраний характер: <span id="bento-current-persona">Добрий друг 🐼</span>
+              </div>
+              <a href="tutor.html" class="btn btn-secondary btn-sm">Перейти до уроку →</a>
+            </div>
+          </div>
+
+          <!-- Card 2: NMT Simulator (Span 4) -->
+          <div class="bento-card bento-col-4">
+            <div class="bento-header">
+              <div class="bento-badge green">УЦОЯО 2025</div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">nmt.html</span>
+            </div>
+            <div class="bento-icon">📝</div>
+            <h3 class="bento-title">Тренажер НМТ</h3>
+            <p class="bento-desc">
+              Повна імітація реального тестування: таймер зворотного відліку, шкала 100–200 балів, банк актуальних завдань та генератор аналогічних прикладів на помилки.
+            </p>
+            <div class="bento-footer">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Прогноз: <strong>176 балів</strong></span>
+              <a href="nmt.html" class="btn btn-secondary btn-sm">Тест →</a>
+            </div>
+          </div>
+
+          <!-- Card 3: Anti-Procrastination Tracker (Span 4) -->
+          <div class="bento-card bento-col-4">
+            <div class="bento-header">
+              <div class="bento-badge blue">Анти-прокрастинація</div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">tracker.html</span>
+            </div>
+            <div class="bento-icon">⏱</div>
+            <h3 class="bento-title">Контроль фокусу & Помодоро</h3>
+            <p class="bento-desc">
+              Детекція зміни вкладок браузера в режимі реального часу. Якщо учень відволікається на соцмережі — сесія переривається, а Панда видає суворе попередження.
+            </p>
+            <div class="bento-footer">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Сьогодні: <strong id="bento-focus-mins">65 хв</strong></span>
+              <a href="tracker.html" class="btn btn-secondary btn-sm">Трекер →</a>
+            </div>
+          </div>
+
+          <!-- Card 4: Knowledge Graph (Span 4) -->
+          <div class="bento-card bento-col-4">
+            <div class="bento-header">
+              <div class="bento-badge purple">Аналітика знань</div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">knowledge.html</span>
+            </div>
+            <div class="bento-icon">🗺</div>
+            <h3 class="bento-title">Карта знань 5–11 класів</h3>
+            <p class="bento-desc">
+              Інтерактивна матриця тем з Математики, Мови, Історії та Англійської. Автоматичне підсвічування прогалин та адресне направлення на повторення.
+            </p>
+            <div class="bento-footer">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">16 тем у базі</span>
+              <a href="knowledge.html" class="btn btn-secondary btn-sm">Карта →</a>
+            </div>
+          </div>
+
+          <!-- Card 5: Parental Control (Span 4) -->
+          <div class="bento-card bento-col-4">
+            <div class="bento-header">
+              <div class="bento-badge orange">Батьківський спокій</div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">parents.html</span>
+            </div>
+            <div class="bento-icon">🛡</div>
+            <h3 class="bento-title">Батьківський кабінет & Контракт</h3>
+            <p class="bento-desc">
+              Захист PIN-кодом, тижневий договір мотивації («Нагорода за досягнення мети»), спостереження за реальними хвилинами занять без порушення довіри.
+            </p>
+            <div class="bento-footer">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Контракт: <strong>78%</strong></span>
+              <a href="parents.html" class="btn btn-secondary btn-sm">Кабінет →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== COMPARISON TABLE SECTION ==================== -->
+    <section class="section" style="padding: 60px 0;">
+      <div class="strict-container">
+        <div style="text-align: center; max-width: 680px; margin: 0 auto 36px;">
+          <div class="bento-badge orange" style="margin-bottom: 12px;">⚖️ Чесне порівняння підходів</div>
+          <h2>Чому StrictAI перевершує звичайні рішення</h2>
+          <p style="margin-top: 8px;">
+            Ми поєднали терплячість індивідуального репетитора, доступність ШІ та залізну дисципліну контролю відволікань.
+          </p>
+        </div>
+
+        <div class="strict-table-container">
+          <table class="strict-table">
+            <thead>
+              <tr>
+                <th style="width: 28%;">Критерій порівняння</th>
+                <th class="col-strict" style="width: 32%;">StrictAI («Панда-репетитор») 🐼</th>
+                <th style="width: 20%;">Звичайний репетитор 👩‍🏫</th>
+                <th style="width: 20%;">Звичайний чат-бот 🤖</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Вартість підготовки</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> <strong>Доступно кожному учню</strong></td>
+                <td><span class="icon-cross">✕</span> Від 4 000 до 12 000 ₴/міс</td>
+                <td><span class="icon-check">✓</span> Безкоштовно / підписка</td>
+              </tr>
+              <tr>
+                <td><strong>Доступність 24/7 без запізнень</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> Завжди на зв’язку в будь-який час</td>
+                <td><span class="icon-cross">✕</span> Тільки за розкладом 1-2 рази/тижд</td>
+                <td><span class="icon-check">✓</span> Цілодобово</td>
+              </tr>
+              <tr>
+                <td><strong>Цифровий аватар та емоції</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> <strong>Жива Червона Панда з 5 характерами</strong></td>
+                <td><span class="icon-check">✓</span> Жива людина (інколи втомлена)</td>
+                <td><span class="icon-cross">✕</span> Сухе текстове полотно без душі</td>
+              </tr>
+              <tr>
+                <td><strong>Контроль відволікань та вкладок</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> <strong>Залізна детекція перемикання вкладок</strong></td>
+                <td><span class="icon-cross">✕</span> Не бачить екран учня онлайн</td>
+                <td><span class="icon-cross">✕</span> Відсутній будь-який контроль</td>
+              </tr>
+              <tr>
+                <td><strong>Програма НМТ та база УЦОЯО</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> Офіційні коефіцієнти та тести 2024–2025</td>
+                <td><span class="icon-check">✓</span> Залежить від кваліфікації</td>
+                <td><span class="icon-cross">✕</span> Галюцинує, плутає програму МОН</td>
+              </tr>
+              <tr>
+                <td><strong>Захист від списання (Метод Сократа)</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> <strong>Покроково веде до відповіді учня</strong></td>
+                <td><span class="icon-check">✓</span> Пояснює хід думок</td>
+                <td><span class="icon-cross">✕</span> Одразу дає готову відповідь</td>
+              </tr>
+              <tr>
+                <td><strong>Батьківський кабінет & Контракт</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> PIN-код, прозорий час та винагороди</td>
+                <td><span class="icon-cross">✕</span> Суб’єктивні короткі дзвінки</td>
+                <td><span class="icon-cross">✕</span> Немає батьківського доступу</td>
+              </tr>
+              <tr>
+                <td><strong>Гейміфікація та мотивація</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> Бамбук-коїни, стрік днів, аксесуари</td>
+                <td><span class="icon-cross">✕</span> Зазвичай нудні домашні завдання</td>
+                <td><span class="icon-cross">✕</span> Відсутня гейміфікація</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PANDA DRESSING ROOM PREVIEW ==================== -->
+    <section class="section" style="padding: 60px 0 90px;">
+      <div class="strict-container">
+        <div class="bento-card" style="background: linear-gradient(135deg, rgba(43,24,74,0.95) 0%, rgba(54,32,91,0.95) 100%);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center;">
+            <div>
+              <div class="bento-badge green" style="margin-bottom: 12px;">🎋 Гардероб Червоної Панди</div>
+              <h2>Навчайся, заробляй бамбук та прокачуй аватар</h2>
+              <p style="margin-top: 12px; margin-bottom: 24px;">
+                За кожні 25 хвилин чесної фокус-сесії без перемикання вкладок та за кожну правильно розібрану помилку ти отримуєш <strong>Бамбук-коїни (🎋)</strong>. Відкривай нові аксесуари та змінюй вигляд своєї Панди!
+              </p>
+
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="pill-btn active" id="acc-btn-glasses">👓 Окуляри професора</button>
+                <button class="pill-btn" id="acc-btn-band">🔥 Пов’язка сэнсэя</button>
+                <button class="pill-btn" id="acc-btn-cap">🎓 Шапочка випускника</button>
+                <button class="pill-btn" id="acc-btn-none">🌿 Без аксесуарів</button>
+              </div>
+
+              <div style="margin-top: 24px;">
+                <a href="tutor.html" class="btn btn-primary">
+                  <span>🐼</span>
+                  <span>Перейти до кімнати репетитора</span>
+                </a>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <div id="wardrobe-avatar-mount" class="panda-avatar-container">
+                <!-- Rendered by window.PandaAvatar -->
+              </div>
+              <div style="margin-top: 12px; font-size: 0.9rem; color: var(--text-secondary); text-align: center;">
+                Поточний баланс: <strong style="color: var(--bamboo-green);" id="wardrobe-bamboo-val">🎋 340 коїнів</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="strict-footer">
+    <div class="strict-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="nav-brand" style="margin-bottom: 12px;">
+            <div class="nav-brand-badge">🐼</div>
+            <div>Strict<span class="nav-brand-highlight">AI</span></div>
+          </div>
+          <p style="font-size: 0.9rem; max-width: 300px; margin-bottom: 16px;">
+            Перший український EdTech-сервіс із цифровим аватаром Панди та повним контролем підготовки до НМТ і шкільної програми.
+          </p>
+          <div class="ua-badge">
+            <span>🇺🇦</span>
+            <span>Створено в Україні для українських учнів</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Навчальні модулі</h4>
+          <ul class="footer-links">
+            <li><a href="tutor.html">AI-Репетитор Панда</a></li>
+            <li><a href="nmt.html">Тренажер НМТ 2025</a></li>
+            <li><a href="tracker.html">Контроль фокусу & Помодоро</a></li>
+            <li><a href="knowledge.html">Карта знань 5–11 класів</a></li>
+            <li><a href="parents.html">Батьківський кабінет</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Характери репетитора</h4>
+          <ul class="footer-links">
+            <li><a href="tutor.html?persona=friend">🐼 Добрий друг</a></li>
+            <li><a href="tutor.html?persona=strict">🧐 Суворий викладач</a></li>
+            <li><a href="tutor.html?persona=joker">😜 Жартівник</a></li>
+            <li><a href="tutor.html?persona=motivator">🔥 Мотиватор</a></li>
+            <li><a href="tutor.html?persona=calm">🧘 Спокійний ментор</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Безпека та конфіденційність</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:StrictComponents.openApiKeyModal()">⚙️ Налаштування API-ключа</a></li>
+            <li><a href="parents.html">🛡 Захист PIN-кодом</a></li>
+            <li><a href="index.html#calc">📊 Офіційні коефіцієнти УЦОЯО</a></li>
+            <li><a href="tracker.html">⏱ Правила анти-прокрастинації</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.
+        </div>
+        <div style="display: flex; gap: 16px;">
+          <span>Версія 1.0 (Release Candidate)</span>
+          <span>•</span>
+          <span>Zero Build Step Architecture</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts: Store -> Avatar -> Components -> Landing -->
+  <script src="js/store.js"></script>
+  <script src="js/panda-avatar.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/landing.js"></script>
+</body>
+</html>
