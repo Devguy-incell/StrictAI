@@ -691,10 +691,10 @@
           const mobileBambooEl = document.getElementById('nav-mobile-bamboo-counter');
           const sessionEl = document.getElementById('nav-session-timer');
 
-          if (streakEl) streakEl.textContent = `${state.student.streakDays || 0}`;
-          if (bambooEl) bambooEl.textContent = `${state.student.bambooCoins || 0}`;
-          if (mobileBambooEl) mobileBambooEl.textContent = `${state.student.bambooCoins || 0}`;
-          if (sessionEl && state.tracker.isSessionActive) {
+          if (streakEl) streakEl.textContent = `${(state && state.student && state.student.streakDays) || 0}`;
+          if (bambooEl) bambooEl.textContent = `${(state && state.student && state.student.bambooCoins) || 0}`;
+          if (mobileBambooEl) mobileBambooEl.textContent = `${(state && state.student && state.student.bambooCoins) || 0}`;
+          if (sessionEl && state && state.tracker && state.tracker.isSessionActive) {
             sessionEl.textContent = formatTime(state.tracker.sessionSecondsLeft || 0);
           }
         });

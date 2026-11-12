@@ -373,7 +373,7 @@
       if (typeof fnOrPartial === 'function') {
         const next = fnOrPartial(this.state);
         if (next && typeof next === 'object') {
-          this.state = next;
+          this.state = deepMerge(this.state, next);
         }
       } else if (typeof fnOrPartial === 'object') {
         this.state = deepMerge(this.state, fnOrPartial);

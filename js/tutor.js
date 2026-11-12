@@ -64,6 +64,7 @@
       // 9. Initial UI Render
       this._renderAllSettings();
       this._renderWhiteboardFormulas();
+      this.applyTranslations();
 
       console.log('StrictAI Tutor Studio successfully initialized.');
     }
@@ -1621,6 +1622,7 @@
     _syncStoreCategory() {
       if (!window.StrictStore) return;
       window.StrictStore.update(st => ({
+        ...st,
         tutor: {
           ...st.tutor,
           category: this.mode === 'school' ? 'nmt' : 'languages'
@@ -1631,6 +1633,7 @@
     _syncStoreLanguage() {
       if (!window.StrictStore) return;
       window.StrictStore.update(st => ({
+        ...st,
         tutor: {
           ...st.tutor,
           language: this.languageName
@@ -1641,6 +1644,7 @@
     _syncStoreLevel() {
       if (!window.StrictStore) return;
       window.StrictStore.update(st => ({
+        ...st,
         tutor: {
           ...st.tutor,
           level: this.level
@@ -1651,6 +1655,7 @@
     _syncStoreSubject() {
       if (!window.StrictStore) return;
       window.StrictStore.update(st => ({
+        ...st,
         tutor: {
           ...st.tutor,
           nmtSubject: this.subjectName
@@ -1661,6 +1666,7 @@
     _syncStorePersona() {
       if (!window.StrictStore) return;
       window.StrictStore.update(st => ({
+        ...st,
         tutor: {
           ...st.tutor,
           persona: this.persona
@@ -1671,6 +1677,7 @@
     _syncStoreVoice() {
       if (!window.StrictStore) return;
       window.StrictStore.update(st => ({
+        ...st,
         tutor: {
           ...st.tutor,
           voiceEnabled: this.voiceEnabled,
@@ -1680,10 +1687,22 @@
     }
   }
 
-  // Instantiate and mount on DOMContentLoaded
-  document.addEventListener('DOMContentLoaded', () => {
-    window.StrictTutorController = new StrictTutorController();
-    window.StrictTutorController.init();
-  });
+  // Instantiate and mount on DOMContentLoaded or immediately if already loaded
+  const bootTutor = () => {
+    try {
+      if (!window.StrictTutorController) {
+        window.StrictTutorController = new StrictTutorController();
+        window.StrictTutorController.init();
+      }
+    } catch(e) {
+      console.error('[StrictTutorController] Initialization error:', e);
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootTutor);
+  } else {
+    setTimeout(bootTutor, 0);
+  }
 
 })();
