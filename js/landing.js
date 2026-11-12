@@ -340,12 +340,56 @@
       window.StrictStore.subscribe((st) => {
         const focusMinsEl = document.getElementById('bento-focus-mins');
         if (focusMinsEl) {
-          focusMinsEl.textContent = `${st.tracker.focusMinutesToday || 0} хв`;
+          const unit = window.StrictI18n ? window.StrictI18n.t('tracker.minutesShort', 'хв') : 'хв';
+          focusMinsEl.textContent = `${st.tracker.focusMinutesToday || 0} ${unit}`;
         }
         if (wardrobeBambooVal) {
-          wardrobeBambooVal.textContent = `🎋 ${st.student.bambooCoins || 0} коїнів`;
+          const coinsLabel = window.StrictI18n ? window.StrictI18n.t('index.wardrobe.coinsLabel', 'коїнів') : 'коїнів';
+          wardrobeBambooVal.textContent = `🎋 ${st.student.bambooCoins || 0} ${coinsLabel}`;
         }
       });
     }
+
+    // 6. Hero Stats Localized Labels
+    const HERO_STATS_LABELS = {
+      uk: ['Сер. прогнозований бал', 'Вступників на бюджет', 'Шансів списати у соцмережах', 'Унікальних характерів ШІ'],
+      en: ['Avg. Predicted Score', 'State-Funded Admissions', 'Chances to Cheat on Socials', 'Unique AI Personas'],
+      pl: ['Śr. prognozowany wynik', 'Przyjęć na studia dzienne', 'Szans na ściąganie w sieci', 'Unikalnych charakterów AI'],
+      de: ['Prognostizierte Punktzahl', 'Studienplatz-Quote', 'Chancen zum Schummeln', 'Einzigartige KI-Charaktere']
+    };
+
+    function updateHeroStatsLabels(locale) {
+      const loc = locale || (window.StrictStore ? window.StrictStore.get().locale : 'uk') || 'uk';
+      const labels = HERO_STATS_LABELS[loc] || HERO_STATS_LABELS.uk;
+      const statLabels = document.querySelectorAll('.hero-stats-row .hero-stat-lbl');
+      statLabels.forEach((el, idx) => {
+        if (labels[idx]) {
+          el.textContent = labels[idx];
+        }
+      });
+    }
+    updateHeroStatsLabels();
+
+    // 7. Listen for i18n locale change
+    window.addEventListener('strictai:localechange', (e) => {
+      const newLoc = (e && e.detail && e.detail.locale) || (window.StrictStore ? window.StrictStore.get().locale : 'uk');
+      
+      // Re-apply hero persona UI with new locale texts
+      updateHeroPersonaUI(currentPersona);
+      
+      // Update voice button text
+      if (heroVoiceBtn && (!window.PandaAvatar || !window.PandaAvatar.isSpeaking)) {
+        const btnVoiceText = window.StrictI18n ? window.StrictI18n.t('index.hero.btnVoice', 'Послухати голос Панди') : 'Послухати голос Панди';
+        heroVoiceBtn.innerHTML = `<span>🔊</span><span>${btnVoiceText}</span>`;
+      }
+
+      // Update hero stats labels
+      updateHeroStatsLabels(newLoc);
+
+      // Re-apply i18n DOM mappings if StrictI18n is loaded
+      if (window.StrictI18n && typeof window.StrictI18n.applyToDOM === 'function') {
+        window.StrictI18n.applyToDOM();
+      }
+    });
   });
 })();

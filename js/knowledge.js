@@ -65,6 +65,14 @@
         window.StrictComponents.initPage('knowledge');
       }
 
+      // Internationalization listener
+      window.addEventListener('strictai:localechange', () => {
+        if (window.StrictI18n) window.StrictI18n.applyToDOM();
+      });
+      if (window.StrictI18n) {
+        window.StrictI18n.applyToDOM();
+      }
+
       this._bindProfileEvents();
       this._bindMapFilters();
       this._bindDojoShop();

@@ -71,6 +71,17 @@
   padding: 0 0 48px;
 }
 
+/* Mobile Controls - Hidden by default on desktop */
+.tutor-mobile-bar {
+  display: none;
+}
+.tutor-mobile-sidebar-header {
+  display: none;
+}
+.tutor-mobile-apply-wrap {
+  display: none;
+}
+
 /* Sidebar Settings Card */
 .tutor-sidebar {
   background-color: var(--bg-surface);
@@ -113,15 +124,18 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: var(--radius-full);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: var(--text-secondary);
   background: transparent;
   cursor: pointer;
   transition: all var(--transition-fast);
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  min-height: 44px;
+  line-height: 1.25;
 }
 
 .tutor-mode-tab:hover {
@@ -1031,7 +1045,12 @@
   z-index: 20;
 }
 
+.tutor-whiteboard-drawer:not(.open) {
+  display: none !important;
+}
+
 .tutor-whiteboard-drawer.open {
+  display: flex !important;
   transform: translateX(0);
 }
 
@@ -1156,51 +1175,287 @@
   background: var(--bg-hover);
 }
 
-/* Responsive Overrides */
-@media (max-width: 1024px) {
+/* ==========================================================================
+   Responsive Overrides & Mobile Tutor UX (< 960px)
+   ========================================================================== */
+@media (max-width: 960px) {
+  .tutor-hero {
+    padding: 16px 0 12px;
+  }
+  .tutor-hero-inner {
+    gap: 12px;
+  }
+  .tutor-hero-badge {
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+  }
+  .tutor-hero-text h1 {
+    font-size: 1.45rem;
+    gap: 8px;
+  }
+  .tutor-hero-text p {
+    font-size: 0.88rem;
+  }
+
+  /* Compact Mobile Bar with Current Summary & Settings Toggle */
+  .tutor-mobile-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tutor-mobile-bar-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .mobile-summary-icon {
+    font-size: 1.35rem;
+    flex-shrink: 0;
+  }
+
+  .mobile-summary-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .mobile-summary-text strong {
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-summary-text span {
+    font-size: 0.76rem;
+    color: var(--accent-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tutor-mobile-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border-radius: var(--radius-full);
+    background: var(--accent-primary);
+    color: #1A0E2E;
+    font-weight: 700;
+    font-size: 0.82rem;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    min-height: 44px;
+    box-shadow: 0 4px 12px rgba(242, 153, 74, 0.3);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  .tutor-mobile-toggle-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* Single Column Layout on Mobile */
   .tutor-layout {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: auto;
+    padding: 0 0 32px;
   }
+
+  /* Sidebar: Collapsed by default on mobile so Panda Workspace is immediately visible */
   .tutor-sidebar {
-    position: static;
+    display: none;
+    position: relative;
+    top: 0;
     max-height: none;
+    padding: 18px 14px;
+    border-radius: var(--radius-lg);
+    animation: sidebar-slide-down 0.25s ease-out;
   }
+
+  .tutor-sidebar.mobile-open {
+    display: flex;
+  }
+
+  @keyframes sidebar-slide-down {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile Sidebar Header */
+  .tutor-mobile-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .sidebar-mobile-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-close-mobile-settings {
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+  }
+
+  .btn-close-mobile-settings:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+
+  /* Mobile Apply & Return Button */
+  .tutor-mobile-apply-wrap {
+    display: block;
+    margin-top: 8px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .tutor-mobile-apply-btn {
+    width: 100%;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--accent-gradient-warm, linear-gradient(135deg, #F2994A 0%, #F2C94C 100%));
+    color: #1A0E2E;
+    font-weight: 800;
+    font-size: 0.92rem;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(242, 153, 74, 0.4);
+    transition: transform 0.15s ease;
+  }
+
+  .tutor-mobile-apply-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Workspace directly visible on first mobile screen */
   .tutor-workspace {
-    height: 700px;
+    height: auto;
+    min-height: 520px;
+    border-radius: var(--radius-lg);
+    overflow-x: hidden;
   }
+
+  /* Mode Tabs - Responsive grid 1fr 1fr with wrapped text */
+  .tutor-mode-tabs {
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .tutor-mode-tab {
+    font-size: 0.82rem;
+    white-space: normal;
+    text-align: center;
+    min-height: 44px;
+    padding: 8px 6px;
+    line-height: 1.25;
+  }
+
+  /* Touch Targets >= 44px on Mobile */
+  .pill-btn,
+  .circle-level-btn,
+  .control-pill-btn,
+  .chip-btn {
+    min-height: 44px;
+  }
+
+  .circle-level-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .pill-btn {
+    padding: 10px 14px;
+    font-size: 0.88rem;
+  }
+
+  /* Quick Action Chips Bar: Wrap neatly on mobile without expanding width */
+  .tutor-chips-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 100%;
+    padding: 8px 12px;
+    overflow-x: hidden;
+  }
+
+  .chip-btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    min-height: 42px;
+  }
+
   .tutor-whiteboard-drawer {
     width: 100%;
+    max-width: 100%;
+    top: 0;
   }
 }
 
-@media (max-width: 768px) {
-  .tutor-hero h1 {
-    font-size: 1.7rem;
-  }
-  .tutor-hero-badge {
-    width: 48px;
-    height: 48px;
-    font-size: 1.6rem;
-  }
+@media (max-width: 480px) {
   .tutor-workspace-header {
-    padding: 12px 16px;
+    padding: 12px 14px;
   }
   .tutor-status-title {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    flex-wrap: wrap;
   }
   .tutor-chat-viewport {
-    padding: 16px;
+    padding: 14px 12px;
   }
   .chat-message-row {
     max-width: 100%;
+    gap: 10px;
   }
-  .tutor-chips-bar {
-    padding: 8px 16px;
+  .message-bubble {
+    padding: 12px 14px;
+    font-size: 0.9rem;
   }
   .tutor-input-bar {
-    padding: 12px 16px;
+    padding: 10px 12px;
+    gap: 8px;
   }
   .tutor-send-btn {
-    padding: 12px 18px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
   }
 }

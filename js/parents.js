@@ -25,6 +25,14 @@
         window.StrictComponents.initPage('parents');
       }
 
+      // Internationalization listener
+      window.addEventListener('strictai:localechange', () => {
+        if (window.StrictI18n) window.StrictI18n.applyToDOM();
+      });
+      if (window.StrictI18n) {
+        window.StrictI18n.applyToDOM();
+      }
+
       this._cacheElements();
       this._bindPinEvents();
       this._bindDashboardEvents();

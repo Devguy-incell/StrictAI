@@ -35,13 +35,37 @@
       </div>
     </section>
 
+    <!-- Mobile Tutor Control Bar (Visible on mobile < 960px) -->
+    <div class="tutor-mobile-bar" id="tutor-mobile-bar">
+      <div class="tutor-mobile-bar-summary" id="tutor-mobile-summary">
+        <span class="mobile-summary-icon">🐼</span>
+        <div class="mobile-summary-text">
+          <strong id="mobile-summary-subject">Англійська • A1</strong>
+          <span id="mobile-summary-persona">🐼 Добрий друг</span>
+        </div>
+      </div>
+      <button type="button" class="tutor-mobile-toggle-btn" id="tutor-mobile-toggle-btn" aria-expanded="false" aria-controls="tutor-sidebar">
+        <span class="toggle-icon">⚙️</span>
+        <span class="toggle-label" id="mobile-toggle-label">Налаштування</span>
+      </button>
+    </div>
+
     <!-- Two-Column Tutor Layout from Mockup -->
     <div class="tutor-layout">
       
       <!-- ==========================================
            LEFT COLUMN: Панель налаштувань репетитора
            ========================================== -->
-      <aside class="tutor-sidebar" aria-label="Панель налаштувань репетитора">
+      <aside class="tutor-sidebar" id="tutor-sidebar" aria-label="Панель налаштувань репетитора">
+        
+        <!-- Mobile Sidebar Header with Close -->
+        <div class="tutor-mobile-sidebar-header">
+          <div class="sidebar-mobile-title">
+            <span>⚙️</span>
+            <span>Налаштування уроку</span>
+          </div>
+          <button type="button" class="btn-close-mobile-settings" id="btn-close-mobile-settings" aria-label="Закрити налаштування">✕</button>
+        </div>
         
         <!-- 1. Режим навчання: Мови | Предмети НМТ та Школа -->
         <div class="tutor-mode-tabs" role="tablist">
@@ -190,6 +214,14 @@
               <span class="persona-badge">Дзен</span>
             </div>
           </div>
+        </div>
+
+        <!-- Mobile Apply & Return to Lesson Button -->
+        <div class="tutor-mobile-apply-wrap">
+          <button type="button" class="tutor-mobile-apply-btn" id="btn-mobile-apply-settings">
+            <span>✅</span>
+            <span>Застосувати та перейти до уроку</span>
+          </button>
         </div>
 
       </aside>
@@ -370,6 +402,7 @@
 
   <!-- Scripts in dependency order -->
   <script src="js/store.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/panda-avatar.js"></script>
   <script src="js/components.js"></script>
   <script src="js/tutor-data.js"></script>

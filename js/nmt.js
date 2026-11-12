@@ -33,6 +33,14 @@
         window.StrictComponents.initPage('nmt');
       }
 
+      // Internationalization listener
+      window.addEventListener('strictai:localechange', () => {
+        if (window.StrictI18n) window.StrictI18n.applyToDOM();
+      });
+      if (window.StrictI18n) {
+        window.StrictI18n.applyToDOM();
+      }
+
       this._bindSetupEvents();
       this._bindExamEvents();
       this._bindDrawers();

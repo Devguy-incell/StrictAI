@@ -71,6 +71,7 @@
   // Full Initial Default State (Ukrainian)
   const DEFAULT_STATE = {
     theme: 'dark',
+    locale: 'uk',
 
     student: {
       name: 'Олександр Коваленко',
@@ -533,11 +534,20 @@
     }
 
     getPersonaMeta(personaId) {
-      return PERSONAS_META[personaId] || PERSONAS_META.friend;
+      const base = PERSONAS_META[personaId] || PERSONAS_META.friend;
+      if (typeof window !== 'undefined' && window.StrictI18n && typeof window.StrictI18n.getPersona === 'function') {
+        const locale = (this.state && this.state.locale) || 'uk';
+        const localized = window.StrictI18n.getPersona(base.id, locale);
+        if (localized) {
+          return Object.assign({}, base, localized);
+        }
+      }
+      return base;
     }
 
     getAllPersonas() {
-      return Object.values(PERSONAS_META);
+      const keys = Object.keys(PERSONAS_META);
+      return keys.map((key) => this.getPersonaMeta(key));
     }
   }
 

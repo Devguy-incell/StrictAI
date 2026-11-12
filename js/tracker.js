@@ -49,6 +49,14 @@
         window.StrictComponents.initPage('tracker');
       }
 
+      // Internationalization listener
+      window.addEventListener('strictai:localechange', () => {
+        if (window.StrictI18n) window.StrictI18n.applyToDOM();
+      });
+      if (window.StrictI18n) {
+        window.StrictI18n.applyToDOM();
+      }
+
       this._cacheElements();
       this._bindEvents();
       this._loadInitialState();

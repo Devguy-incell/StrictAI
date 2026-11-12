@@ -125,7 +125,17 @@
         whiteboardFormulasList: document.getElementById('whiteboard-formulas-list'),
         scratchpadText: document.getElementById('scratchpad-text'),
         btnClearScratchpad: document.getElementById('btn-clear-scratchpad'),
-        btnCopyScratchpad: document.getElementById('btn-copy-scratchpad')
+        btnCopyScratchpad: document.getElementById('btn-copy-scratchpad'),
+
+        // Mobile Bar & Toggle
+        mobileBar: document.getElementById('tutor-mobile-bar'),
+        mobileSummarySubject: document.getElementById('mobile-summary-subject'),
+        mobileSummaryPersona: document.getElementById('mobile-summary-persona'),
+        mobileToggleBtn: document.getElementById('tutor-mobile-toggle-btn'),
+        mobileToggleLabel: document.getElementById('mobile-toggle-label'),
+        tutorSidebar: document.getElementById('tutor-sidebar'),
+        btnCloseMobileSettings: document.getElementById('btn-close-mobile-settings'),
+        btnMobileApplySettings: document.getElementById('btn-mobile-apply-settings')
       };
     }
 
@@ -396,6 +406,30 @@
           }
         };
       }
+
+      // 13. Mobile Settings Bar & Accordion
+      if (this.dom.mobileToggleBtn) {
+        this.dom.mobileToggleBtn.onclick = () => this.toggleMobileSettings();
+      }
+      if (this.dom.btnCloseMobileSettings) {
+        this.dom.btnCloseMobileSettings.onclick = () => this.toggleMobileSettings(false);
+      }
+      if (this.dom.btnMobileApplySettings) {
+        this.dom.btnMobileApplySettings.onclick = () => {
+          this.toggleMobileSettings(false);
+          if (this.dom.userInput) {
+            this.dom.userInput.focus();
+          }
+          if (window.StrictComponents) {
+            window.StrictComponents.toast('Налаштування застосовано!', 'success');
+          }
+        };
+      }
+
+      // 14. i18n Locale Change Listener
+      window.addEventListener('strictai:localechange', () => {
+        this._handleLocaleChange();
+      });
     }
 
     _subscribeStore() {
@@ -656,36 +690,125 @@
       });
     }
 
-    _renderStatusTitle() {
-      const personaNames = {
-        friend: 'Добрий друг',
-        strict: 'Суворий викладач',
-        joker: 'Жартівник',
-        motivator: 'Мотиватор',
-        calm: 'Спокійний ментор'
+    _getLocalizedTargetName(locale = null) {
+      const loc = locale || (window.StrictStore ? window.StrictStore.get().locale : 'uk') || 'uk';
+
+      const LANG_NAMES = {
+        english: { uk: 'Англійська', en: 'English', pl: 'Angielski', de: 'Englisch' },
+        deutsch: { uk: 'Німецька', en: 'German', pl: 'Niemiecki', de: 'Deutsch' },
+        espanol: { uk: 'Іспанська', en: 'Spanish', pl: 'Hiszpański', de: 'Spanisch' },
+        chinese: { uk: 'Китайська', en: 'Chinese', pl: 'Chiński', de: 'Chinesisch' },
+        ukrainian: { uk: 'Українська', en: 'Ukrainian', pl: 'Ukraiński', de: 'Ukrainisch' }
       };
 
-      const languageUkrainianNames = {
-        english: 'Англійська',
-        deutsch: 'Німецька',
-        espanol: 'Іспанська',
-        chinese: 'Китайська',
-        ukrainian: 'Українська'
+      const SUBJ_NAMES = {
+        'math': { uk: 'Математика', en: 'Mathematics', pl: 'Matematyka', de: 'Mathematik' },
+        'ukr-lang': { uk: 'Українська мова', en: 'Ukrainian Language', pl: 'Język ukraiński', de: 'Ukrainische Sprache' },
+        'history': { uk: 'Історія України', en: 'History of Ukraine', pl: 'Historia Ukrainy', de: 'Geschichte der Ukraine' },
+        'eng-nmt': { uk: 'Англійська (НМТ)', en: 'English (NMT)', pl: 'Angielski (NMT)', de: 'Englisch (NMT)' },
+        'physics': { uk: 'Фізика', en: 'Physics', pl: 'Fizyka', de: 'Physik' },
+        'biology': { uk: 'Біологія', en: 'Biology', pl: 'Biologia', de: 'Biologie' }
       };
 
       if (this.mode === 'languages') {
-        const langUkr = languageUkrainianNames[this.language] || this.languageName;
-        if (this.dom.statusSubjectText) this.dom.statusSubjectText.textContent = langUkr;
-        if (this.dom.statusLevelText) this.dom.statusLevelText.textContent = this.level;
-        if (this.dom.statusModeBadge) this.dom.statusModeBadge.textContent = 'Мови';
+        const item = LANG_NAMES[this.language];
+        return (item && item[loc]) || this.languageName;
       } else {
-        if (this.dom.statusSubjectText) this.dom.statusSubjectText.textContent = this.subjectName;
-        if (this.dom.statusLevelText) this.dom.statusLevelText.textContent = this.goalName;
-        if (this.dom.statusModeBadge) this.dom.statusModeBadge.textContent = 'Предмети НМТ';
+        const item = SUBJ_NAMES[this.subject];
+        return (item && item[loc]) || this.subjectName;
+      }
+    }
+
+    _getMobileButtonLabel(isOpen, locale = null) {
+      const loc = locale || (window.StrictStore ? window.StrictStore.get().locale : 'uk') || 'uk';
+      if (isOpen) {
+        const toLesson = { uk: '💬 До уроку', en: '💬 To Lesson', pl: '💬 Do lekcji', de: '💬 Zum Unterricht' };
+        return toLesson[loc] || toLesson.uk;
+      } else {
+        const settings = { uk: '⚙️ Налаштування', en: '⚙️ Settings', pl: '⚙️ Ustawienia', de: '⚙️ Einstellungen' };
+        return settings[loc] || settings.uk;
+      }
+    }
+
+    applyTranslations() {
+      const loc = (window.StrictStore ? window.StrictStore.get().locale : 'uk') || 'uk';
+      const isOpen = this.dom.tutorSidebar && this.dom.tutorSidebar.classList.contains('mobile-open');
+      const btnText = this._getMobileButtonLabel(isOpen, loc);
+
+      const drawerToggle = document.getElementById('tutor-mobile-drawer-toggle');
+      if (drawerToggle) {
+        drawerToggle.textContent = btnText;
+      }
+      if (this.dom.mobileToggleLabel) {
+        this.dom.mobileToggleLabel.textContent = btnText.replace(/^[^\s]+\s/, '');
       }
 
+      this._renderStatusTitle();
+    }
+
+    syncHeaderPills() {
+      this._renderStatusTitle();
+    }
+
+    _renderStatusTitle() {
+      let personaName = 'Добрий друг';
+      if (window.StrictI18n) {
+        const pMeta = window.StrictI18n.getPersona(this.persona);
+        if (pMeta && pMeta.name) {
+          personaName = pMeta.name;
+        }
+      } else {
+        const personaNames = {
+          friend: 'Добрий друг',
+          strict: 'Суворий викладач',
+          joker: 'Жартівник',
+          motivator: 'Мотиватор',
+          calm: 'Спокійний ментор'
+        };
+        personaName = personaNames[this.persona] || 'Добрий друг';
+      }
+
+      const targetLocalizedName = this._getLocalizedTargetName();
+      const tabLangLabel = window.StrictI18n ? window.StrictI18n.t('tutor.tabLanguages', 'Мови') : 'Мови';
+      const tabSchoolLabel = window.StrictI18n ? window.StrictI18n.t('tutor.tabSchool', 'Предмети НМТ') : 'Предмети НМТ';
+
+      if (this.mode === 'languages') {
+        if (this.dom.statusSubjectText) this.dom.statusSubjectText.textContent = targetLocalizedName;
+        if (this.dom.statusLevelText) this.dom.statusLevelText.textContent = this.level;
+        if (this.dom.statusModeBadge) this.dom.statusModeBadge.textContent = tabLangLabel;
+      } else {
+        if (this.dom.statusSubjectText) this.dom.statusSubjectText.textContent = targetLocalizedName;
+        if (this.dom.statusLevelText) this.dom.statusLevelText.textContent = this.goalName;
+        if (this.dom.statusModeBadge) this.dom.statusModeBadge.textContent = tabSchoolLabel;
+      }
+
+      const headerSubjectNameEl = document.getElementById('header-subject-name');
+      if (headerSubjectNameEl) headerSubjectNameEl.textContent = targetLocalizedName;
+
       if (this.dom.statusPersonaText) {
-        this.dom.statusPersonaText.textContent = personaNames[this.persona] || 'Добрий друг';
+        this.dom.statusPersonaText.textContent = personaName;
+      }
+
+      this._updateMobileSummary(targetLocalizedName, personaName);
+    }
+
+    _updateMobileSummary(targetLocalizedName, personaName) {
+      const summaryText = this.mode === 'languages'
+        ? `🌍 ${targetLocalizedName} • ${this.level}`
+        : `🎓 ${targetLocalizedName} • ${this.goalName}`;
+
+      if (this.dom.mobileSummarySubject) {
+        this.dom.mobileSummarySubject.textContent = summaryText;
+      }
+      const mobileBarSubj = document.getElementById('mobile-bar-subject');
+      if (mobileBarSubj) {
+        mobileBarSubj.textContent = summaryText;
+      }
+
+      if (this.dom.mobileSummaryPersona) {
+        const icons = { friend: '🐼', strict: '🧐', joker: '😜', motivator: '🔥', calm: '🧘' };
+        const icon = icons[this.persona] || '🐼';
+        this.dom.mobileSummaryPersona.textContent = `${icon} ${personaName}`;
       }
     }
 
@@ -783,6 +906,50 @@
       }
     }
 
+    toggleMobileSettings(forceState = null) {
+      if (!this.dom.tutorSidebar) return;
+      const isOpen = forceState !== null ? forceState : !this.dom.tutorSidebar.classList.contains('mobile-open');
+      this.dom.tutorSidebar.classList.toggle('mobile-open', isOpen);
+      if (this.dom.mobileToggleBtn) {
+        this.dom.mobileToggleBtn.setAttribute('aria-expanded', String(isOpen));
+      }
+      const btnFullText = this._getMobileButtonLabel(isOpen);
+      if (this.dom.mobileToggleLabel) {
+        this.dom.mobileToggleLabel.textContent = btnFullText.replace(/^[^\s]+\s/, '');
+      }
+      const drawerToggle = document.getElementById('tutor-mobile-drawer-toggle');
+      if (drawerToggle) {
+        drawerToggle.textContent = btnFullText;
+      }
+      const iconEl = this.dom.mobileToggleBtn ? this.dom.mobileToggleBtn.querySelector('.toggle-icon') : null;
+      if (iconEl) {
+        iconEl.textContent = isOpen ? '💬' : '⚙️';
+      }
+      if (isOpen) {
+        this.dom.tutorSidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        const workspace = document.getElementById('tutor-workspace-root');
+        if (workspace) {
+          workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+      if (window.StrictComponents) window.StrictComponents.playBeep('click');
+    }
+
+    _handleLocaleChange() {
+      if (window.StrictI18n && typeof window.StrictI18n.applyToDOM === 'function') {
+        window.StrictI18n.applyToDOM();
+      }
+      this.applyTranslations();
+      this._renderAllSettings();
+      if (this.dom.presenceText) {
+        this.dom.presenceText.textContent = window.StrictI18n ? window.StrictI18n.t('tutor.statusReady', 'Панда готова до уроку') : 'Панда готова до уроку';
+      }
+      if (this.dom.userInput && window.StrictI18n) {
+        this.dom.userInput.placeholder = window.StrictI18n.t('tutor.inputPlaceholder', 'Напишіть відповідь або натисніть швидку дію вище...');
+      }
+    }
+
     toggleVoiceRecording() {
       if (!this.speechRecognition) {
         if (window.StrictComponents) {
@@ -823,6 +990,7 @@
 
     startLesson() {
       this.isLessonStarted = true;
+      this.toggleMobileSettings(false);
       if (window.StrictComponents) {
         window.StrictComponents.playBeep('click');
       }
@@ -844,7 +1012,7 @@
       });
 
       if (this.dom.presenceText) {
-        this.dom.presenceText.textContent = 'Урок триває • Активна сесія';
+        this.dom.presenceText.textContent = window.StrictI18n ? window.StrictI18n.t('tutor.presenceActive', 'Урок триває • Активна сесія') : 'Урок триває • Активна сесія';
       }
     }
 
@@ -935,6 +1103,13 @@
       const p = this.persona;
       const targetName = this.mode === 'languages' ? this.languageName : this.subjectName;
       const levelOrGoal = this.mode === 'languages' ? `рівень ${this.level}` : this.goalName;
+
+      if (window.StrictI18n && window.StrictI18n.currentLocale !== 'uk') {
+        const pMeta = window.StrictI18n.getPersona(p);
+        if (pMeta && pMeta.greeting) {
+          return `${pMeta.greeting}\n\n**${targetName}** (${levelOrGoal})`;
+        }
+      }
 
       if (p === 'strict') {
         return `Вітаю. До початку іспитів часу обмаль. Ми працюємо над дисципліною **«${targetName}»** (${levelOrGoal}). Прошу повної зосередженості: вимкніть сторонні вкладки, формулюйте думки чітко. З якої теми розпочнемо: правило чи практична вправа?`;
