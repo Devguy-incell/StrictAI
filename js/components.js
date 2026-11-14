@@ -19,9 +19,20 @@
     { code: 'de', label: 'DE', name: 'Deutsch', flag: '🇩🇪' }
   ];
 
+  const NAV_ITEMS = [
+    { id: 'index', href: 'index.html', url: 'index.html', icon: '🏠', label: 'Головна', i18nKey: 'nav.home' },
+    { id: 'tutor', href: 'tutor.html', url: 'tutor.html', icon: '🐼', label: 'AI-Репетитор', i18nKey: 'nav.tutor' },
+    { id: 'placement', href: 'placement.html', url: 'placement.html', icon: '🎯', label: 'Рівень', i18nKey: 'nav.placement' },
+    { id: 'nmt', href: 'nmt.html', url: 'nmt.html', icon: '📝', label: 'Тренажер НМТ', i18nKey: 'nav.nmt' },
+    { id: 'tracker', href: 'tracker.html', url: 'tracker.html', icon: '⏱', label: 'Контроль & Фокус', i18nKey: 'nav.tracker' },
+    { id: 'parents', href: 'parents.html', url: 'parents.html', icon: '🛡', label: 'Батьківський кабінет', i18nKey: 'nav.parents' },
+    { id: 'knowledge', href: 'knowledge.html', url: 'knowledge.html', icon: '🗺', label: 'Карта знань', i18nKey: 'nav.knowledge' }
+  ];
+
   const BOTTOM_NAV_PAGES = [
     { id: 'index', url: 'index.html', icon: '🏠', labels: { uk: 'Головна', en: 'Home', pl: 'Start', de: 'Start' } },
     { id: 'tutor', url: 'tutor.html', icon: '🐼', labels: { uk: 'Репетитор', en: 'Tutor', pl: 'Tutor', de: 'Tutor' } },
+    { id: 'placement', url: 'placement.html', icon: '🎯', labels: { uk: 'Рівень', en: 'Level', pl: 'Poziom', de: 'Level' } },
     { id: 'nmt', url: 'nmt.html', icon: '📝', labels: { uk: 'НМТ', en: 'NMT', pl: 'NMT', de: 'NMT' } },
     { id: 'tracker', url: 'tracker.html', icon: '⏱', labels: { uk: 'Трекер', en: 'Tracker', pl: 'Tracker', de: 'Tracker' } },
     { id: 'parents', url: 'parents.html', icon: '🛡', labels: { uk: 'Батьки', en: 'Parents', pl: 'Rodzice', de: 'Eltern' } },
@@ -30,15 +41,18 @@
 
   class StrictComponentsController {
     constructor() {
+      this.NAV_ITEMS = NAV_ITEMS;
       this.audioCtx = null;
       this.lastBlurTime = 0;
       this.currentPageId = 'index';
       this._localeListenerAttached = false;
       this._storeSubscribed = false;
+      this._notifEventsAttached = false;
 
       this._initAudioContext();
       this._initFocusGuard();
       this._initLocaleListener();
+      this._initNotificationListeners();
       this._ensureI18nLoaded();
     }
 
@@ -394,29 +408,28 @@
       const currentLocObj = this._getLocaleObj(currentLocale);
 
       const navTitles = {
-        uk: { home: 'Головна', tutor: 'AI-Репетитор', nmt: 'Тренажер НМТ', tracker: 'Контроль & Фокус', parents: 'Батьківський кабінет', knowledge: 'Карта знань' },
-        en: { home: 'Home', tutor: 'AI Tutor', nmt: 'NMT Simulator', tracker: 'Focus & Tracker', parents: 'Parents Portal', knowledge: 'Knowledge Map' },
-        pl: { home: 'Start', tutor: 'AI Korepetytor', nmt: 'Symulator NMT', tracker: 'Kontrola & Focus', parents: 'Panel Rodziców', knowledge: 'Mapa Wiedzy' },
-        de: { home: 'Start', tutor: 'AI Tutor', nmt: 'NMT Simulator', tracker: 'Fokus & Tracker', parents: 'Elternbereich', knowledge: 'Wissenskarte' }
+        uk: { home: 'Головна', tutor: 'AI-Репетитор', placement: 'Рівень', nmt: 'Тренажер НМТ', tracker: 'Контроль & Фокус', parents: 'Батьківський кабінет', knowledge: 'Карта знань' },
+        en: { home: 'Home', tutor: 'AI Tutor', placement: 'Level', nmt: 'NMT Simulator', tracker: 'Focus & Tracker', parents: 'Parents Portal', knowledge: 'Knowledge Map' },
+        pl: { home: 'Start', tutor: 'AI Korepetytor', placement: 'Poziom', nmt: 'Symulator NMT', tracker: 'Kontrola & Focus', parents: 'Panel Rodziców', knowledge: 'Mapa Wiedzy' },
+        de: { home: 'Start', tutor: 'AI Tutor', placement: 'Level', nmt: 'NMT Simulator', tracker: 'Fokus & Tracker', parents: 'Elternbereich', knowledge: 'Wissenskarte' }
       };
       const activeTitles = navTitles[currentLocale] || navTitles.uk;
 
-      const pages = [
-        { id: 'index', title: activeTitles.home, url: 'index.html', icon: '🏠' },
-        { id: 'tutor', title: activeTitles.tutor, url: 'tutor.html', icon: '🐼' },
-        { id: 'nmt', title: activeTitles.nmt, url: 'nmt.html', icon: '📝' },
-        { id: 'tracker', title: activeTitles.tracker, url: 'tracker.html', icon: '⏱' },
-        { id: 'parents', title: activeTitles.parents, url: 'parents.html', icon: '🛡' },
-        { id: 'knowledge', title: activeTitles.knowledge, url: 'knowledge.html', icon: '🗺' }
-      ];
+      const pages = NAV_ITEMS.map(item => ({
+        id: item.id,
+        title: activeTitles[item.id] || item.label,
+        url: item.url || item.href,
+        icon: item.icon,
+        i18nKey: item.i18nKey || `nav.${item.id}`
+      }));
 
       const navLinksHtml = pages.map(p => {
         const isActive = p.id === activePageId ? 'active' : '';
         return `
           <li>
-            <a href="${p.url}" class="nav-link ${isActive}" data-page="${p.id}">
+            <a href="${p.url}" class="nav-link strict-nav-link ${isActive}" data-page="${p.id}">
               <span>${p.icon}</span>
-              <span data-i18n="nav.${p.id}">${p.title}</span>
+              <span data-i18n="${p.i18nKey}">${p.title}</span>
             </a>
           </li>
         `;
@@ -459,19 +472,19 @@
       // Header Container Markup
       header.className = 'strict-navbar';
       header.innerHTML = `
-        <div class="strict-container nav-inner">
+        <div class="strict-container nav-inner strict-navbar-inner">
           <a href="index.html" class="nav-brand" title="StrictAI — Головна сторінка">
             <div class="nav-brand-badge">🐼</div>
             <div>Strict<span class="nav-brand-highlight">AI</span></div>
           </a>
 
           <!-- Desktop Nav Links -->
-          <ul class="nav-links" id="nav-links-menu">
+          <ul class="nav-links strict-nav-links" id="nav-links-menu">
             ${navLinksHtml}
           </ul>
 
           <!-- Nav Actions (Top Bar) -->
-          <div class="nav-actions">
+          <div class="nav-actions strict-navbar-actions">
             ${sessionBadgeHtml}
 
             <!-- Compact Language Switcher Dropdown -->
@@ -487,6 +500,30 @@
             <div class="nav-badge bamboo desktop-only-action" title="Бамбук-коїни за фокус та розібрані завдання">
               <span>🎋</span>
               <span id="nav-bamboo-counter">${store.student.bambooCoins || 340}</span>
+            </div>
+
+            <!-- Notification Bell Dropdown -->
+            <div class="strict-notif-wrapper" id="notif-wrapper" style="position: relative;">
+              <button type="button" class="notif-bell-btn" id="notif-bell-btn" aria-label="Сповіщення" title="Сповіщення про уроки">
+                <span class="bell-icon">🔔</span>
+                <span class="notif-badge" id="notif-badge" style="display: none;">0</span>
+              </button>
+              <div class="notif-dropdown" id="notif-dropdown" style="display: none;">
+                <div class="notif-dropdown-header">
+                  <div class="notif-dropdown-title">
+                    <span>🔔</span> <span>Сповіщення</span>
+                  </div>
+                  <button type="button" class="notif-mark-read-btn" id="notif-mark-read-btn" title="Позначити всі як прочитані">✓ Прочитано</button>
+                </div>
+                <div class="notif-dropdown-body" id="notif-dropdown-list">
+                  <!-- Список сповіщень -->
+                </div>
+                <div class="notif-dropdown-footer">
+                  <button type="button" class="btn-simulate-missed-lesson" id="btn-simulate-missed-lesson">
+                    ⚡ Симулювати пропуск уроку
+                  </button>
+                </div>
+              </div>
             </div>
 
             <!-- Desktop Only: Theme Toggle Button -->
@@ -549,7 +586,7 @@
               <li>
                 <a href="${p.url}" class="mobile-drawer-link ${p.id === activePageId ? 'active' : ''}">
                   <span class="drawer-link-icon">${p.icon}</span>
-                  <span class="drawer-link-title" data-i18n="nav.${p.id}">${p.title}</span>
+                  <span class="drawer-link-title" data-i18n="${p.i18nKey}">${p.title}</span>
                   ${p.id === activePageId ? '<span class="drawer-link-dot">●</span>' : ''}
                 </a>
               </li>
@@ -564,6 +601,8 @@
       if (langSwitcher && langBtn) {
         langBtn.onclick = (e) => {
           e.stopPropagation();
+          const notifDropdown = document.getElementById('notif-dropdown');
+          if (notifDropdown) notifDropdown.style.display = 'none';
           langSwitcher.classList.toggle('open');
         };
 
@@ -603,6 +642,8 @@
       if (mobileToggle && mobileDrawer) {
         mobileToggle.onclick = (e) => {
           e.stopPropagation();
+          const notifDropdown = document.getElementById('notif-dropdown');
+          if (notifDropdown) notifDropdown.style.display = 'none';
           const isOpen = mobileDrawer.classList.toggle('open');
           mobileToggle.setAttribute('aria-expanded', isOpen);
           if (mobileIcon) mobileIcon.textContent = isOpen ? '✕' : '☰';
@@ -702,6 +743,10 @@
 
       // Build / Update Fixed Mobile Bottom Tab Bar (< 768px)
       this._renderMobileBottomNav(activePageId, currentLocale);
+
+      // Initialize Notification Dropdown & Badge
+      this._initNotificationsUI();
+      this._updateNotifBadge();
 
       // Translate DOM elements via StrictI18n if available
       if (window.StrictI18n && typeof window.StrictI18n.applyToDOM === 'function') {
@@ -906,9 +951,205 @@
         setTimeout(() => toastEl.remove(), 300);
       }, 3500);
     }
+
+    /**
+     * Initializes Global Notification Listeners (Missed Lessons & Click Outside)
+     */
+    _initNotificationListeners() {
+      if (this._notifEventsAttached || typeof window === 'undefined') return;
+      this._notifEventsAttached = true;
+
+      window.addEventListener('strictai:notifications-updated', () => {
+        this._updateNotifBadge();
+        this._renderNotifications();
+      });
+
+      window.addEventListener('strictai:missed-lesson', () => {
+        this._updateNotifBadge();
+        this._renderNotifications();
+      });
+
+      document.addEventListener('click', (e) => {
+        const notifWrapper = document.getElementById('notif-wrapper');
+        const notifDropdown = document.getElementById('notif-dropdown');
+        if (notifDropdown && notifDropdown.style.display !== 'none') {
+          if (!notifWrapper || !notifWrapper.contains(e.target)) {
+            notifDropdown.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    _escapeHtml(str) {
+      if (typeof str !== 'string') return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    /**
+     * Renders notification items in the dropdown
+     */
+    _renderNotifications() {
+      const listEl = document.getElementById('notif-dropdown-list');
+      if (!listEl) return;
+
+      let alerts = [];
+      if (window.StrictNotificationsData && Array.isArray(window.StrictNotificationsData.alerts)) {
+        alerts = window.StrictNotificationsData.alerts;
+      } else {
+        try {
+          const stored = JSON.parse(localStorage.getItem('strictai_notifications') || '{}');
+          if (Array.isArray(stored.alerts)) {
+            alerts = stored.alerts;
+          }
+        } catch (e) {
+          alerts = [];
+        }
+      }
+
+      if (!alerts || alerts.length === 0) {
+        listEl.innerHTML = '<div class="notif-empty">Немає нових сповіщень 🎉</div>';
+        return;
+      }
+
+      listEl.innerHTML = alerts.map(alert => `
+        <div class="notif-item ${alert.read ? 'read' : 'unread'}" data-id="${this._escapeHtml(alert.id || '')}">
+          <div class="notif-item-icon">⚠️</div>
+          <div class="notif-item-content">
+            <div class="notif-item-header">
+              <strong class="notif-item-title">${this._escapeHtml(alert.title || 'Сповіщення')}</strong>
+              <span class="notif-item-time">${this._escapeHtml(alert.time || '')}</span>
+            </div>
+            <div class="notif-item-msg">${this._escapeHtml(alert.message || '')}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /**
+     * Updates notification badge unread counter
+     */
+    _updateNotifBadge() {
+      let alerts = [];
+      if (window.StrictNotificationsData && Array.isArray(window.StrictNotificationsData.alerts)) {
+        alerts = window.StrictNotificationsData.alerts;
+      } else {
+        try {
+          const stored = JSON.parse(localStorage.getItem('strictai_notifications') || '{}');
+          if (Array.isArray(stored.alerts)) {
+            alerts = stored.alerts;
+          }
+        } catch (e) {
+          alerts = [];
+        }
+      }
+
+      const count = alerts.filter(a => !a.read).length;
+      const notifBadge = document.getElementById('notif-badge');
+      if (notifBadge) {
+        if (count > 0) {
+          notifBadge.style.display = 'inline-flex';
+          notifBadge.textContent = count > 99 ? '99+' : `${count}`;
+        } else {
+          notifBadge.style.display = 'none';
+          notifBadge.textContent = '0';
+        }
+      }
+    }
+
+    /**
+     * Wires up notification UI interactions
+     */
+    _initNotificationsUI() {
+      const bellBtn = document.getElementById('notif-bell-btn');
+      const notifDropdown = document.getElementById('notif-dropdown');
+      const markReadBtn = document.getElementById('notif-mark-read-btn');
+      const simulateBtn = document.getElementById('btn-simulate-missed-lesson');
+      const langSwitcher = document.getElementById('lang-switcher');
+
+      if (bellBtn && notifDropdown) {
+        bellBtn.onclick = (e) => {
+          e.stopPropagation();
+          this.playBeep('click');
+          const isHidden = notifDropdown.style.display === 'none' || notifDropdown.style.display === '';
+          if (isHidden) {
+            if (langSwitcher) langSwitcher.classList.remove('open');
+            notifDropdown.style.display = 'flex';
+            this._renderNotifications();
+          } else {
+            notifDropdown.style.display = 'none';
+          }
+        };
+      }
+
+      if (markReadBtn) {
+        markReadBtn.onclick = (e) => {
+          e.stopPropagation();
+          this.playBeep('click');
+          if (window.StrictNotificationsData && Array.isArray(window.StrictNotificationsData.alerts)) {
+            window.StrictNotificationsData.alerts.forEach(a => { a.read = true; });
+          }
+          if (window.StrictNotifications && typeof window.StrictNotifications.saveStore === 'function') {
+            window.StrictNotifications.saveStore();
+          } else {
+            try {
+              const stored = JSON.parse(localStorage.getItem('strictai_notifications') || '{}');
+              if (Array.isArray(stored.alerts)) {
+                stored.alerts.forEach(a => { a.read = true; });
+                localStorage.setItem('strictai_notifications', JSON.stringify(stored));
+              }
+            } catch (err) {}
+          }
+          this._updateNotifBadge();
+          this._renderNotifications();
+        };
+      }
+
+      if (simulateBtn) {
+        simulateBtn.onclick = (e) => {
+          e.stopPropagation();
+          this.playBeep('alert');
+          if (window.StrictNotifications && typeof window.StrictNotifications.triggerMissedLessonAlert === 'function') {
+            window.StrictNotifications.triggerMissedLessonAlert('Англійська мова / NMT');
+          } else {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const alertObj = {
+              id: 'notif_' + Date.now(),
+              title: '⚠️ Пропущено плановий урок!',
+              message: 'Учень Антон не розпочав заняття з Англійська мова / NMT о 17:00. Батькам надіслано сповіщення у Батьківський контроль.',
+              time: timeStr,
+              scheduledTime: '17:00',
+              studentName: 'Антон',
+              timestamp: Date.now(),
+              read: false,
+              subject: 'Англійська мова / NMT'
+            };
+            if (!window.StrictNotificationsData) {
+              window.StrictNotificationsData = { alerts: [], settings: { lessonTime: '17:00', enabled: true } };
+            }
+            window.StrictNotificationsData.alerts.unshift(alertObj);
+            try {
+              localStorage.setItem('strictai_notifications', JSON.stringify(window.StrictNotificationsData));
+            } catch (err) {}
+            this.toast('🔔 Пропущено плановий урок: Англійська мова / NMT (17:00) — Антон', 'warning');
+          }
+          this._renderNotifications();
+          this._updateNotifBadge();
+        };
+      }
+    }
   }
+
+  // Static reference on class
+  StrictComponentsController.NAV_ITEMS = NAV_ITEMS;
 
   // Export Singleton on window
   window.StrictComponents = new StrictComponentsController();
+  window.StrictComponents.NAV_ITEMS = NAV_ITEMS;
 
 })();

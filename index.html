@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StrictAI — Панда-репетитор | ШІ-підготовка до НМТ та шкільної програми</title>
-  <meta name="description" content="Платформа StrictAI: персоналізований ШІ-репетитор у вигляді цифрового аватара Червоної Панди. 5 характерів, залізний контроль відволікань, підготовка до НМТ 2025 та батьківський кабінет.">
+  <meta name="description" content="Платформа StrictAI: персоналізований ШІ-репетитор у вигляді цифрового аватара Червоної Панди. 9 характерів ШІ-репетитора (від доброго друга до сократівського детектива, RPG гейм-майстра та носія мови), залізний контроль відволікань, підготовка до НМТ 2025 та батьківський кабінет.">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐼</text></svg>">
 </head>
@@ -47,6 +47,19 @@
             </a>
           </div>
 
+          <!-- Hero Placement Diagnostic Banner Card -->
+          <a href="placement.html" class="hero-placement-banner" title="Визначити свій точний рівень знань">
+            <div class="hero-placement-icon">🎯</div>
+            <div class="hero-placement-text">
+              <span class="hero-placement-question">Не знаєш свій рівень?</span>
+              <span class="hero-placement-hint">Пройди 3-хвилинний адаптивний тест (CEFR A1–C2 / НМТ)</span>
+            </div>
+            <div class="hero-placement-action">
+              <span>Визначити рівень</span>
+              <span class="hero-placement-arrow">→</span>
+            </div>
+          </a>
+
           <!-- Trust & Performance Metrics Bar -->
           <div class="hero-stats-row">
             <div class="hero-stat-item">
@@ -62,7 +75,7 @@
               <span class="hero-stat-lbl" data-i18n="index.hero.statCheating">Шансів списати у соцмережах</span>
             </div>
             <div class="hero-stat-item">
-              <span class="hero-stat-val">5</span>
+              <span class="hero-stat-val">9</span>
               <span class="hero-stat-lbl" data-i18n="index.hero.statPersonas">Унікальних характерів ШІ</span>
             </div>
           </div>
@@ -89,13 +102,17 @@
             </a>
           </div>
 
-          <!-- 5 Persona Switcher Pills from Mockup -->
+          <!-- 9 Signature Persona Switcher Pills -->
           <div class="persona-switcher-pills" id="hero-persona-pills">
             <button class="persona-switcher-btn active" data-persona="friend">🐼 Добрий друг</button>
             <button class="persona-switcher-btn" data-persona="strict">🧐 Суворий викладач</button>
             <button class="persona-switcher-btn" data-persona="joker">😜 Жартівник</button>
             <button class="persona-switcher-btn" data-persona="motivator">🔥 Мотиватор</button>
             <button class="persona-switcher-btn" data-persona="calm">🧘 Спокійний ментор</button>
+            <button class="persona-switcher-btn" data-persona="socratic">🕵️ Сократівський детектив</button>
+            <button class="persona-switcher-btn" data-persona="examiner">🎓 Екзаменатор</button>
+            <button class="persona-switcher-btn" data-persona="gamemaster">🚀 RPG Гейм-майстер</button>
+            <button class="persona-switcher-btn" data-persona="native">🗣️ Носій мови</button>
           </div>
         </div>
       </div>
@@ -242,7 +259,7 @@
             <div class="bento-icon">🐼</div>
             <h3 class="bento-title">AI-Репетитор Червона Панда</h3>
             <p class="bento-desc">
-              5 унікальних характерів під будь-який настрій. Панда не видає готові відповіді для списування — вона використовує сократичний діалог, направляє запитаннями та пояснює кожен крок розв’язку. Голосове введення, озвучення та жива міміка.
+              9 характерів ШІ-репетитора (від доброго друга до сократівського детектива, RPG гейм-майстра та носія мови). Панда не видає готові відповіді для списування — вона використовує сократичний діалог, направляє запитаннями та пояснює кожен крок розв’язку. Голосове введення, озвучення та жива міміка.
             </p>
             <div class="bento-footer">
               <div style="font-size: 0.88rem; color: var(--accent-primary); font-weight: 600;">
@@ -359,7 +376,7 @@
               </tr>
               <tr>
                 <td><strong>Цифровий аватар та емоції</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> <strong>Жива Червона Панда з 5 характерами</strong></td>
+                <td class="col-strict"><span class="icon-check">✓</span> <strong>Жива Червона Панда з 9 характерами</strong></td>
                 <td><span class="icon-check">✓</span> Жива людина (інколи втомлена)</td>
                 <td><span class="icon-cross">✕</span> Сухе текстове полотно без душі</td>
               </tr>
@@ -462,6 +479,7 @@
           <h4>Навчальні модулі</h4>
           <ul class="footer-links">
             <li><a href="tutor.html">AI-Репетитор Панда</a></li>
+            <li><a href="placement.html">🎯 Тест на визначення рівня</a></li>
             <li><a href="nmt.html">Тренажер НМТ 2025</a></li>
             <li><a href="tracker.html">Контроль фокусу & Помодоро</a></li>
             <li><a href="knowledge.html">Карта знань 5–11 класів</a></li>
@@ -477,6 +495,10 @@
             <li><a href="tutor.html?persona=joker">😜 Жартівник</a></li>
             <li><a href="tutor.html?persona=motivator">🔥 Мотиватор</a></li>
             <li><a href="tutor.html?persona=calm">🧘 Спокійний ментор</a></li>
+            <li><a href="tutor.html?persona=socratic">🕵️ Сократівський детектив</a></li>
+            <li><a href="tutor.html?persona=examiner">🎓 Екзаменатор УЦОЯО</a></li>
+            <li><a href="tutor.html?persona=gamemaster">🚀 RPG Гейм-майстер</a></li>
+            <li><a href="tutor.html?persona=native">🗣️ Носій мови (Native)</a></li>
           </ul>
         </div>
 
@@ -504,11 +526,13 @@
     </div>
   </footer>
 
-  <!-- Scripts: Store -> i18n -> Avatar -> Components -> Landing -->
+  <!-- Scripts: Store -> i18n -> Avatar -> Notifications -> Components -> Landing -->
   <script src="js/store.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/panda-avatar.js"></script>
+  <script src="js/notifications.js"></script>
   <script src="js/components.js"></script>
   <script src="js/landing.js"></script>
+  <script src="js/polyglot-tts.js"></script>
 </body>
 </html>

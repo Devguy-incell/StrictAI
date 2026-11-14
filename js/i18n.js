@@ -25,6 +25,7 @@
       nav: {
         home: 'Головна',
         tutor: 'AI-Репетитор',
+        placement: 'Рівень',
         nmt: 'Тренажер НМТ',
         tracker: 'Контроль & Фокус',
         parents: 'Батьківський кабінет',
@@ -429,6 +430,7 @@
       nav: {
         home: 'Home',
         tutor: 'AI Tutor',
+        placement: 'Level',
         nmt: 'NMT Simulator',
         tracker: 'Control & Focus',
         parents: 'Parents Hub',
@@ -833,6 +835,7 @@
       nav: {
         home: 'Główna',
         tutor: 'Korepetytor AI',
+        placement: 'Poziom',
         nmt: 'Symulator NMT',
         tracker: 'Kontrola i skupienie',
         parents: 'Strefa Rodzica',
@@ -1237,6 +1240,7 @@
       nav: {
         home: 'Startseite',
         tutor: 'KI-Tutor',
+        placement: 'Level',
         nmt: 'NMT-Simulator',
         tracker: 'Fokus & Kontrolle',
         parents: 'Elternbereich',
@@ -1895,6 +1899,7 @@
         // Navbar Links
         { sel: 'a[href="index.html"].nav-link span:last-child', key: 'nav.home' },
         { sel: 'a[href="tutor.html"].nav-link span:last-child', key: 'nav.tutor' },
+        { sel: 'a[href="placement.html"].nav-link span:last-child', key: 'nav.placement' },
         { sel: 'a[href="nmt.html"].nav-link span:last-child', key: 'nav.nmt' },
         { sel: 'a[href="tracker.html"].nav-link span:last-child', key: 'nav.tracker' },
         { sel: 'a[href="parents.html"].nav-link span:last-child', key: 'nav.parents' },

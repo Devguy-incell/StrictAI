@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictAI — Тест визначення рівня (Placement Test)</title>
+  <meta name="description" content="Адаптивна діагностика знань StrictAI: визнач свій точний рівень володіння предметом (CEFR A1–C2 / матриця НМТ) з живим аватаром Червоної Панди.">
+  
+  <!-- StrictAI Typography & Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    :root {
+      --bg-primary: var(--bg-canvas, #1E1035);
+      --bg-card: var(--bg-surface, #2B184A);
+      --bg-card-hover: var(--bg-hover, #3D2466);
+      --accent-orange: var(--accent-primary, #F2994A);
+      --accent-bamboo: var(--bamboo-green, #22C55E);
+      --text-main: var(--text-primary, #FFFFFF);
+      --text-sub: var(--text-secondary, #C8B6E2);
+      --border-card: var(--border-subtle, rgba(255, 255, 255, 0.12));
+      --border-card-hover: rgba(242, 153, 74, 0.45);
+      --shadow-card-glow: 0 8px 32px rgba(10, 4, 20, 0.45);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: var(--bg-canvas, #FBF9F5);
+      --bg-card: var(--bg-surface, #FFFFFF);
+      --bg-card-hover: var(--bg-hover, #EAE3D5);
+      --accent-orange: var(--accent-primary, #E67E22);
+      --accent-bamboo: #16A34A;
+      --text-main: var(--text-primary, #1E1035);
+      --text-sub: var(--text-secondary, #4A3869);
+      --border-card: var(--border-subtle, rgba(30, 16, 53, 0.12));
+      --border-card-hover: rgba(230, 126, 34, 0.45);
+      --shadow-card-glow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .placement-main {
+      flex: 1;
+      max-width: 980px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 20px 80px 20px;
+      box-sizing: border-box;
+    }
+
+    /* Hero Block & Panda Avatar */
+    .placement-hero {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-xl, 24px);
+      padding: 28px 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-card-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .placement-hero::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(242, 153, 74, 0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .placement-panda-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    #placement-panda-mount {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid var(--accent-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 18px rgba(242, 153, 74, 0.25);
+    }
+
+    .placement-hero-body {
+      flex: 1;
+    }
+
+    .placement-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(242, 153, 74, 0.14);
+      border: 1px solid rgba(242, 153, 74, 0.3);
+      color: var(--accent-orange);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .placement-hero-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .placement-hero-desc {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0 0 16px 0;
+    }
+
+    #placement-panda-speech {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid var(--accent-orange);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      line-height: 1.45;
+      position: relative;
+    }
+
+    /* Cards & Containers */
+    .placement-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: var(--shadow-card-glow);
+      margin-bottom: 24px;
+      transition: border-color 0.2s ease;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+    }
+
+    .section-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-sub);
+      margin: 0 0 20px 0;
+    }
+
+    /* Subject Selector Grid & Cards */
+    #subject-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .subject-select-card,
+    .subject-btn {
+      background: var(--bg-card);
+      border: 2px solid var(--border-card);
+      border-radius: 16px;
+      padding: 16px 18px;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      text-align: left;
+      width: 100%;
+      box-sizing: border-box;
+      user-select: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .subject-select-card:hover,
+    .subject-btn:hover {
+      border-color: var(--border-card-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .subject-select-card.active,
+    .subject-btn.active {
+      border-color: var(--accent-orange);
+      background: rgba(242, 153, 74, 0.16);
+      box-shadow: 0 0 20px rgba(242, 153, 74, 0.25);
+    }
+
+    .subject-select-card .subj-icon,
+    .subject-btn .subject-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .subject-select-card .subj-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.25;
+      display: block;
+    }
+
+    .subject-select-card .subj-meta {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-orange);
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: block;
+    }
+
+    /* Mode Selection Cards */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .mode-card {
+      display: block;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-card);
+      border-radius: 16px;
+      padding: 22px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .mode-card:hover {
+      border-color: var(--border-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .mode-card.selected,
+    .mode-card:has(input[type="radio"]:checked) {
+      border-color: var(--accent-orange);
+      background: rgba(242, 153, 74, 0.08);
+      box-shadow: 0 0 20px rgba(242, 153, 74, 0.2);
+    }
+
+    .mode-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .mode-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-orange);
+    }
+
+    .mode-time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38BDF8;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+    }
+
+    .mode-time-badge.ai-time-badge {
+      background: rgba(242, 153, 74, 0.14);
+      border-color: rgba(242, 153, 74, 0.3);
+      color: var(--accent-orange);
+    }
+
+    .mode-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mode-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    /* Seed Banner */
+    .seed-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      background: var(--bg-primary);
+      border: 1px dashed var(--border-card);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-top: 20px;
+    }
+
+    .seed-info {
+      font-size: 0.88rem;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #current-seed-label {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-orange);
+      background: rgba(242, 153, 74, 0.15);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    /* Button Primary & Secondary Custom Styling */
+    .btn-placement-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: linear-gradient(135deg, var(--accent-orange) 0%, #EB5757 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 14px;
+      padding: 18px 36px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(242, 153, 74, 0.35);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+    }
+
+    .btn-placement-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(242, 153, 74, 0.45);
+    }
+
+    .btn-placement-cta:active {
+      transform: translateY(0);
+    }
+
+    .btn-seed {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-seed:hover {
+      border-color: var(--accent-orange);
+      background: var(--bg-card-hover);
+    }
+
+    /* Diagnostics History */
+    .history-card {
+      margin-top: 32px;
+    }
+
+    #placement-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      border: 1px dashed var(--border-card);
+      border-radius: 12px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 0.9rem;
+    }
+
+    /* Step 2: Quiz View */
+    .quiz-progress-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 18px;
+      padding: 18px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-card-glow);
+    }
+
+    .quiz-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .quiz-meta-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #quiz-step-badge {
+      background: rgba(242, 153, 74, 0.15);
+      border: 1px solid rgba(242, 153, 74, 0.3);
+      color: var(--accent-orange);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    #quiz-difficulty-badge {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--accent-bamboo);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    #btn-abort-placement {
+      background: transparent;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #F43F5E;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #btn-abort-placement:hover {
+      background: rgba(244, 63, 94, 0.12);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-primary);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    #quiz-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-orange) 0%, var(--accent-bamboo) 100%);
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Audio question box */
+    #quiz-audio-box {
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: rgba(242, 153, 74, 0.08);
+      border: 1px solid rgba(242, 153, 74, 0.25);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    #btn-play-question-audio {
+      background: var(--accent-orange);
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s ease, transform 0.1s ease;
+    }
+
+    #btn-play-question-audio:hover {
+      opacity: 0.92;
+      transform: scale(1.02);
+    }
+
+    /* Question details */
+    #quiz-question-context {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    #quiz-question-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+
+    /* Options Grid */
+    #quiz-options-grid,
+    #question-options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .quiz-option-btn,
+    .option-btn {
+      background: var(--bg-card);
+      border: 2px solid var(--border-card);
+      border-radius: 14px;
+      padding: 16px 20px;
+      color: var(--text-main);
+      font-size: 0.98rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .quiz-option-btn:hover:not(:disabled),
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--accent-orange);
+      background: var(--bg-card-hover);
+      transform: translateX(4px);
+    }
+
+    .quiz-option-btn.selected,
+    .option-btn.selected {
+      border-color: var(--accent-orange);
+      background: rgba(242, 153, 74, 0.16);
+    }
+
+    .quiz-option-btn.correct,
+    .option-btn.correct {
+      border-color: var(--accent-bamboo) !important;
+      background: rgba(34, 197, 94, 0.18) !important;
+      color: #FFFFFF !important;
+    }
+
+    .quiz-option-btn.incorrect,
+    .option-btn.incorrect {
+      border-color: #F43F5E !important;
+      background: rgba(244, 63, 94, 0.18) !important;
+      color: #FFFFFF !important;
+    }
+
+    .option-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      color: var(--text-main);
+    }
+
+    .quiz-option-btn.correct .option-letter,
+    .option-btn.correct .option-letter {
+      background: var(--accent-bamboo);
+      color: #FFFFFF;
+    }
+
+    .quiz-option-btn.incorrect .option-letter,
+    .option-btn.incorrect .option-letter {
+      background: #F43F5E;
+      color: #FFFFFF;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Open answer box */
+    #quiz-open-answer-box {
+      margin-bottom: 24px;
+    }
+
+    #quiz-open-input {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-card);
+      border-radius: 14px;
+      padding: 16px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
+      resize: vertical;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #quiz-open-input:focus {
+      border-color: var(--accent-orange);
+    }
+
+    /* Feedback box */
+    #quiz-feedback-box {
+      background: var(--bg-primary);
+      border-left: 4px solid var(--accent-orange);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #btn-next-question {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent-orange);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #btn-next-question:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    #btn-next-question:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Step 3: Result Certificate */
+    .result-certificate {
+      background: var(--bg-card);
+      border: 2px solid rgba(242, 153, 74, 0.4);
+      border-radius: 28px;
+      padding: 40px 32px;
+      box-shadow: 0 16px 48px rgba(10, 4, 20, 0.6);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-certificate::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--accent-orange) 0%, #E94057 50%, var(--accent-bamboo) 100%);
+    }
+
+    .cert-badge-pill,
+    .result-cert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: var(--accent-bamboo);
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .result-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0 0 10px 0;
+      color: var(--text-main);
+    }
+
+    #result-level-badge {
+      display: inline-block;
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--accent-orange);
+      background: rgba(242, 153, 74, 0.12);
+      border: 2px solid var(--accent-orange);
+      border-radius: 16px;
+      padding: 12px 32px;
+      margin: 16px auto;
+      letter-spacing: 0.04em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .result-score-wrap {
+      font-size: 1.1rem;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+    }
+
+    #result-score-pct {
+      color: var(--accent-bamboo);
+      font-weight: 800;
+    }
+
+    #result-level-desc {
+      max-width: 620px;
+      margin: 0 auto 28px auto;
+      font-size: 1rem;
+      color: var(--text-sub);
+      line-height: 1.55;
+    }
+
+    /* Skills Grid */
+    .skill-bar-card,
+    .skills-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 24px;
+      max-width: 680px;
+      margin: 0 auto 28px auto;
+      text-align: left;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .skill-bar-header,
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .skill-bar-track,
+    .skill-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill,
+    .skill-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.4s ease;
+    }
+
+    #skill-grammar-bar {
+      background: var(--accent-orange);
+    }
+
+    #skill-vocab-bar {
+      background: var(--accent-bamboo);
+    }
+
+    #skill-listening-bar {
+      background: #38BDF8;
+    }
+
+    #skill-logic-bar {
+      background: #A855F7;
+    }
+
+    /* Panda Verdict Box */
+    .result-panda-box {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-card);
+      border-radius: 18px;
+      padding: 20px 24px;
+      max-width: 680px;
+      margin: 0 auto 32px auto;
+      text-align: left;
+    }
+
+    #result-panda-mount {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--accent-orange);
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #result-panda-verdict {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    /* Result Action Buttons */
+    .result-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    #btn-apply-level-tutor {
+      background: linear-gradient(135deg, var(--accent-bamboo) 0%, #059669 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 32px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #btn-apply-level-tutor:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(34, 197, 94, 0.4);
+    }
+
+    #btn-retake-new-seed {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-card);
+      color: var(--text-main);
+      border-radius: 14px;
+      padding: 16px 28px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #btn-retake-new-seed:hover {
+      border-color: var(--accent-orange);
+      background: var(--bg-card-hover);
+    }
+
+    @media (max-width: 768px) {
+      .placement-hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+      .mode-grid {
+        grid-template-columns: 1fr;
+      }
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+      #result-level-badge {
+        font-size: 1.8rem;
+        padding: 10px 20px;
+      }
+      .result-actions {
+        flex-direction: column;
+      }
+      .result-actions button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- StrictAI Global Navigation & Anti-Distraction Mount Points -->
+  <div id="strict-navbar-mount">
+    <header id="app-header"></header>
+  </div>
+  <div id="focus-warning-banner" class="focus-warning-banner"></div>
+  <div id="focus-alert-banner" class="focus-alert-banner"></div>
+
+  <main class="placement-main">
+    
+    <!-- Hero Block with Live Red Panda Avatar & Speech Bubble -->
+    <section class="placement-hero">
+      <div class="placement-panda-wrap">
+        <div id="placement-panda-mount">
+          <!-- Dynamic Red Panda SVG Avatar injected by window.PandaAvatar -->
+        </div>
+      </div>
+      <div class="placement-hero-body">
+        <div class="placement-hero-badge">
+          <span>🐼</span> StrictAI Adaptive Placement
+        </div>
+        <h1 class="placement-hero-title">Визнач свій точний рівень</h1>
+        <p class="placement-hero-desc">
+          Пройди адаптивну експрес-діагностику знань: отримай міжнародний сертифікат CEFR (A1–C2) або зріз НМТ, детальний аналіз 4-х навичок та персональну програму для ШІ-Репетитора!
+        </p>
+        <div id="placement-panda-speech">
+          «Привіт! Я Червона Панда-Екзаменатор. Обери предмет і формат тесту нижче. Я адаптуватиму кожне наступне питання під твої відповіді!»
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 1: Configuration & Mode Selection -->
+    <section id="placement-config-view" class="placement-step-view">
+      
+      <!-- 1. Subject / Language Selector -->
+      <div class="placement-card">
+        <h2 class="section-title">
+          <span>📚</span> Оберіть предмет або мову
+        </h2>
+        <p class="section-subtitle">
+          Оберіть дисципліну, рівень якої ви бажаєте визначити
+        </p>
+        <div id="subject-selector-grid">
+          <button type="button" class="subject-select-card active" data-subject="english">
+            <span class="subj-icon">🇬🇧</span>
+            <span class="subj-name">Англійська мова</span>
+            <span class="subj-meta">CEFR A1–C2</span>
+          </button>
+          <button type="button" class="subject-select-card" data-subject="deutsch">
+            <span class="subj-icon">🇩🇪</span>
+            <span class="subj-name">Німецька мова</span>
+            <span class="subj-meta">CEFR A1–C2</span>
+          </button>
+          <button type="button" class="subject-select-card" data-subject="espanol">
+            <span class="subj-icon">🇪🇸</span>
+            <span class="subj-name">Іспанська мова</span>
+            <span class="subj-meta">CEFR A1–C2</span>
+          </button>
+          <button type="button" class="subject-select-card" data-subject="chinese">
+            <span class="subj-icon">🇨🇳</span>
+            <span class="subj-name">Китайська мова</span>
+            <span class="subj-meta">CEFR A1–C2</span>
+          </button>
+          <button type="button" class="subject-select-card" data-subject="polish">
+            <span class="subj-icon">🇵🇱</span>
+            <span class="subj-name">Польська мова</span>
+            <span class="subj-meta">CEFR A1–C2</span>
+          </button>
+          <button type="button" class="subject-select-card" data-subject="math">
+            <span class="subj-icon">📐</span>
+            <span class="subj-name">Математика</span>
+            <span class="subj-meta">НМТ 100–200 балів</span>
+          </button>
+          <button type="button" class="subject-select-card" data-subject="ukr-lang">
+            <span class="subj-icon">✍️</span>
+            <span class="subj-name">Українська мова</span>
+            <span class="subj-meta">НМТ 100–200 балів</span>
+          </button>
+          <button type="button" class="subject-select-card" data-subject="history">
+            <span class="subj-icon">🏛️</span>
+            <span class="subj-name">Історія України</span>
+            <span class="subj-meta">НМТ 100–200 балів</span>
+          </button>
+          <button type="button" class="subject-select-card" data-subject="biology">
+            <span class="subj-icon">🧬</span>
+            <span class="subj-name">Біологія та Фізика</span>
+            <span class="subj-meta">НМТ 100–200 балів</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Test Mode Selector -->
+      <div class="placement-card">
+        <h2 class="section-title">
+          <span>⚙️</span> Оберіть варіант тесту
+        </h2>
+        <p class="section-subtitle">
+          Два формати діагностики під різні освітні задачі
+        </p>
+        
+        <div class="mode-grid">
+          <!-- Mode 1: CEFR Standard -->
+          <label id="mode-cefr-card" class="mode-card selected">
+            <div class="mode-card-header">
+              <span class="mode-badge">Варіант 1</span>
+              <input type="radio" name="test-mode" value="cefr" checked>
+            </div>
+            <div class="mode-time-badge">⏱ ~5–7 хв • 8 завдань + аудіювання</div>
+            <h3 class="mode-card-title">
+              <span>🌍</span> Міжнародний стандарт (CEFR A1–C2 / Матриця УЦОЯО)
+            </h3>
+            <p class="mode-card-desc">
+              8–10 структурованих питань: граматика, лексика, читання та аудіювання з вбудованим синтезом мовлення (TTS).
+            </p>
+          </label>
+
+          <!-- Mode 2: AI Adaptive Placement -->
+          <label id="mode-ai-card" class="mode-card">
+            <div class="mode-card-header">
+              <span class="mode-badge">Варіант 2</span>
+              <input type="radio" name="test-mode" value="ai">
+            </div>
+            <div class="mode-time-badge ai-time-badge">⚡ ~3 хв • 5 експрес-кроків з Пандою</div>
+            <h3 class="mode-card-title">
+              <span>🤖</span> Жива ШІ-Діагностика з Пандою (AI Adaptive Placement)
+            </h3>
+            <p class="mode-card-desc">
+              5 глибоких адаптивних кроків. Панда-екзаменатор підлаштовує складність в реальному часі під твої відповіді.
+            </p>
+          </label>
+        </div>
+
+        <!-- Variant Seed & Uniqueness Banner -->
+        <div class="seed-banner">
+          <div class="seed-info">
+            <span>🎫 Екзаменаційний білет: <strong id="current-seed-label">#8492-CEFR</strong> <span style="opacity:0.8;">(Щоразу нові завдання • 0% повторів)</span></span>
+          </div>
+          <button type="button" id="btn-regenerate-seed" class="btn-seed">
+            <span>🎲</span> Згенерувати інший білет
+          </button>
+        </div>
+      </div>
+
+      <!-- Start CTA -->
+      <div style="text-align: center; margin: 32px 0;">
+        <button type="button" id="btn-start-placement" class="btn-placement-cta">
+          <span>🚀</span> Розпочати тест на визначення рівня
+        </button>
+      </div>
+
+      <!-- History of diagnostics -->
+      <div class="placement-card history-card">
+        <h3 class="section-title" style="font-size: 1.1rem;">
+          <span>🕒</span> Історія попередніх діагностик
+        </h3>
+        <div id="placement-history-list">
+          <div class="history-empty">
+            Немає збережених тестів. Пройдіть першу діагностику, щоб отримати сертифікат!
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- STEP 2: Active Test Session View (Hidden by default) -->
+    <section id="placement-quiz-view" class="placement-step-view" style="display:none;">
+      
+      <!-- Top Progress Panel -->
+      <div class="quiz-progress-panel">
+        <div class="quiz-top-bar">
+          <div class="quiz-meta-group">
+            <span id="quiz-step-badge">Питання 1 з 10</span>
+            <span id="quiz-difficulty-badge">Рівень: A1 -> C2</span>
+          </div>
+          <button type="button" id="btn-abort-placement">
+            ✕ Завершити достроково
+          </button>
+        </div>
+        <div class="progress-track">
+          <div id="quiz-progress-bar" style="width: 10%;"></div>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="placement-card">
+        
+        <!-- Audio Box (Displayed for listening tasks) -->
+        <div id="quiz-audio-box" style="display:none;">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: var(--text-main);">
+            <span>🎧</span>
+            <span>Завдання на слухове сприйняття (TTS):</span>
+          </div>
+          <button type="button" id="btn-play-question-audio" data-alias="btn-audio-pronounce">
+            <span>🔊</span> Прослухати вимову / аудіо фрагмент
+          </button>
+        </div>
+
+        <!-- Question Prompt & Context -->
+        <div id="quiz-question-context" style="display:none;"></div>
+        <h2 id="quiz-question-text" data-alias="question-text">
+          Завантаження запитання...
+        </h2>
+
+        <!-- Answer Options Container (Multiple Choice) -->
+        <div id="quiz-options-grid" data-alias="question-options-container">
+          <!-- Injected dynamically by placement.js -->
+        </div>
+
+        <!-- Open Answer Container (AI Mode) -->
+        <div id="quiz-open-answer-box" style="display:none;">
+          <textarea id="quiz-open-input" placeholder="Введіть вашу розгорнуту відповідь тут українською або досліджуваною мовою..." rows="4"></textarea>
+        </div>
+
+        <!-- Realtime Feedback Box -->
+        <div id="quiz-feedback-box" style="display:none;"></div>
+
+        <!-- Next Question Action -->
+        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" id="btn-next-question" disabled>
+            <span>Далі ➔</span>
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- STEP 3: Result Certificate View (Hidden by default) -->
+    <section id="placement-result-view" class="placement-step-view" style="display:none;">
+      
+      <div class="result-certificate">
+        
+        <div class="result-cert-badge">
+          <span>🏆</span> Офіційний сертифікат StrictAI
+        </div>
+        <h2 class="result-title">Діагностику успішно завершено!</h2>
+        <div class="result-score-wrap">
+          Точність відповідей: <strong id="result-score-pct">92%</strong>
+        </div>
+
+        <!-- Determined Level Badge -->
+        <div id="result-level-badge" data-alias="result-level-title">
+          B2 Upper-Intermediate
+        </div>
+        <p id="result-level-desc">
+          Впевнене володіння граматикою, багатий словниковий запас, здатність розуміти складні технічні та розмовні тексти.
+        </p>
+
+        <!-- 4-Skill Progress Bars -->
+        <div class="skills-card">
+          <div class="skills-grid">
+            
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>📝 Граматика</span>
+                <span id="skill-grammar-val" style="color: var(--accent-orange); font-weight: 700;">85%</span>
+              </div>
+              <div class="skill-track">
+                <div id="skill-grammar-bar" class="skill-fill" style="width: 85%;"></div>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>📚 Словниковий запас</span>
+                <span id="skill-vocab-val" style="color: var(--accent-bamboo); font-weight: 700;">90%</span>
+              </div>
+              <div class="skill-track">
+                <div id="skill-vocab-bar" class="skill-fill" style="width: 90%;"></div>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>🎧 Аудіювання</span>
+                <span id="skill-listening-val" style="color: #38BDF8; font-weight: 700;">78%</span>
+              </div>
+              <div class="skill-track">
+                <div id="skill-listening-bar" class="skill-fill" style="width: 78%;"></div>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>💡 Логіка та читання</span>
+                <span id="skill-logic-val" style="color: #A855F7; font-weight: 700;">88%</span>
+              </div>
+              <div class="skill-track">
+                <div id="skill-logic-bar" class="skill-fill" style="width: 88%;"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- AI Red Panda Verdict -->
+        <div class="result-panda-box">
+          <div id="result-panda-mount">
+            <!-- Dynamic Red Panda SVG mount -->
+          </div>
+          <div>
+            <strong style="color: var(--accent-orange); display: block; margin-bottom: 4px; font-size: 0.95rem;">
+              Персональний вердикт від ШІ-Панди:
+            </strong>
+            <div id="result-panda-verdict">
+              Чудовий результат! Твій рівень впевнено підтверджено. Я вже оптимізувала навчальний план у ШІ-Репетиторі для досягнення рівня C1.
+            </div>
+          </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div class="result-actions">
+          <button type="button" id="btn-apply-level-tutor" data-alias="btn-save-and-tutor">
+            <span>🚀</span> Зберегти рівень і почати урок з Пандою
+          </button>
+          <button type="button" id="btn-retake-new-seed" data-alias="btn-retake-test">
+            <span>🎲</span> Пройти інший білет (новий варіант)
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- StrictAI Engine Scripts in Exact Sequence -->
+  <script src="js/store.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/polyglot-dict-data.js"></script>
+  <script src="js/polyglot-tts.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/panda-avatar.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/placement.js"></script>
+</body>
+</html>

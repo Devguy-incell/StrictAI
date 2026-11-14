@@ -253,7 +253,32 @@
   margin-bottom: 6px;
 }
 
-/* Persona Cards Custom Details */
+/* Persona Cards Custom Details & Compact Layout */
+.persona-grid {
+  gap: 8px;
+}
+.persona-card {
+  padding: 10px 12px !important;
+  gap: 10px !important;
+}
+.persona-avatar-mini {
+  width: 40px !important;
+  height: 40px !important;
+  font-size: 1.3rem !important;
+}
+.persona-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.persona-desc {
+  font-size: 0.76rem;
+  line-height: 1.25;
+}
+.persona-badge {
+  font-size: 0.68rem;
+  padding: 2px 7px;
+}
+
 .persona-card.locked-inactive {
   opacity: 0.45;
   cursor: not-allowed;
@@ -348,6 +373,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.status-title-text {
+  display: inline;
+  white-space: nowrap;
 }
 
 .tutor-status-badge {
@@ -1176,6 +1206,870 @@
 }
 
 /* ==========================================================================
+   Placement Test Banner Button
+   ========================================================================== */
+.placement-test-banner-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(242, 153, 74, 0.14) 0%, rgba(155, 81, 224, 0.18) 100%);
+  border: 1.5px solid rgba(242, 153, 74, 0.35);
+  text-decoration: none;
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(10, 4, 20, 0.3);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.placement-test-banner-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.placement-test-banner-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-primary);
+  box-shadow: 0 8px 24px rgba(242, 153, 74, 0.35);
+  background: linear-gradient(135deg, rgba(242, 153, 74, 0.22) 0%, rgba(155, 81, 224, 0.26) 100%);
+}
+
+.placement-test-banner-btn:hover::before {
+  left: 100%;
+}
+
+.placement-test-banner-btn .banner-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.placement-test-banner-btn .banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  text-align: left;
+}
+
+.placement-test-banner-btn .banner-text strong {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.placement-test-banner-btn .banner-text small {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+.placement-test-banner-btn .banner-arrow {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.placement-test-banner-btn:hover .banner-arrow {
+  transform: translateX(4px);
+}
+
+/* ==========================================================================
+   Persona Cards Custom Styles (4 New Characters)
+   ========================================================================== */
+.persona-card[data-persona="socratic"] .persona-badge {
+  background: rgba(0, 210, 255, 0.15);
+  color: #00D2FF;
+  border: 1px solid rgba(0, 210, 255, 0.35);
+}
+
+.persona-card[data-persona="socratic"]:hover {
+  border-color: rgba(0, 210, 255, 0.6);
+  box-shadow: 0 4px 18px rgba(0, 210, 255, 0.2);
+}
+
+.persona-card[data-persona="examiner"] .persona-badge {
+  background: rgba(242, 201, 76, 0.15);
+  color: #F2C94C;
+  border: 1px solid rgba(242, 201, 76, 0.35);
+}
+
+.persona-card[data-persona="examiner"]:hover {
+  border-color: rgba(242, 201, 76, 0.6);
+  box-shadow: 0 4px 18px rgba(242, 201, 76, 0.2);
+}
+
+.persona-card[data-persona="gamemaster"] .persona-badge {
+  background: rgba(187, 107, 217, 0.18);
+  color: #BB6BD9;
+  border: 1px solid rgba(187, 107, 217, 0.4);
+}
+
+.persona-card[data-persona="gamemaster"]:hover {
+  border-color: rgba(187, 107, 217, 0.6);
+  box-shadow: 0 4px 18px rgba(187, 107, 217, 0.22);
+}
+
+.persona-card[data-persona="native"] .persona-badge {
+  background: rgba(39, 174, 96, 0.15);
+  color: #27AE60;
+  border: 1px solid rgba(39, 174, 96, 0.35);
+}
+
+.persona-card[data-persona="native"]:hover {
+  border-color: rgba(39, 174, 96, 0.6);
+  box-shadow: 0 4px 18px rgba(39, 174, 96, 0.2);
+}
+
+/* ==========================================================================
+   Restored Lesson Banner
+   ========================================================================== */
+.session-restored-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 18px;
+  margin-bottom: 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.16) 0%, rgba(242, 153, 74, 0.12) 100%);
+  border: 1.5px solid rgba(39, 174, 96, 0.4);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  animation: banner-slide-down 0.3s ease-out;
+  position: relative;
+  z-index: 5;
+}
+
+@keyframes banner-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.session-restored-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.session-restored-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.session-restored-text {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.session-restored-text b {
+  color: var(--accent-primary);
+}
+
+.session-restored-close {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.session-restored-close:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   Active Scenario Banner
+   ========================================================================== */
+.active-scenario-banner {
+  background: linear-gradient(135deg, rgba(32, 17, 56, 0.95) 0%, rgba(20, 10, 36, 0.98) 100%);
+  border: 1.5px solid rgba(187, 107, 217, 0.45);
+  border-radius: var(--radius-xl);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 28px rgba(10, 4, 20, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  animation: banner-slide-down 0.35s ease-out;
+  z-index: 6;
+}
+
+.active-scenario-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #F2994A, #BB6BD9, #00D2FF);
+}
+
+.scenario-banner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+.scenario-banner-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scenario-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: rgba(187, 107, 217, 0.2);
+  border: 1px solid rgba(187, 107, 217, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45rem;
+  flex-shrink: 0;
+}
+
+.scenario-badge-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #BB6BD9;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.scenario-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.scenario-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scenario-progress-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(39, 174, 96, 0.18);
+  color: #27AE60;
+  border: 1px solid rgba(39, 174, 96, 0.35);
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-exit-scenario {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(235, 87, 87, 0.15);
+  color: #EB5757;
+  border: 1px solid rgba(235, 87, 87, 0.35);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-exit-scenario:hover {
+  background: #EB5757;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(235, 87, 87, 0.35);
+}
+
+.scenario-banner-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .scenario-banner-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.scenario-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.scenario-info-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.scenario-info-val {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.scenario-missions-wrap {
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.scenario-missions-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.scenario-missions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scenario-mission-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.scenario-mission-item.completed {
+  color: var(--text-primary);
+  text-decoration: line-through rgba(255, 255, 255, 0.4);
+}
+
+.scenario-mission-item.completed .mission-checkbox {
+  color: #27AE60;
+}
+
+.mission-checkbox {
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.mission-text {
+  flex: 1;
+  line-height: 1.3;
+}
+
+/* ==========================================================================
+   Roleplay Scenarios Panel (#roleplay-panel)
+   ========================================================================== */
+.roleplay-panel {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 7, 32, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: roleplay-fade-in 0.25s ease-out;
+}
+
+.roleplay-panel:not(.open) {
+  display: none !important;
+}
+
+.roleplay-panel.open,
+.roleplay-panel[style*="display: block"],
+.roleplay-panel[style*="display: flex"] {
+  display: flex !important;
+}
+
+@keyframes roleplay-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.roleplay-panel-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface-elevated);
+  flex-shrink: 0;
+}
+
+.roleplay-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.roleplay-panel-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.roleplay-panel-title h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 2px 0;
+  color: var(--text-primary);
+}
+
+.roleplay-panel-title p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.btn-close-roleplay {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.btn-close-roleplay:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  transform: scale(1.08);
+}
+
+.roleplay-panel-body {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-subtle) transparent;
+}
+
+.roleplay-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.roleplay-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.roleplay-card:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--accent-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(242, 153, 74, 0.25);
+}
+
+.roleplay-card.active {
+  border-color: var(--accent-primary);
+  background: var(--bg-surface-elevated);
+  box-shadow: 0 0 20px rgba(242, 153, 74, 0.35);
+}
+
+.roleplay-card.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--accent-primary);
+}
+
+.roleplay-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.roleplay-card-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.roleplay-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(187, 107, 217, 0.16);
+  color: #BB6BD9;
+  border: 1px solid rgba(187, 107, 217, 0.3);
+}
+
+.roleplay-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.roleplay-card-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+  flex: 1;
+}
+
+.roleplay-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.76rem;
+}
+
+.roleplay-missions-count {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.roleplay-card-badge {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Tutor History Drawer (#tutor-history-drawer)
+   ========================================================================== */
+.tutor-history-drawer {
+  position: absolute;
+  top: 68px;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  background-color: var(--bg-surface-elevated);
+  border-left: 1px solid var(--border-subtle);
+  box-shadow: -8px 0 32px rgba(10, 4, 20, 0.5);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 22;
+}
+
+.tutor-history-drawer:not(.open) {
+  display: none !important;
+}
+
+.tutor-history-drawer.open,
+.tutor-history-drawer[style*="display: block"],
+.tutor-history-drawer[style*="display: flex"] {
+  display: flex !important;
+  transform: translateX(0);
+}
+
+.history-drawer-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.history-drawer-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.history-close-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.history-close-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.history-drawer-body {
+  flex: 1;
+  padding: 16px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.history-drawer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.history-count-badge {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.btn-clear-all-history {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-clear-all-history:hover {
+  color: #EB5757;
+  border-color: rgba(235, 87, 87, 0.35);
+  background: rgba(235, 87, 87, 0.1);
+}
+
+.history-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.history-item-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-item-card:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+  transform: translateX(-2px);
+}
+
+.history-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.history-item-subject {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.history-item-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.history-item-snippet {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.history-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-empty-state .empty-icon {
+  font-size: 2.2rem;
+  opacity: 0.6;
+}
+
+.history-empty-state p {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Typewriter Cursor Animation
+   ========================================================================== */
+.typewriter-cursor {
+  display: inline-block;
+  color: var(--accent-primary);
+  font-weight: 900;
+  margin-left: 2px;
+  animation: blink-cursor 0.7s infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Dictionary Audio Pronunciation Button
+   ========================================================================== */
+.btn-dict-audio {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(242, 153, 74, 0.12);
+  border: 1px solid rgba(242, 153, 74, 0.3);
+  color: var(--accent-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin: 4px 0;
+  user-select: none;
+  line-height: 1.2;
+}
+
+.btn-dict-audio:hover {
+  background: var(--accent-primary);
+  color: #1A0E2E;
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(242, 153, 74, 0.35);
+}
+
+.btn-dict-audio .dict-ipa {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.btn-dict-audio.playing-audio {
+  background: rgba(39, 174, 96, 0.2);
+  color: #27AE60;
+  border-color: rgba(39, 174, 96, 0.5);
+  animation: dict-audio-pulse 1.2s infinite;
+}
+
+@keyframes dict-audio-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4);
+  }
+  70% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 8px rgba(39, 174, 96, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(39, 174, 96, 0);
+  }
+}
+
+/* ==========================================================================
    Responsive Overrides & Mobile Tutor UX (< 960px)
    ========================================================================== */
 @media (max-width: 960px) {
@@ -1424,14 +2318,28 @@
     min-height: 42px;
   }
 
-  .tutor-whiteboard-drawer {
+  .tutor-whiteboard-drawer,
+  .tutor-history-drawer {
     width: 100%;
     max-width: 100%;
     top: 0;
   }
+
+  .roleplay-panel {
+    border-radius: 0;
+  }
 }
 
 @media (max-width: 480px) {
+  .roleplay-grid {
+    grid-template-columns: 1fr;
+  }
+  .roleplay-panel-header {
+    padding: 14px 16px;
+  }
+  .roleplay-panel-body {
+    padding: 14px 12px;
+  }
   .tutor-workspace-header {
     padding: 12px 14px;
   }

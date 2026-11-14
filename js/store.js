@@ -9,7 +9,7 @@
 
   const STORAGE_KEY = 'strictai_state_v1';
 
-  // 5 Signature Personas Metadata
+  // 9 Signature Personas Metadata
   const PERSONAS_META = {
     friend: {
       id: 'friend',
@@ -65,6 +65,100 @@
       voicePitch: 0.95,
       voiceRate: 0.9,
       avatarClass: 'persona-calm'
+    },
+    socratic: {
+      id: 'socratic',
+      name: 'Сократівський детектив',
+      tagline: 'Навчає через навідні питання, розвиває логіку без готових шпаргалок',
+      icon: '🕵️',
+      badge: 'Без шпаргалок',
+      greeting: 'Вітаю у детективному бюро істини! Жодних готових відповідей. Я ставитиму запитання, а ти розкриєш справу самостійно. З чого почнемо наше розслідування?',
+      voicePitch: 0.95,
+      voiceRate: 1.0,
+      avatarClass: 'persona-socratic'
+    },
+    examiner: {
+      id: 'examiner',
+      name: 'Екзаменатор УЦОЯО / IELTS',
+      tagline: 'Офіційні критерії оцінювання, таймінг та академічна точність',
+      icon: '🎓',
+      badge: 'Стандарт 200',
+      greeting: 'Добрий день. Сесія офіційного оцінювання розпочата. Слідкуйте за таймінгом, обґрунтовуйте кожен крок за критеріями тестування. До виконання!',
+      voicePitch: 0.9,
+      voiceRate: 1.05,
+      avatarClass: 'persona-examiner'
+    },
+    gamemaster: {
+      id: 'gamemaster',
+      name: 'Ігровий Гейм-майстер',
+      tagline: 'Перетворює кожну тему на RPG-квест із місіями та босами',
+      icon: '🚀',
+      badge: 'RPG-квест',
+      greeting: 'Привіт, мандрівнику! Твій персонаж увійшов у підземелля знань. Кожне завдання — це бій з босом за рідкісні бамбукові коїни. Готовий прийняти квест?',
+      voicePitch: 1.15,
+      voiceRate: 1.1,
+      avatarClass: 'persona-gamemaster'
+    },
+    native: {
+      id: 'native',
+      name: 'Носій мови (Native)',
+      tagline: 'Жива розмовна практика мовою оригіналу + пояснення українською',
+      icon: '🗣️',
+      badge: 'Жива розмова',
+      greeting: 'Hello and welcome! Сьогодні говоримо як справжні native speakers: жива ідіоматика, сучасний сленг та впевненість, а всі складні правила розберемо рідною мовою. Ready?',
+      voicePitch: 1.0,
+      voiceRate: 1.0,
+      avatarClass: 'persona-native'
+    }
+  };
+
+  const PERSONA_META = PERSONAS_META;
+
+  // Multi-lingual translations for all 9 Personas (uk, en, pl, de)
+  const PERSONA_TRANSLATIONS = {
+    uk: {
+      friend: { name: 'Добрий друг', tagline: 'М’яка підтримка, жодного тиску та терпляче пояснення', badge: 'Терплячий', greeting: 'Привіт! Я поруч, щоб допомогти тобі розібратися з будь-якою темою без жодного стресу. З чого почнемо сьогодні?' },
+      strict: { name: 'Суворий викладач', tagline: 'Залізна дисципліна, точність формулювань, нуль лінощів', badge: 'Без поблажок', greeting: 'Вітаю. Час до НМТ спливає. Жодних виправдань та сторонніх вкладок! Сконцентруйся та доведи свою відповідь.' },
+      joker: { name: 'Жартівник', tagline: 'Мемологія, кумедні асоціації та навчання з усмішкою', badge: 'З гумором', greeting: 'О, привіт! Кажуть, що граніт науки смакує краще за молодий бамбук. Розкладемо ці формули по поличках так, щоб комісія плакала від радості!' },
+      motivator: { name: 'Мотиватор', tagline: 'Енергія переможця, фокус на бюджет та рекордні 200 балів', badge: 'Драйв 200 балів', greeting: 'Увага на ціль! Ти можеш значно більше, ніж думаєш. Кожен розібраний тест — це твій крок до омріяного вишу! Погнали!' },
+      calm: { name: 'Спокійний ментор', tagline: 'Дзен-підхід, структура, системне мислення та впевненість', badge: 'Дзен', greeting: 'Зроби спокійний вдих. Складне стає елементарним, коли розкласти його на послідовні кроки. Почнімо повільно й вдумливо.' },
+      socratic: { name: 'Сократівський детектив', tagline: 'Навчає через навідні питання, розвиває логіку без готових шпаргалок', badge: 'Без шпаргалок', greeting: 'Вітаю у детективному бюро істини! Жодних готових відповідей. Я ставитиму запитання, а ти розкриєш справу самостійно. З чого почнемо наше розслідування?' },
+      examiner: { name: 'Екзаменатор УЦОЯО / IELTS', tagline: 'Офіційні критерії оцінювання, таймінг та академічна точність', badge: 'Стандарт 200', greeting: 'Добрий день. Сесія офіційного оцінювання розпочата. Слідкуйте за таймінгом, обґрунтовуйте кожен крок за критеріями тестування. До виконання!' },
+      gamemaster: { name: 'Ігровий Гейм-майстер', tagline: 'Перетворює кожну тему на RPG-квест із місіями та босами', badge: 'RPG-квест', greeting: 'Привіт, мандрівнику! Твій персонаж увійшов у підземелля знань. Кожне завдання — це бій з босом за рідкісні бамбукові коїни. Готовий прийняти квест?' },
+      native: { name: 'Носій мови (Native)', tagline: 'Жива розмовна практика мовою оригіналу + пояснення українською', badge: 'Жива розмова', greeting: 'Hello and welcome! Сьогодні говоримо як справжні native speakers: жива ідіоматика, сучасний сленг та впевненість, а всі складні правила розберемо рідною мовою. Ready?' }
+    },
+    en: {
+      friend: { name: 'Kind Friend', tagline: 'Gentle support, zero pressure, and patient explanations', badge: 'Patient', greeting: 'Hi! I\'m here to help you master any topic completely stress-free. Where shall we start today?' },
+      strict: { name: 'Strict Teacher', tagline: 'Ironclad discipline, precise phrasing, zero slacking', badge: 'No Excuses', greeting: 'Greetings. Time until NMT is ticking away. No excuses and no extra tabs! Focus and justify your answer.' },
+      joker: { name: 'Joker', tagline: 'Memes, humorous analogies, and learning with a smile', badge: 'Witty', greeting: 'Oh, hello! They say the granite of science tastes better than fresh bamboo shoots. Let\'s conquer these formulas so smoothly that the exam board weeps with joy!' },
+      motivator: { name: 'Motivator', tagline: 'Winner\'s drive, focus on tuition-free spots, and a 200 score target', badge: '200 Score Drive', greeting: 'Eyes on the prize! You can do so much more than you think. Every solved test is your leap toward your dream university! Let\'s go!' },
+      calm: { name: 'Calm Mentor', tagline: 'Zen approach, structure, systemic thinking, and confidence', badge: 'Zen', greeting: 'Take a calm deep breath. The complex becomes elementary when broken down into sequential steps. Let us begin slowly and mindfully.' },
+      socratic: { name: 'Socratic Detective', tagline: 'Guides through leading questions, builds critical logic without cheat sheets', badge: 'Logic & Inquiry', greeting: 'Welcome to the Detective Bureau of Truth! No ready-made answers. I ask the questions, and you solve the mystery step-by-step. Ready to investigate?' },
+      examiner: { name: 'Examiner (NMT / IELTS)', tagline: 'Official scoring criteria, strict timing, and academic precision', badge: '200 Benchmark', greeting: 'Good day. Official evaluation session has started. Monitor your timer, ground each step in exam standards. Begin!' },
+      gamemaster: { name: 'RPG Game Master', tagline: 'Turns every subject into an epic quest with boss battles and XP', badge: 'RPG Quest', greeting: 'Greetings, adventurer! You have entered the Dungeon of Knowledge. Every question is a boss fight for rare bamboo coins. Accept the quest?' },
+      native: { name: 'Native Speaker', tagline: 'Authentic conversational fluency + native language grammar breakdowns', badge: 'Native Fluency', greeting: 'Hello and welcome! Let\'s speak like real native speakers: authentic idioms, modern flow, and confident phrasing with clear explanations. Ready?' }
+    },
+    pl: {
+      friend: { name: 'Dobry Przyjaciel', tagline: 'Łagodne wsparcie, zero presji i cierpliwe wyjaśnienia', badge: 'Cierpliwy', greeting: 'Cześć! Jestem tutaj, aby pomóc Ci opanować każdy temat bez stresu. Od czego dziś zaczniemy?' },
+      strict: { name: 'Surowy Nauczyciel', tagline: 'Żelazna dyscyplina, precyzja sformułowań, zero lenistwa', badge: 'Bez ulg', greeting: 'Witam. Czas do NMT ucieka. Żadnych wymówek i otwartych innych kart! Skup się i uzasadnij odpowiedź.' },
+      joker: { name: 'Żartowniś', tagline: 'Memy, zabawne skojarzenia i nauka z uśmiechem', badge: 'Z humorem', greeting: 'O, cześć! Mówią, że granit nauki smakuje lepiej niż młody bambus. Rozłożymy te formuły na czynniki pierwsze tak, by komisja płakała ze szczęścia!' },
+      motivator: { name: 'Motywator', tagline: 'Energia zwycięzcy, nacisk na studia bezpłatne i cel 200 punktów', badge: 'Napęd 200 pkt', greeting: 'Wzrok na cel! Potrafisz znacznie więcej, niż myślisz. Każdy rozwiązany test to krok do wymarzonej uczelni! Do boju!' },
+      calm: { name: 'Spokojny Mentor', tagline: 'Podejście zen, struktura, myślenie systemowe i pewność siebie', badge: 'Zen', greeting: 'Weź głęboki, spokojny oddech. To, co skomplikowane, staje się proste, gdy podzielimy to na kolejne kroki. Zacznijmy powoli i uważnie.' },
+      socratic: { name: 'Detektyw Sokratejski', tagline: 'Uczy przez pytania naprowadzające, rozwija logikę bez gotowców', badge: 'Logika i dociekanie', greeting: 'Witaj w Biurze Prawdy! Żadnych gotowych odpowiedzi na tacy. Zadaję pytania, a Ty sam rozwiązujesz zagadkę krok po kroku. Zaczynamy śledztwo?' },
+      examiner: { name: 'Egzaminator CKE / IELTS', tagline: 'Oficjalne kryteria oceniania, dyscyplina czasowa i precyzja akademicka', badge: 'Standard 200', greeting: 'Dzień dobry. Rozpoczynamy oficjalną sesję egzaminacyjną. Pilnuj czasu i precyzyjnie uzasadniaj każdy krok. Do dzieła!' },
+      gamemaster: { name: 'Mistrz Gry RPG', tagline: 'Zmienia każdy temat w epicki quest z misjami i bossami', badge: 'Quest RPG', greeting: 'Witaj, poszukiwaczu przygód! Wkroczyłeś do lochów wiedzy. Każde zadanie to walka z bossem o rzadkie bambusowe monety. Przyjmujesz quest?' },
+      native: { name: 'Native Speaker', tagline: 'Prawdziwa praktyka językowa w oryginale + gramatyka po ukraińsku', badge: 'Żywa rozmowa', greeting: 'Hello and welcome! Mówimy dzisiaj jak prawdziwi native speakerzy: żywe zwroty, współczesny slang i pewność siebie. Ready?' }
+    },
+    de: {
+      friend: { name: 'Guter Freund', tagline: 'Sanfte Unterstützung, kein Druck und geduldige Erklärungen', badge: 'Geduldig', greeting: 'Hallo! Ich bin hier, um dir zu helfen, jedes Thema stressfrei zu meistern. Womit fangen wir heute an?' },
+      strict: { name: 'Strenger Lehrer', tagline: 'Eiserne Disziplin, präzise Formulierungen, null Nachlässigkeit', badge: 'Kompromisslos', greeting: 'Guten Tag. Die Zeit bis zum NMT vergeht schnell. Keine Ausreden und keine Ablenkungen! Konzentriere dich und begründe deine Antwort.' },
+      joker: { name: 'Witzbold', tagline: 'Memes, lustige Assoziationen und Lernen mit einem Lächeln', badge: 'Humorvoll', greeting: 'Oh, hallo! Man sagt, der Granit der Wissenschaft schmeckt besser als junger Bambus. Knacken wir diese Formeln so, dass die Prüfungskommission vor Freude weint!' },
+      motivator: { name: 'Motivator', tagline: 'Siegermentalität, Fokus auf Studienförderung und 200-Punkte-Ziel', badge: '200-Punkte-Drive', greeting: 'Fokus auf das Ziel! Du schaffst viel mehr, als du denkst. Jeder gelöste Test ist dein Schritt zur Traumuniversität! Packen wir es an!' },
+      calm: { name: 'Ruhiger Mentor', tagline: 'Zen-Ansatz, Struktur, systematisches Denken und Zuversicht', badge: 'Zen', greeting: 'Atme ruhig ein. Schwieriges wird einfach, wenn man es in aufeinanderfolgende Schritte zerlegt. Beginnen wir langsam und achtsam.' },
+      socratic: { name: 'Sokratischer Detektiv', tagline: 'Lehrt durch gezielte Leitfragen, schärft die Logik ohne Spickzettel', badge: 'Logik & Erkenntnis', greeting: 'Willkommen im Detektivbüro der Wahrheit! Keine vorgekauten Antworten. Ich stelle die Fragen und du löst den Fall selbstständig. Womit beginnen wir?' },
+      examiner: { name: 'Prüfer (NMT / IELTS)', tagline: 'Offizielle Bewertungskriterien, strenges Timing und akademische Präzision', badge: 'Standard 200', greeting: 'Guten Tag. Die offizielle Prüfungssitzung ist eröffnet. Achte auf das Zeitlimit und begründe jeden Schritt nach Bewertungsstandards. An die Arbeit!' },
+      gamemaster: { name: 'RPG Game Master', tagline: 'Verwandelt jedes Thema in eine epische Quest mit Missionen und Bosskämpfen', badge: 'RPG-Quest', greeting: 'Sei gegrüßt, Abenteurer! Du hast das Verlies des Wissens betreten. Jede Aufgabe ist ein Bosskampf um seltene Bambus-Münzen. Nimmst du die Quest an?' },
+      native: { name: 'Muttersprachler (Native)', tagline: 'Lebendige Sprachpraxis in der Originalsprache + ukrainische Erklärungen', badge: 'Freies Sprechen', greeting: 'Hello and welcome! Heute sprechen wir wie echte Native Speaker: authentische Redewendungen, moderner Slang und Selbstvertrauen. Ready?' }
     }
   };
 
@@ -104,7 +198,53 @@
           type: 'text'
         }
       ],
-      pendingMistakeReview: null
+      pendingMistakeReview: null,
+      activeRoleplayId: null,
+      roleplayMissionStep: 0,
+      savedSession: {
+        active: false,
+        messages: [],
+        mode: 'languages',
+        language: 'english',
+        level: 'A1',
+        subject: 'math',
+        persona: 'friend',
+        roleplayId: null,
+        updatedAt: null
+      },
+      lessonHistory: [
+        {
+          id: 'lesson-demo-1',
+          title: '☕ Замовлення круасана та кави в Лондоні (A1)',
+          category: 'languages',
+          language: 'english',
+          level: 'A1',
+          subject: null,
+          roleplayId: 'cafe_order',
+          persona: 'friend',
+          date: 'Вчора, 18:40',
+          durationMinutes: 18,
+          messagesCount: 8,
+          summary: 'Успішно замовлено Flat White та круасан без цукру, опановано конструкції "Could I have..." та ввічливі запитання.',
+          completed: true
+        },
+        {
+          id: 'lesson-demo-2',
+          title: '📐 Параметри та показникові рівняння (НМТ Математика)',
+          category: 'school',
+          language: null,
+          level: null,
+          subject: 'math',
+          grade: 'nmt-200',
+          roleplayId: null,
+          persona: 'strict',
+          date: 'Сьогодні, 12:15',
+          durationMinutes: 24,
+          messagesCount: 12,
+          summary: 'Розібрано ОДЗ у логарифмічних виразах (Завдання 21 НМТ), виявлено та виправлено помилку з відкиданням стороннього кореня.',
+          completed: true
+        }
+      ]
     },
 
     tracker: {
@@ -533,21 +673,80 @@
       });
     }
 
-    getPersonaMeta(personaId) {
+    getPersonaMeta(personaId, locale) {
       const base = PERSONAS_META[personaId] || PERSONAS_META.friend;
-      if (typeof window !== 'undefined' && window.StrictI18n && typeof window.StrictI18n.getPersona === 'function') {
-        const locale = (this.state && this.state.locale) || 'uk';
-        const localized = window.StrictI18n.getPersona(base.id, locale);
-        if (localized) {
-          return Object.assign({}, base, localized);
-        }
+      const targetLocale = locale || (this.state && this.state.locale) || 'uk';
+
+      let localized = null;
+      if (PERSONA_TRANSLATIONS[targetLocale] && PERSONA_TRANSLATIONS[targetLocale][base.id]) {
+        localized = PERSONA_TRANSLATIONS[targetLocale][base.id];
+      } else if (typeof window !== 'undefined' && window.StrictI18n && typeof window.StrictI18n.getPersona === 'function') {
+        localized = window.StrictI18n.getPersona(base.id, targetLocale);
+      }
+
+      if (localized) {
+        return Object.assign({}, base, localized);
       }
       return base;
     }
 
-    getAllPersonas() {
+    getAllPersonas(locale) {
       const keys = Object.keys(PERSONAS_META);
-      return keys.map((key) => this.getPersonaMeta(key));
+      return keys.map((key) => this.getPersonaMeta(key, locale));
+    }
+
+    saveLessonToHistory(lessonObj) {
+      return this.update((st) => {
+        const history = [lessonObj, ...(st.tutor.lessonHistory || [])].slice(0, 30);
+        return {
+          ...st,
+          tutor: {
+            ...st.tutor,
+            lessonHistory: history
+          }
+        };
+      });
+    }
+
+    archiveCurrentLesson(title, summary) {
+      return this.update((st) => {
+        const msgs = st.tutor.chatHistory || [];
+        if (msgs.length <= 1) return st;
+        const lesson = {
+          id: 'lesson-' + Date.now(),
+          title: title || (st.tutor.category === 'languages' ? `Урок ${st.tutor.language} (${st.tutor.level})` : `Урок ${st.tutor.nmtSubject}`),
+          category: st.tutor.category,
+          language: st.tutor.language,
+          level: st.tutor.level,
+          subject: st.tutor.nmtSubject,
+          roleplayId: st.tutor.activeRoleplayId || null,
+          persona: st.tutor.persona,
+          date: 'Сьогодні, ' + new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
+          durationMinutes: Math.max(5, Math.round(msgs.length * 1.5)),
+          messagesCount: msgs.length,
+          summary: summary || 'Пройдено розбір матеріалу та практичні вправи з ШІ-репетитором.',
+          completed: true
+        };
+        const history = [lesson, ...(st.tutor.lessonHistory || [])].slice(0, 30);
+        return {
+          ...st,
+          tutor: {
+            ...st.tutor,
+            lessonHistory: history
+          }
+        };
+      });
+    }
+
+    setRoleplay(roleplayId, missionStep = 0) {
+      return this.update((st) => ({
+        ...st,
+        tutor: {
+          ...st.tutor,
+          activeRoleplayId: roleplayId,
+          roleplayMissionStep: missionStep
+        }
+      }));
     }
   }
 

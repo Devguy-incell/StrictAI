@@ -113,6 +113,16 @@
           <div class="tutor-level-desc-box" id="language-level-desc">
             <b>Рівень A1:</b> Початківець: перші слова й прості фрази для щоденного знайомства.
           </div>
+
+          <!-- Спеціальна кнопка-банер діагностики рівня -->
+          <a href="placement.html" class="placement-test-banner-btn" id="btn-placement-test">
+            <span class="banner-icon">🎯</span>
+            <span class="banner-text">
+              <strong>Визначити точний рівень</strong>
+              <small>Тест CEFR / ШІ-діагностика</small>
+            </span>
+            <span class="banner-arrow">→</span>
+          </a>
         </div>
 
         <!-- 2B. Блок налаштувань: ПРЕДМЕТИ НМТ ТА ШКОЛА (Hidden by default) -->
@@ -153,7 +163,10 @@
         <!-- 3. Характер репетитора (Усі 5 карточок зі скриншоту) -->
         <div class="tutor-setting-section">
           <div class="persona-section-header">
-            <h3 class="persona-section-title">Характер репетитора</h3>
+            <h3 class="persona-section-title" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+              <span>Характер репетитора</span>
+              <span class="badge-tag" style="font-size:0.72rem; padding:2px 8px; background:rgba(242,153,74,0.18); color:var(--accent-primary); border-radius:99px;">9 варіантів ↕</span>
+            </h3>
             <p class="persona-section-subtitle">Оберіть, як саме вас навчатимуть</p>
           </div>
 
@@ -213,6 +226,46 @@
               </div>
               <span class="persona-badge">Дзен</span>
             </div>
+
+            <!-- 6. Сократівський детектив -->
+            <div class="persona-card" data-persona="socratic">
+              <div class="persona-avatar-mini">🕵️</div>
+              <div class="persona-info">
+                <div class="persona-title">Сократівський детектив</div>
+                <div class="persona-desc">Веде до правильної відповіді через навідні питання</div>
+              </div>
+              <span class="persona-badge">Маєвтика</span>
+            </div>
+
+            <!-- 7. Екзаменатор УЦОЯО / IELTS -->
+            <div class="persona-card" data-persona="examiner">
+              <div class="persona-avatar-mini">🎓</div>
+              <div class="persona-info">
+                <div class="persona-title">Екзаменатор УЦОЯО / IELTS</div>
+                <div class="persona-desc">Офіційні критерії, академічна точність і таймінг</div>
+              </div>
+              <span class="persona-badge">НМТ / IELTS</span>
+            </div>
+
+            <!-- 8. Ігровий Гейм-майстер -->
+            <div class="persona-card" data-persona="gamemaster">
+              <div class="persona-avatar-mini">🚀</div>
+              <div class="persona-info">
+                <div class="persona-title">Ігровий Гейм-майстер</div>
+                <div class="persona-desc">Перетворює тему на захопливий RPG-квест із місіями</div>
+              </div>
+              <span class="persona-badge">RPG Квест</span>
+            </div>
+
+            <!-- 9. Носій мови (Native) -->
+            <div class="persona-card" data-persona="native">
+              <div class="persona-avatar-mini">🗣️</div>
+              <div class="persona-info">
+                <div class="persona-title">Носій мови (Native)</div>
+                <div class="persona-desc">Живий діалог мовою оригіналу + пояснення українською</div>
+              </div>
+              <span class="persona-badge">Native</span>
+            </div>
           </div>
         </div>
 
@@ -239,10 +292,8 @@
               <div id="tutor-panda-avatar"></div>
             </div>
             <div class="tutor-header-meta">
-              <div class="tutor-status-title" id="tutor-status-title">
-                <span id="status-subject-text">Англійська</span>, 
-                <span id="status-level-text">A1</span>, 
-                <span id="status-persona-text">Добрий друг</span>
+              <div class="tutor-status-title" id="status-bar-title">
+                <span class="status-title-text"><span id="status-subject-text">Англійська</span>, <span id="status-level-text">A1</span>, <span id="status-persona-text">Добрий друг</span></span>
                 <span class="tutor-status-badge" id="status-mode-badge">Мови</span>
               </div>
               <div class="tutor-status-sub">
@@ -270,6 +321,18 @@
               <span>Новий урок</span>
             </button>
 
+            <!-- Рольові сценарії та квести -->
+            <button class="control-pill-btn" id="btn-toggle-roleplay" title="Рольові сценарії та квести">
+              <span>🎭</span>
+              <span>Сценарії</span>
+            </button>
+
+            <!-- Історія минулих уроків -->
+            <button class="control-pill-btn" id="btn-lesson-history" title="Історія минулих уроків">
+              <span>📜</span>
+              <span>Історія</span>
+            </button>
+
             <!-- Дошка / Чернетка -->
             <button class="control-pill-btn" id="btn-toggle-whiteboard" title="Відкрити дошку з формулами та блокнот для чернетки">
               <span>📋</span>
@@ -281,6 +344,61 @@
         <!-- Центральна область уроку та діалогу -->
         <div class="tutor-chat-viewport" id="tutor-chat-viewport">
           
+          <!-- Банер відновлення попередньої сесії уроку -->
+          <div class="session-restored-banner" id="session-restored-banner" style="display: none;">
+            <div class="session-restored-content">
+              <span class="session-restored-icon">💾</span>
+              <span class="session-restored-text">Відновлено ваш попередній урок з місця зупинки! Можете продовжувати діалог або натиснути <b>«🔄 Новий урок»</b> для очищення.</span>
+            </div>
+            <button type="button" class="session-restored-close" id="btn-close-restored-banner" aria-label="Закрити сповіщення">✕</button>
+          </div>
+
+          <!-- Плашка активного рольового сценарію -->
+          <div class="active-scenario-banner" id="active-scenario-banner" style="display: none;">
+            <div class="scenario-banner-header">
+              <div class="scenario-banner-title-wrap">
+                <span class="scenario-icon" id="active-scenario-icon">🎭</span>
+                <div>
+                  <div class="scenario-badge-label">АКТИВНИЙ СЦЕНАРІЙ</div>
+                  <h4 class="scenario-title" id="active-scenario-title">Кав'ярня в Лондоні</h4>
+                </div>
+              </div>
+              <div class="scenario-header-actions">
+                <span class="scenario-progress-pill" id="scenario-missions-progress">0/3 виконано</span>
+                <button type="button" class="btn-exit-scenario" id="btn-exit-scenario" title="Завершити або вийти зі сценарію">✕ Завершити квест</button>
+              </div>
+            </div>
+            
+            <div class="scenario-banner-info-grid">
+              <div class="scenario-info-item">
+                <span class="scenario-info-label">Локація:</span>
+                <span class="scenario-info-val" id="active-scenario-location">📍 Central London Coffee House</span>
+              </div>
+              <div class="scenario-info-item">
+                <span class="scenario-info-label">Зав'язка:</span>
+                <span class="scenario-info-val" id="active-scenario-premise">🎬 Ви зайшли випити кави перед важливою зустріччю...</span>
+              </div>
+            </div>
+
+            <div class="scenario-missions-wrap">
+              <div class="scenario-missions-heading">Місії квесту:</div>
+              <ul class="scenario-missions-list" id="active-scenario-missions">
+                <li class="scenario-mission-item" data-mission-index="0">
+                  <span class="mission-checkbox">⭕</span>
+                  <span class="mission-text">Привітатися та замовити каву з молоком і десерт</span>
+                </li>
+                <li class="scenario-mission-item" data-mission-index="1">
+                  <span class="mission-checkbox">⭕</span>
+                  <span class="mission-text">Уточнити наявність цукру або альтернативного молока</span>
+                </li>
+                <li class="scenario-mission-item" data-mission-index="2">
+                  <span class="mission-checkbox">⭕</span>
+                  <span class="mission-text">Попросити рахунок і подякувати бариста</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
           <!-- Початковий екран привітання (за скриншотом користувача) -->
           <div class="tutor-welcome-screen" id="tutor-welcome-screen">
             <div class="welcome-panda-badge">🐼</div>
@@ -307,6 +425,10 @@
 
         <!-- Панель швидких дій (Quick Action Chips над вводом) -->
         <div class="tutor-chips-bar" id="tutor-chips-bar">
+          <button class="chip-btn" data-action="roleplay_quick" title="Розпочати рольову сценку з репетитором">
+            <span>🎭</span>
+            <span>Рольова сценка</span>
+          </button>
           <button class="chip-btn" data-action="exercise" title="Отримати інтерактивну тестову вправу з варіантами">
             <span>📝</span>
             <span>Дай вправу</span>
@@ -359,6 +481,137 @@
         </div>
 
         <!-- ==========================================
+             Панель рольових сценаріїв та квестів
+             ========================================== -->
+        <div class="roleplay-panel" id="roleplay-panel" style="display: none;">
+          <div class="roleplay-panel-header">
+            <div class="roleplay-panel-title">
+              <span class="roleplay-panel-icon">🎭</span>
+              <div>
+                <h3>Рольові сценарії та квести</h3>
+                <p>Практикуйте реальні ситуації та тематичні діалоги з Пандою</p>
+              </div>
+            </div>
+            <button type="button" class="btn-close-roleplay" id="btn-close-roleplay" aria-label="Закрити сценарії">✕</button>
+          </div>
+          <div class="roleplay-panel-body">
+            <div class="roleplay-grid">
+              <!-- 1. cafe -->
+              <div class="roleplay-card" data-scenario-id="cafe">
+                <div class="roleplay-card-header">
+                  <span class="roleplay-card-icon">☕</span>
+                  <span class="roleplay-tag">Розмовна</span>
+                </div>
+                <h4 class="roleplay-card-title">Кав'ярня в Лондоні</h4>
+                <p class="roleplay-card-desc">Замовлення кави, десерт, рахунок</p>
+                <div class="roleplay-card-meta">
+                  <span class="roleplay-missions-count">🎯 3 місії</span>
+                  <span class="roleplay-card-badge">A1-B1</span>
+                </div>
+              </div>
+
+              <!-- 2. airport -->
+              <div class="roleplay-card" data-scenario-id="airport">
+                <div class="roleplay-card-header">
+                  <span class="roleplay-card-icon">✈️</span>
+                  <span class="roleplay-tag">Подорож</span>
+                </div>
+                <h4 class="roleplay-card-title">Аеропорт і митниця</h4>
+                <p class="roleplay-card-desc">Паспортний контроль, мета візиту, декларація</p>
+                <div class="roleplay-card-meta">
+                  <span class="roleplay-missions-count">🎯 3 місії</span>
+                  <span class="roleplay-card-badge">A2-B2</span>
+                </div>
+              </div>
+
+              <!-- 3. interview -->
+              <div class="roleplay-card" data-scenario-id="interview">
+                <div class="roleplay-card-header">
+                  <span class="roleplay-card-icon">💼</span>
+                  <span class="roleplay-tag">Кар'єра</span>
+                </div>
+                <h4 class="roleplay-card-title">IT-Співбесіда</h4>
+                <p class="roleplay-card-desc">Elevator pitch, STAR-досвід, запитання тімліду</p>
+                <div class="roleplay-card-meta">
+                  <span class="roleplay-missions-count">🎯 3 місії</span>
+                  <span class="roleplay-card-badge">B2-C1</span>
+                </div>
+              </div>
+
+              <!-- 4. hotel -->
+              <div class="roleplay-card" data-scenario-id="hotel">
+                <div class="roleplay-card-header">
+                  <span class="roleplay-card-icon">🏨</span>
+                  <span class="roleplay-tag">Готель</span>
+                </div>
+                <h4 class="roleplay-card-title">Готель: Овербукінг</h4>
+                <p class="roleplay-card-desc">Претензія, апгрейд номеру, чек-ін</p>
+                <div class="roleplay-card-meta">
+                  <span class="roleplay-missions-count">🎯 3 місії</span>
+                  <span class="roleplay-card-badge">B1-B2</span>
+                </div>
+              </div>
+
+              <!-- 5. doctor -->
+              <div class="roleplay-card" data-scenario-id="doctor">
+                <div class="roleplay-card-header">
+                  <span class="roleplay-card-icon">🏥</span>
+                  <span class="roleplay-tag">Здоров'я</span>
+                </div>
+                <h4 class="roleplay-card-title">Візит до лікаря</h4>
+                <p class="roleplay-card-desc">Симптоми, алергії, припис ліків</p>
+                <div class="roleplay-card-meta">
+                  <span class="roleplay-missions-count">🎯 3 місії</span>
+                  <span class="roleplay-card-badge">A2-B2</span>
+                </div>
+              </div>
+
+              <!-- 6. gadget -->
+              <div class="roleplay-card" data-scenario-id="gadget">
+                <div class="roleplay-card-header">
+                  <span class="roleplay-card-icon">💻</span>
+                  <span class="roleplay-tag">Сервіс</span>
+                </div>
+                <h4 class="roleplay-card-title">Повернення гаджета</h4>
+                <p class="roleplay-card-desc">Брак товару, повернення коштів/заміна</p>
+                <div class="roleplay-card-meta">
+                  <span class="roleplay-missions-count">🎯 3 місії</span>
+                  <span class="roleplay-card-badge">B1-B2</span>
+                </div>
+              </div>
+
+              <!-- 7. history_debate -->
+              <div class="roleplay-card" data-scenario-id="history_debate">
+                <div class="roleplay-card-header">
+                  <span class="roleplay-card-icon">🏛️</span>
+                  <span class="roleplay-tag">НМТ Дебат</span>
+                </div>
+                <h4 class="roleplay-card-title">Історичний дебат НМТ</h4>
+                <p class="roleplay-card-desc">Четвертий Універсал, аргументи незалежності</p>
+                <div class="roleplay-card-meta">
+                  <span class="roleplay-missions-count">🎯 3 місії</span>
+                  <span class="roleplay-card-badge">НМТ 200</span>
+                </div>
+              </div>
+
+              <!-- 8. lab -->
+              <div class="roleplay-card" data-scenario-id="lab">
+                <div class="roleplay-card-header">
+                  <span class="roleplay-card-icon">🔬</span>
+                  <span class="roleplay-tag">Наука</span>
+                </div>
+                <h4 class="roleplay-card-title">Лабораторія КПІ</h4>
+                <p class="roleplay-card-desc">Фізичний дослід, похибка вимірювань, закон збереження</p>
+                <div class="roleplay-card-meta">
+                  <span class="roleplay-missions-count">🎯 3 місії</span>
+                  <span class="roleplay-card-badge">Школа / НМТ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
              Висувна Дошка / Чернетка (Whiteboard Drawer)
              ========================================== -->
         <div class="tutor-whiteboard-drawer" id="tutor-whiteboard">
@@ -395,6 +648,34 @@
           </div>
         </div>
 
+        <!-- ==========================================
+             Шухляда історії минулих уроків
+             ========================================== -->
+        <div class="tutor-history-drawer" id="tutor-history-drawer">
+          <div class="history-drawer-header">
+            <h4 class="history-drawer-title">
+              <span>📜</span>
+              <span>Історія уроків</span>
+            </h4>
+            <button type="button" class="history-close-btn" id="btn-close-history" aria-label="Закрити історію">✕</button>
+          </div>
+          <div class="history-drawer-body">
+            <div class="history-drawer-actions">
+              <span class="history-count-badge" id="history-total-count">Збережені уроки</span>
+              <button type="button" class="btn-clear-all-history" id="btn-clear-all-history">
+                <span>🗑️</span>
+                <span>Очистити історію</span>
+              </button>
+            </div>
+            <div class="history-items-list" id="history-items-list">
+              <div class="history-empty-state" id="history-empty-state">
+                <span class="empty-icon">📖</span>
+                <p>У вас ще немає збережених сесій.<br>Почніть діалог із репетитором, і сесія автоматично збережеться!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </main>
 
     </div>
@@ -403,6 +684,9 @@
   <!-- Scripts in dependency order -->
   <script src="js/store.js"></script>
   <script src="js/i18n.js"></script>
+  <script src="js/polyglot-dict-data.js"></script>
+  <script src="js/polyglot-tts.js"></script>
+  <script src="js/notifications.js"></script>
   <script src="js/panda-avatar.js"></script>
   <script src="js/components.js"></script>
   <script src="js/tutor-data.js"></script>

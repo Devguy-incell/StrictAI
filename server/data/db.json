@@ -1,0 +1,12 @@
+{
+  "users": [],
+  "sessions": [],
+  "lessons": [],
+  "notifications": [],
+  "state": {
+    "activeUser": null,
+    "theme": "dark",
+    "progress": {}
+  },
+  "updatedAt": "2026-11-14T16:58:41.841Z"
+}
