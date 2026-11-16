@@ -12,6 +12,86 @@
   <!-- Core & Tutor Styles -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/tutor.css">
+
+  <style>
+    /* ========================================================================
+       LeetCode & Brilliant.org EdTech Enhancements
+       ======================================================================== */
+    .badge-grade-match {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(44, 187, 93, 0.15);
+      border: 1px solid rgba(44, 187, 93, 0.4);
+      color: #2cbb5d;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 3px 9px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+
+    /* Brilliant.org / LeetCode Action Pills under Tutor Messages */
+    .tutor-message-actions {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-subtle, #333333);
+    }
+
+    .tutor-action-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-surface, #1e1e1e);
+      border: 1px solid var(--border-subtle, #333333);
+      color: var(--text-primary, #eff1f6);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 11px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .tutor-action-pill:hover {
+      border-color: var(--accent-primary, #ffa116);
+      color: var(--accent-primary, #ffa116);
+      background: var(--bg-card-hover, #323232);
+      transform: translateY(-1px);
+    }
+
+    .tutor-action-pill:active {
+      transform: translateY(0);
+    }
+
+    /* Reactive Tutor Status Bar Root */
+    #react-tutor-status-root {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 24px;
+    }
+
+    /* Strict Navbar & Tutor Header Controls Uniformity */
+    .strict-navbar .nav-btn,
+    .strict-navbar .btn,
+    .strict-navbar button,
+    .tutor-header-controls .control-pill-btn {
+      height: 38px;
+      font-size: 13.5px;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
 </head>
 <body>
 
@@ -292,6 +372,8 @@
               <div id="tutor-panda-avatar"></div>
             </div>
             <div class="tutor-header-meta">
+              <!-- React Status Bar Root Mount Container -->
+              <div id="react-tutor-status-root"></div>
               <div class="tutor-status-title" id="status-bar-title">
                 <span class="status-title-text"><span id="status-subject-text">Англійська</span>, <span id="status-level-text">A1</span>, <span id="status-persona-text">Добрий друг</span></span>
                 <span class="tutor-status-badge" id="status-mode-badge">Мови</span>
@@ -305,16 +387,6 @@
 
           <!-- Ряд таблеточних кнопок керування зі скриншота -->
           <div class="tutor-header-controls">
-            <!-- Озвучення (Вкл/Викл) -->
-            <button class="control-pill-btn btn-voice active" id="btn-toggle-voice" title="Увімкнути/вимкнути автоозвучення реплік Панди">
-              <span class="voice-dot"></span>
-              <span>Озвучення</span>
-            </button>
-
-            <!-- Вибір голосу (Жіночий / Чоловічий) -->
-            <button class="control-pill-btn active" id="btn-voice-female" title="Жіночий голос синтезу">Жіночий голос</button>
-            <button class="control-pill-btn" id="btn-voice-male" title="Чоловічий голос синтезу">Чоловічий голос</button>
-
             <!-- Новий урок -->
             <button class="control-pill-btn" id="btn-new-lesson" title="Очистити чат та розпочати новий урок з початкового вітання">
               <span>🔄</span>
@@ -328,9 +400,22 @@
             </button>
 
             <!-- Історія минулих уроків -->
-            <button class="control-pill-btn" id="btn-lesson-history" title="Історія минулих уроків">
+            <button class="control-pill-btn" id="btn-history-modal" title="Історія минулих уроків">
               <span>📜</span>
               <span>Історія</span>
+            </button>
+            <button class="control-pill-btn" id="btn-lesson-history" style="display:none;" aria-hidden="true"></button>
+
+            <!-- Очистити чат -->
+            <button class="control-pill-btn" id="btn-clear-chat" title="Очистити поточний діалог">
+              <span>🗑️</span>
+              <span>Очистити чат</span>
+            </button>
+
+            <!-- Експорт чату -->
+            <button class="control-pill-btn" id="btn-export-chat" title="Експортувати чат у файл">
+              <span>📥</span>
+              <span>Експорт</span>
             </button>
 
             <!-- Дошка / Чернетка -->
@@ -457,11 +542,6 @@
 
         <!-- Нижня панель вводу -->
         <div class="tutor-input-bar">
-          <!-- Мікрофон (Голосовий ввід) -->
-          <button class="voice-record-btn" id="voice-input-btn" title="Голосовий ввід (натисніть і говоріть)">
-            🎤
-          </button>
-          
           <!-- Текстове поле -->
           <div class="tutor-input-wrap">
             <input 
@@ -681,13 +761,70 @@
     </div>
   </div>
 
+  <!-- Standard StrictAI Footer -->
+  <footer class="strict-footer" style="margin-top: 48px;">
+    <div class="strict-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="nav-brand" style="margin-bottom: 14px;">
+            <div class="nav-brand-badge">🐼</div>
+            <div>Strict<span class="nav-brand-highlight">AI</span></div>
+          </div>
+          <p style="font-size: 0.95rem; max-width: 440px; margin-bottom: 16px;">
+            Панда-репетитор: адаптивна підготовка до НМТ 2025 за програмою УЦОЯО, гейміфікація та залізна концентрація уваги.
+          </p>
+          <div class="ua-badge">
+            <span>🇺🇦</span>
+            <span>Розроблено для українських випускників</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Навігація</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Головна</a></li>
+            <li><a href="tutor.html">AI-Репетитор</a></li>
+            <li><a href="nmt.html">Симулятор НМТ</a></li>
+            <li><a href="tracker.html">Контроль фокусу</a></li>
+            <li><a href="knowledge.html">Карта знань</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Матеріали</h4>
+          <ul class="footer-links">
+            <li><a href="nmt.html">📝 Тренажер НМТ 2025</a></li>
+            <li><a href="parents.html">🛡 Батьківський кабінет</a></li>
+            <li><a href="javascript:void(0)" onclick="window.StrictComponents.openApiKeyModal()">⚙️ Налаштувати AI-ключ</a></li>
+            <li><a href="index.html#calc">📊 Калькулятор коефіцієнтів</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Контроль & Прозорість</div>
+          <ul class="footer-links">
+            <li><a href="parents.html">Батьківський кабінет</a></li>
+            <li><a href="parents.html#educational-contract">Освітній контракт</a></li>
+            <li><a href="parents.html#anticheat-monitoring">Анти-чит моніторинг</a></li>
+            <li><a href="parents.html#pin-change">Зміна PIN-коду</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.</div>
+        <div>Аутентичні стандарти УЦОЯО та МОН України</div>
+      </div>
+    </div>
+  </footer>
+
   <!-- Scripts in dependency order -->
   <script src="js/store.js"></script>
   <script src="js/i18n.js"></script>
-  <script src="js/polyglot-dict-data.js"></script>
-  <script src="js/polyglot-tts.js"></script>
-  <script src="js/notifications.js"></script>
+  <script src="js/anti-cheat-engine.js"></script>
+  <script src="js/react-runtime.js"></script>
   <script src="js/panda-avatar.js"></script>
+  <script src="js/notifications.js"></script>
   <script src="js/components.js"></script>
   <script src="js/tutor-data.js"></script>
   <script src="js/tutor.js"></script>

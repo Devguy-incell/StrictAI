@@ -1,6 +1,6 @@
 /**
  * StrictAI Landing Page Controller (index.html)
- * - Red Panda Avatar Hero interactivity with Voice Speech
+ * - Red Panda Avatar Hero interactivity
  * - NMT 2024-2025 Competitive Score & Admission Calculator
  * - Real-time metrics sync with StrictStore
  * - Interactive Panda Wardrobe preview
@@ -33,7 +33,6 @@
     // Persona Switcher Pills in Hero
     const heroBubble = document.getElementById('hero-panda-bubble');
     const heroPersonaPills = document.querySelectorAll('#hero-persona-pills .persona-switcher-btn');
-    const heroVoiceBtn = document.getElementById('hero-voice-btn');
     const bentoCurrentPersonaEl = document.getElementById('bento-current-persona');
 
     function updateHeroPersonaUI(personaId) {
@@ -84,33 +83,15 @@
       });
     });
 
-    // Voice button trigger
-    if (heroVoiceBtn) {
-      heroVoiceBtn.addEventListener('click', () => {
-        if (!window.PandaAvatar) return;
-
-        if (window.PandaAvatar.isSpeaking) {
-          window.PandaAvatar.stopSpeaking();
-          heroVoiceBtn.innerHTML = '<span>🔊</span><span>Послухати голос Панди</span>';
-          return;
-        }
-
-        const meta = window.StrictStore ? window.StrictStore.getPersonaMeta(currentPersona) : null;
-        const textToSpeak = meta ? meta.greeting : 'Привіт! Я твій персональний репетитор Червона Панда.';
-
-        heroVoiceBtn.innerHTML = '<span>⏹</span><span>Зупинити озвучення</span>';
-
-        window.PandaAvatar.speak(textToSpeak, {
-          persona: currentPersona,
-          onStart: () => {
-            heroVoiceBtn.innerHTML = '<span>⏹</span><span>Зупинити озвучення</span>';
-          },
-          onEnd: () => {
-            heroVoiceBtn.innerHTML = '<span>🔊</span><span>Послухати голос Панди</span>';
-          }
+    // Click sound effect for Hero CTA buttons
+    ['hero-open-tutor-btn', 'hero-demo-anticheat-btn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener('click', () => {
+          if (window.StrictComponents) window.StrictComponents.playBeep('click');
         });
-      });
-    }
+      }
+    });
 
     // Set initial active pill
     if (currentPersona) {
@@ -376,12 +357,6 @@
       
       // Re-apply hero persona UI with new locale texts
       updateHeroPersonaUI(currentPersona);
-      
-      // Update voice button text
-      if (heroVoiceBtn && (!window.PandaAvatar || !window.PandaAvatar.isSpeaking)) {
-        const btnVoiceText = window.StrictI18n ? window.StrictI18n.t('index.hero.btnVoice', 'Послухати голос Панди') : 'Послухати голос Панди';
-        heroVoiceBtn.innerHTML = `<span>🔊</span><span>${btnVoiceText}</span>`;
-      }
 
       // Update hero stats labels
       updateHeroStatsLabels(newLoc);

@@ -36,6 +36,9 @@
       // Internationalization listener
       window.addEventListener('strictai:localechange', () => {
         if (window.StrictI18n) window.StrictI18n.applyToDOM();
+        if (this.lastResultsData && document.getElementById('nmt-results-view')?.style.display === 'block') {
+          this._renderVerdict(this.lastResultsData);
+        }
       });
       if (window.StrictI18n) {
         window.StrictI18n.applyToDOM();
@@ -204,6 +207,52 @@
       this.secondsLeft = this.totalSeconds;
       this.startTime = Date.now();
 
+      // Incorporate AI-Resilient questions with authentic OCR-shield schemas if present
+      if (window.StrictAntiCheat && Array.isArray(window.StrictAntiCheat.AI_RESILIENT_QUESTIONS)) {
+        const aiPool = window.StrictAntiCheat.AI_RESILIENT_QUESTIONS;
+        const matchingAi = this.selectedSubject === 'all'
+          ? aiPool
+          : aiPool.filter(aq => aq.subject === this.selectedSubject);
+
+        if (matchingAi.length > 0) {
+          const adaptedAi = matchingAi.map(aq => ({
+            id: aq.id,
+            subject: aq.subject,
+            topic: aq.title || 'ШІ-стійке завдання',
+            points: aq.difficulty || 2,
+            difficulty: aq.difficulty || 3,
+            aiType: aq.type,
+            aiBadge: aq.type === 'visual_schema' ? '📐 Багатокомпонентна візуальна схема (Canvas)'
+              : (aq.type === 'context_case' ? '📊 Кейс курсу StrictAI'
+              : (aq.type === 'find_bug' ? "🐞 Пошук багів у розв'язку (Find the Bug)"
+              : '🪤 Пастка для LLM (Інформаційний шум)')),
+            useCanvas: aq.type === 'visual_schema' || aq.type === 'find_bug' || aq.type === 'context_case',
+            question: aq.statement,
+            visualDiagram: aq.visualDiagram,
+            contextTable: aq.contextTable,
+            solutionSteps: aq.solutionSteps,
+            distractorAnalysis: aq.distractorAnalysis,
+            microVerificationPrompt: aq.microVerificationPrompt,
+            microVerificationExpectedKeywords: aq.microVerificationExpectedKeywords,
+            type: 'single',
+            options: (aq.options || []).map(o => ({ key: o.id, text: o.text })),
+            correctAnswer: aq.correctOption,
+            explanation: aq.explanation
+          }));
+
+          const existingIds = new Set(this.questions.map(q => q.id));
+          const freshAi = adaptedAi.filter(aq => !existingIds.has(aq.id));
+
+          if (freshAi.length > 0) {
+            if (this.selectedMode === 'express') {
+              this.questions = [freshAi[0], ...this.questions.slice(0, 4)];
+            } else {
+              this.questions = [...freshAi.slice(0, 3), ...this.questions];
+            }
+          }
+        }
+      }
+
       this.currentIndex = 0;
       this.userAnswers = {};
       this.flaggedQuestions.clear();
@@ -214,6 +263,13 @@
       document.getElementById('nmt-results-view').style.display = 'none';
       document.getElementById('nmt-exam-view').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Apply dynamic translations immediately for testing screen
+      if (window.StrictI18n && typeof window.StrictI18n.applyTranslations === 'function') {
+        window.StrictI18n.applyTranslations();
+      } else if (window.StrictI18n && typeof window.StrictI18n.applyToDOM === 'function') {
+        window.StrictI18n.applyToDOM();
+      }
 
       // Setup title
       const titleEl = document.getElementById('exam-active-title');
@@ -230,14 +286,91 @@
         subEl.textContent = 'Українська мова • Математика • Історія України • Англійська мова';
       }
 
-      // Render mini avatar in sidebar
-      if (window.PandaAvatar) {
-        const miniContainer = document.getElementById('nmt-mini-panda-avatar');
-        if (miniContainer) {
+      // Render mini panda proctor avatar in sidebar (strictly fixed to 52x52px)
+      const proctorContainers = [
+        document.getElementById('nmt-mini-panda-avatar'),
+        document.getElementById('nmt-proctor-avatar')
+      ].filter(Boolean);
+
+      proctorContainers.forEach(container => {
+        container.style.width = '52px';
+        container.style.height = '52px';
+        container.style.overflow = 'hidden';
+        container.style.flexShrink = '0';
+        if (window.PandaAvatar) {
           const store = window.StrictStore ? window.StrictStore.get() : null;
           const persona = this.timerMode === 'strict' ? 'strict' : (store?.tutor?.persona || 'friend');
-          window.PandaAvatar.render(miniContainer, { persona: persona, state: 'idle' });
+          window.PandaAvatar.render(container, { persona: persona, state: 'idle' });
         }
+      });
+
+      // ----------------------------------------------------
+      // STRICTAI ANTI-CHEAT ENGINE INITIALIZATION
+      // ----------------------------------------------------
+      // 1. Enable security locks (Context menu, shortcuts, text selection)
+      window.StrictAntiCheat?.enableSecurityLocks();
+
+      // 2. Track tab switching and focus blur (2-strike forfeiture)
+      window.StrictAntiCheat?.startFocusTracking((violationCount) => {
+        if (violationCount >= 2) {
+          if (window.StrictComponents) window.StrictComponents.toast('🚨 Порушення 2/2: Питання анульовано через вихід з вкладки!', 'error');
+          this.userAnswers[this.questions[this.currentIndex]?.id] = '__forfeited__';
+          if (this.currentIndex < this.questions.length - 1) {
+            this._renderQuestion(this.currentIndex + 1);
+            this._renderMatrix();
+          } else {
+            this.submitExam();
+          }
+        }
+      });
+
+      // 3. Initialize AI Extensions MutationObserver
+      window.StrictAntiCheat?.initMutationObserver();
+
+      // 4. Ensure Proctor Telemetry HUD container exists and render HUD
+      let hudEl = document.getElementById('proctor-telemetry-hud');
+      if (!hudEl) {
+        const sidebarCard = document.querySelector('.nmt-sidebar-card');
+        if (sidebarCard) {
+          hudEl = document.createElement('div');
+          hudEl.id = 'proctor-telemetry-hud';
+          hudEl.style.cssText = 'margin-top: 10px; width: 100%;';
+          const navMatrixCard = sidebarCard.querySelector('.nmt-nav-matrix-card');
+          if (navMatrixCard) {
+            sidebarCard.insertBefore(hudEl, navMatrixCard);
+          } else {
+            sidebarCard.appendChild(hudEl);
+          }
+        }
+      }
+      if (hudEl) {
+        window.StrictAntiCheat?.renderTelemetryHUD(hudEl, 3);
+      }
+
+      // 5. Connect AI Extension simulation button
+      const simExtBtn = document.getElementById('btn-simulate-ai-extension');
+      if (simExtBtn) {
+        simExtBtn.onclick = () => {
+          window.StrictAntiCheat?.simulateAIExtension();
+        };
+      }
+
+      // 6. Connect manual micro-verification button
+      const verifyTriggerBtn = document.getElementById('btn-trigger-micro-verify');
+      if (verifyTriggerBtn) {
+        verifyTriggerBtn.onclick = () => {
+          const currentQ = this.questions[this.currentIndex];
+          window.StrictAntiCheat?.openMicroVerificationModal({
+            question: currentQ,
+            answerText: 'Ручна бліц-верифікація',
+            prompt: 'Ручна бліц-верифікація: коротко опишіть правило чи алгоритм розв\'язку:',
+            onComplete: () => {
+              if (window.StrictComponents) {
+                window.StrictComponents.toast('⚡ Мікро-верифікацію успішно підтверджено!', 'success');
+              }
+            }
+          });
+        };
       }
 
       // Apply Timer Mode UI
@@ -335,13 +468,122 @@
       this.currentIndex = index;
       const q = this.questions[index];
 
-      // Update Meta
+      // 1. Strict per-question 45s timer control
+      window.StrictAntiCheat?.stopQuestionTimer();
+
+      let timerBox = document.getElementById('question-hard-timer-container');
+      if (!timerBox) {
+        const wsHeader = document.querySelector('.nmt-workspace-header');
+        if (wsHeader) {
+          timerBox = document.createElement('div');
+          timerBox.id = 'question-hard-timer-container';
+          timerBox.style.cssText = 'width: 100%; margin: 10px 0 6px 0; background: var(--bg-surface, #1e1e1e); padding: 8px 12px; border-radius: var(--radius-sm, 8px); border: 1px solid var(--border-subtle, #333); box-sizing: border-box;';
+          timerBox.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;">
+              <span style="color: var(--text-secondary, #9ca3af); display: flex; align-items: center; gap: 6px;">
+                <span>⏱️</span>
+                <span>Жорсткий ліміт на запитання</span>
+              </span>
+              <span id="question-timer-countdown" style="font-family: var(--font-mono, monospace); color: var(--accent-primary, #ffa116); font-weight: 700; font-size: 0.95rem;">45с</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden;">
+              <div id="question-timer-progress-fill" style="width: 100%; height: 100%; background: linear-gradient(90deg, #ffa116, #ef4743); transition: width 1s linear;"></div>
+            </div>
+          `;
+          wsHeader.insertAdjacentElement('afterend', timerBox);
+        }
+      }
+
+      window.StrictAntiCheat?.startQuestionTimer({
+        countdownEl: document.getElementById('question-timer-countdown'),
+        fillEl: document.getElementById('question-timer-progress-fill'),
+        durationSec: 45,
+        onExpire: () => {
+          if (window.StrictComponents) window.StrictComponents.toast('⏱️ 45с вичерпано! Перехід до наступного завдання...', 'info');
+          if (this.currentIndex < this.questions.length - 1) {
+            this._renderQuestion(this.currentIndex + 1);
+            this._renderMatrix();
+          } else {
+            this.submitExam();
+          }
+        }
+      });
+
+      // 2. Previous button is strictly disabled with anti-cheat lock
+      const prevBtn = document.getElementById('btn-prev-q');
+      if (prevBtn) {
+        prevBtn.disabled = true;
+        prevBtn.innerHTML = `<span>🔒</span> <span>Назад заборонено</span>`;
+        prevBtn.title = '🔒 Перехід назад заборонено анти-чит протоколом';
+        prevBtn.style.opacity = '0.5';
+        prevBtn.style.cursor = 'not-allowed';
+      }
+
+      // 3. Update Meta & Counter
       document.getElementById('q-counter-badge').textContent = `Завдання ${index + 1} з ${this.questions.length}`;
 
       const subjMeta = window.StrictNMTBank.subjects[q.subject] || { name: q.subject, icon: '📝' };
       document.getElementById('q-subject-badge').innerHTML = `${subjMeta.icon} ${subjMeta.name}`;
       document.getElementById('q-topic-badge').textContent = q.topic;
       document.getElementById('q-points-badge').textContent = `${q.points} ${q.points === 1 ? 'бал' : (q.points < 5 ? 'бали' : 'балів')}`;
+
+      // 4. AI-Resilient Question Badge handling
+      let aiBadgeEl = document.getElementById('q-ai-badge');
+      if (!aiBadgeEl) {
+        const metaContainer = document.querySelector('.nmt-question-meta');
+        if (metaContainer) {
+          aiBadgeEl = document.createElement('span');
+          aiBadgeEl.id = 'q-ai-badge';
+          aiBadgeEl.className = 'badge-tag';
+          metaContainer.appendChild(aiBadgeEl);
+        }
+      }
+
+      if (q.aiBadge || q.aiType) {
+        if (aiBadgeEl) {
+          const badgeMap = {
+            'visual_diagram': '📐 Багатокомпонентна візуальна схема (Canvas)',
+            'visual_schema': '📐 Багатокомпонентна візуальна схема (Canvas)',
+            'case_study': '📊 Кейс курсу StrictAI',
+            'context_case': '📊 Кейс курсу StrictAI',
+            'find_bug': "🐞 Пошук багів у розв'язку (Find the Bug)",
+            'find_the_bug': "🐞 Пошук багів у розв'язку (Find the Bug)",
+            'llm_trap': '🪤 Пастка для LLM (Інформаційний шум)'
+          };
+          aiBadgeEl.textContent = q.aiBadge || badgeMap[q.aiType] || '🛡️ ШІ-стійке завдання';
+          aiBadgeEl.style.display = 'inline-flex';
+          aiBadgeEl.style.background = 'rgba(255, 161, 22, 0.15)';
+          aiBadgeEl.style.color = 'var(--accent-primary, #ffa116)';
+          aiBadgeEl.style.border = '1px solid rgba(255, 161, 22, 0.35)';
+        }
+      } else {
+        if (aiBadgeEl) {
+          aiBadgeEl.style.display = 'none';
+        }
+      }
+
+      // 5. Canvas OCR-Shield Rendering
+      let canvasEl = document.getElementById('question-protection-canvas');
+      if (!canvasEl) {
+        const statementBox = document.querySelector('.question-statement-box');
+        if (statementBox) {
+          canvasEl = document.createElement('canvas');
+          canvasEl.id = 'question-protection-canvas';
+          canvasEl.style.cssText = 'width: 100%; border-radius: var(--radius-sm, 6px); margin: 12px 0; border: 1px solid var(--border-subtle, #333); display: none;';
+          statementBox.appendChild(canvasEl);
+        }
+      }
+
+      const isCanvasRequired = q.aiType === 'visual_diagram' || q.aiType === 'visual_schema' || q.aiType === 'case_study' || q.aiType === 'context_case' || q.aiType === 'find_bug' || q.aiType === 'find_the_bug' || q.useCanvas;
+      if (isCanvasRequired && canvasEl) {
+        canvasEl.style.display = 'block';
+        window.StrictAntiCheat?.renderQuestionCanvas(canvasEl, q);
+      } else if (canvasEl) {
+        canvasEl.style.display = 'none';
+      }
+
+      // 6. Record timestamp of question display for anomaly and blitz verification
+      this._questionRenderTime = Date.now();
 
       // Flag button state
       const flagBtn = document.getElementById('q-flag-btn');
@@ -364,8 +606,7 @@
         this._renderNumeric(inputArea, q);
       }
 
-      // Update Navigation Buttons
-      document.getElementById('btn-prev-q').disabled = index === 0;
+      // Next button text
       const nextBtn = document.getElementById('btn-next-q');
       if (index === this.questions.length - 1) {
         nextBtn.innerHTML = `<span>Перейти до перевірки</span> <span>🏁</span>`;
@@ -380,23 +621,53 @@
 
     _renderSingleChoice(container, q) {
       const currentAns = this.userAnswers[q.id];
+      const isForfeited = currentAns === '__forfeited__';
       const matrix = document.createElement('div');
       matrix.className = 'options-matrix';
+
+      if (isForfeited) {
+        const warnNotice = document.createElement('div');
+        warnNotice.style.cssText = 'padding: 12px 16px; background: rgba(239, 71, 67, 0.15); border: 1px solid var(--accent-danger, #ef4743); border-radius: 8px; color: var(--accent-danger, #ef4743); font-weight: 700; margin-bottom: 12px;';
+        warnNotice.innerHTML = '🚨 Завдання анульовано анти-чит системою через вихід із вкладки!';
+        container.appendChild(warnNotice);
+      }
 
       q.options.forEach(opt => {
         const isSelected = currentAns === opt.key;
         const card = document.createElement('div');
-        card.className = `option-card-label ${isSelected ? 'selected' : ''}`;
+        card.className = `option-card-label ${isSelected ? 'selected' : ''} ${isForfeited ? 'disabled' : ''}`;
         card.innerHTML = `
           <div class="option-circle-letter">${opt.key}</div>
           <div class="option-card-text">${opt.text}</div>
         `;
 
         card.addEventListener('click', () => {
-          this.userAnswers[q.id] = opt.key;
-          if (window.StrictComponents) window.StrictComponents.playBeep('click');
-          this._renderQuestion(this.currentIndex);
-          this._renderMatrix();
+          if (isForfeited) return;
+
+          const elapsedMs = Date.now() - (this._questionRenderTime || Date.now());
+          const isRapidClick = elapsedMs < 4000;
+          const isComplex = (q.points && q.points >= 2) || (q.difficulty && q.difficulty >= 4) || q.aiType === 'find_bug' || q.aiType === 'find_the_bug' || q.aiType === 'context_case' || q.isOpen;
+
+          const recordChoice = () => {
+            this.userAnswers[q.id] = opt.key;
+            if (window.StrictComponents) window.StrictComponents.playBeep('click');
+            this._renderQuestion(this.currentIndex);
+            this._renderMatrix();
+          };
+
+          if ((isRapidClick || isComplex) && window.StrictAntiCheat && typeof window.StrictAntiCheat.openMicroVerificationModal === 'function') {
+            window.StrictAntiCheat.openMicroVerificationModal({
+              question: q,
+              answerText: opt.key + ': ' + opt.text,
+              prompt: q.microVerificationPrompt || `Підтвердіть хід розв'язання для вибору варіанта [${opt.key}]:`,
+              expectedKeywords: q.microVerificationExpectedKeywords || [],
+              onComplete: () => {
+                recordChoice();
+              }
+            });
+          } else {
+            recordChoice();
+          }
         });
 
         matrix.appendChild(card);
@@ -627,12 +898,17 @@
 
         const isFlagged = this.flaggedQuestions.has(q.id);
         const isActive = idx === this.currentIndex;
+        const isForfeited = this.userAnswers[q.id] === '__forfeited__';
 
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `q-bubble-btn ${isActive ? 'active' : ''} ${isAnswered ? 'answered' : ''} ${isFlagged ? 'flagged' : ''}`;
+        btn.className = `q-bubble-btn ${isActive ? 'active' : ''} ${isAnswered ? 'answered' : ''} ${isFlagged ? 'flagged' : ''} ${isForfeited ? 'forfeited' : ''}`;
+        if (isForfeited) {
+          btn.style.borderColor = 'var(--accent-danger, #ef4743)';
+          btn.style.color = 'var(--accent-danger, #ef4743)';
+        }
         btn.textContent = idx + 1;
-        btn.title = `Завдання ${idx + 1} (${window.StrictNMTBank.subjects[q.subject]?.name || ''})`;
+        btn.title = `Завдання ${idx + 1} (${window.StrictNMTBank.subjects[q.subject]?.name || ''})${isForfeited ? ' [Анульовано анти-читом]' : ''}`;
 
         btn.addEventListener('click', () => {
           if (window.StrictComponents) window.StrictComponents.playBeep('click');
@@ -657,6 +933,7 @@
     _isQuestionAnswered(q) {
       const ans = this.userAnswers[q.id];
       if (!ans) return false;
+      if (ans === '__forfeited__') return true;
       if (q.type === 'single') return typeof ans === 'string' && ans.length > 0;
       if (q.type === 'matching') return typeof ans === 'object' && Object.keys(ans).length > 0;
       if (q.type === 'numeric') return typeof ans === 'string' && ans.trim().length > 0;
@@ -664,13 +941,18 @@
     }
 
     _bindExamEvents() {
-      // Prev Button
+      // Prev Button - ALWAYS disabled by Anti-Cheat protocol
       const prevBtn = document.getElementById('btn-prev-q');
       if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          if (this.currentIndex > 0) {
-            if (window.StrictComponents) window.StrictComponents.playBeep('click');
-            this._renderQuestion(this.currentIndex - 1);
+        prevBtn.disabled = true;
+        prevBtn.innerHTML = `<span>🔒</span> <span>Назад заборонено</span>`;
+        prevBtn.title = '🔒 Перехід назад заборонено анти-чит протоколом';
+        prevBtn.style.opacity = '0.5';
+        prevBtn.style.cursor = 'not-allowed';
+        prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (window.StrictComponents) {
+            window.StrictComponents.toast('🔒 Перехід назад заборонено анти-чит протоколом', 'warning');
           }
         });
       }
@@ -688,6 +970,32 @@
               this.submitExam();
             }
           }
+        });
+      }
+
+      // AI Extension simulation button
+      const simExtBtn = document.getElementById('btn-simulate-ai-extension');
+      if (simExtBtn) {
+        simExtBtn.addEventListener('click', () => {
+          window.StrictAntiCheat?.simulateAIExtension();
+        });
+      }
+
+      // Manual micro-verification trigger button
+      const verifyTriggerBtn = document.getElementById('btn-trigger-micro-verify');
+      if (verifyTriggerBtn) {
+        verifyTriggerBtn.addEventListener('click', () => {
+          const currentQ = this.questions[this.currentIndex];
+          window.StrictAntiCheat?.openMicroVerificationModal({
+            question: currentQ,
+            answerText: 'Ручна бліц-перевірка',
+            prompt: 'Ручна бліц-верифікація: коротко опишіть правило чи алгоритм розв\'язку:',
+            onComplete: () => {
+              if (window.StrictComponents) {
+                window.StrictComponents.toast('⚡ Мікро-верифікацію успішно підтверджено!', 'success');
+              }
+            }
+          });
         });
       }
 
@@ -887,6 +1195,17 @@
       this.examActive = false;
       clearInterval(this.timerInterval);
 
+      // Stop anti-cheat question timer & release browser lockdown
+      window.StrictAntiCheat?.stopQuestionTimer();
+      window.StrictAntiCheat?.disableSecurityLocks();
+
+      // Apply dynamic translations immediately for results view
+      if (window.StrictI18n && typeof window.StrictI18n.applyTranslations === 'function') {
+        window.StrictI18n.applyTranslations();
+      } else if (window.StrictI18n && typeof window.StrictI18n.applyToDOM === 'function') {
+        window.StrictI18n.applyToDOM();
+      }
+
       let totalRawScore = 0;
       let maxRawScore = 0;
       const questionResults = [];
@@ -898,7 +1217,10 @@
         let earnedPoints = 0;
         let isCorrect = false;
 
-        if (q.type === 'single') {
+        if (userAns === '__forfeited__') {
+          earnedPoints = 0;
+          isCorrect = false;
+        } else if (q.type === 'single') {
           isCorrect = userAns === q.correctAnswer;
           earnedPoints = isCorrect ? q.points : 0;
         } else if (q.type === 'matching') {
@@ -935,7 +1257,10 @@
           let userAnsFormatted = 'Немає відповіді';
           let correctAnsFormatted = '';
 
-          if (q.type === 'single') {
+          if (userAns === '__forfeited__') {
+            userAnsFormatted = '🚨 Анульовано анти-чит системою';
+            correctAnsFormatted = typeof q.correctAnswer === 'object' ? JSON.stringify(q.correctAnswer) : `Варіант (${q.correctAnswer})`;
+          } else if (q.type === 'single') {
             userAnsFormatted = userAns ? `Варіант (${userAns})` : 'Пропущено';
             correctAnsFormatted = `Варіант (${q.correctAnswer})`;
           } else if (q.type === 'matching') {
@@ -1009,48 +1334,51 @@
       resultsView.style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Render Panda Reaction Avatar
-      if (window.PandaAvatar) {
-        const avatarContainer = document.getElementById('results-panda-avatar');
-        if (avatarContainer) {
+      // Render Panda Reaction Avatar (strictly fixed to 52x52px)
+      const resultsContainers = [
+        document.getElementById('results-panda-avatar'),
+        document.getElementById('nmt-results-avatar')
+      ].filter(Boolean);
+
+      resultsContainers.forEach(avatarContainer => {
+        avatarContainer.style.width = '52px';
+        avatarContainer.style.height = '52px';
+        avatarContainer.style.overflow = 'hidden';
+        avatarContainer.style.flexShrink = '0';
+        if (window.PandaAvatar) {
           const store = window.StrictStore ? window.StrictStore.get() : null;
           const persona = store?.tutor?.persona || 'friend';
           const state = data.scaledScore >= 170 ? 'celebrating' : (data.scaledScore < 130 ? 'strict-warning' : 'idle');
           window.PandaAvatar.render(avatarContainer, { persona: persona, state: state });
         }
+      });
+
+      // Apply dynamic translations immediately for all elements on the results view
+      if (window.StrictI18n && typeof window.StrictI18n.applyTranslations === 'function') {
+        window.StrictI18n.applyTranslations();
+      } else if (window.StrictI18n && typeof window.StrictI18n.applyToDOM === 'function') {
+        window.StrictI18n.applyToDOM();
       }
 
       // Update Headings & Verdict
-      const verdictBadge = document.getElementById('results-verdict-badge');
-      const headline = document.getElementById('results-headline');
-      const subtext = document.getElementById('results-subtext');
+      this.lastResultsData = data;
+      this._renderVerdict(data);
 
-      if (data.scaledScore >= 180) {
-        verdictBadge.innerHTML = `<span>🌟</span> <span>Тріумф! Рівень бюджетного місця</span>`;
-        verdictBadge.style.background = 'rgba(16, 185, 129, 0.2)';
-        verdictBadge.style.color = 'var(--accent-success)';
-        headline.textContent = 'Блискучий результат! Твої шанси на вступ — максимальні!';
-        subtext.textContent = 'Ти продемонстрував глибоке володіння матеріалом. Залишилося відшліфувати кілька дрібниць.';
-      } else if (data.scaledScore >= 150) {
-        verdictBadge.innerHTML = `<span>👍</span> <span>Гарний рівень. Поріг подолано впевнено</span>`;
-        headline.textContent = 'Впевнена робота! Але є потенціал рости до 185+!';
-        subtext.textContent = 'Зверни увагу на теми з помилками нижче. Панда-репетитор допоможе розібрати тонкі моменти.';
-      } else {
-        verdictBadge.innerHTML = `<span>⚠️</span> <span>Потрібна увага до базових правил</span>`;
-        verdictBadge.style.background = 'rgba(244, 63, 94, 0.2)';
-        verdictBadge.style.color = 'var(--accent-danger)';
-        headline.textContent = 'Тест складено. Не засмучуйся — помилки вказують шлях!';
-        subtext.textContent = 'Кожна помилка — це шанс стати сильнішим. Почни розбір із найпростіших правил просто зараз.';
-      }
+      const rawScoreSuffix = (window.StrictI18n && typeof window.StrictI18n.t === 'function')
+        ? window.StrictI18n.t('nmt.rawScoreSuffix', 'первинних балів')
+        : 'первинних балів';
+      const minsSuffix = (window.StrictI18n && typeof window.StrictI18n.t === 'function')
+        ? window.StrictI18n.t('nmt.minsSuffix', 'хв')
+        : 'хв';
 
       // Score dial
       document.getElementById('results-scaled-score').textContent = data.scaledScore;
-      document.getElementById('results-raw-score').textContent = `${data.totalRawScore} / ${data.maxRawScore} первинних балів`;
+      document.getElementById('results-raw-score').textContent = `${data.totalRawScore} / ${data.maxRawScore} ${rawScoreSuffix}`;
 
       // Metrics
       document.getElementById('metric-accuracy').textContent = `${data.accuracy}%`;
       document.getElementById('metric-mistakes').textContent = data.mistakesCount;
-      document.getElementById('metric-time').textContent = `${data.timeSpentMins} хв`;
+      document.getElementById('metric-time').textContent = `${data.timeSpentMins} ${minsSuffix}`;
       document.getElementById('metric-coins').textContent = `+${data.earnedCoins} 🎋`;
 
       // Render Mistakes Breakdown Cards
@@ -1058,6 +1386,91 @@
 
       if (window.StrictComponents) {
         window.StrictComponents.playBeep('success');
+      }
+
+      // Re-apply I18n refresh to capture dynamic results markup
+      if (window.StrictI18n && typeof window.StrictI18n.refresh === 'function') {
+        window.StrictI18n.refresh();
+      }
+    }
+
+    _renderResults(data) {
+      return this._renderResultsView(data);
+    }
+
+    _renderVerdict(data) {
+      const verdictBadge = document.getElementById('results-verdict-badge');
+      const headline = document.getElementById('results-headline');
+      const subtext = document.getElementById('results-subtext');
+
+      const isI18n = !!(window.StrictI18n && typeof window.StrictI18n.t === 'function');
+      const isNotUk = !!(isI18n && typeof window.StrictI18n.getLocale === 'function' && window.StrictI18n.getLocale() !== 'uk');
+
+      let badgeHtml = '';
+      let headlineText = '';
+      let subtextText = '';
+
+      if (data.scaledScore >= 180) {
+        if (verdictBadge) {
+          verdictBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+          verdictBadge.style.color = 'var(--accent-success)';
+        }
+        const bText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.highBadge', '🌟 Тріумф! Рівень бюджетного місця')
+          : '🌟 Тріумф! Рівень бюджетного місця';
+        badgeHtml = bText.startsWith('🌟') ? `<span>🌟</span> <span>${bText.replace(/^🌟\s*/, '')}</span>` : `<span>🌟</span> <span>${bText}</span>`;
+
+        headlineText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.highHeadline', 'Блискучий результат! Твої шанси на вступ — максимальні!')
+          : 'Блискучий результат! Твої шанси на вступ — максимальні!';
+
+        subtextText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.highSub', 'Ти продемонстрував глибоке володіння матеріалом. Залишилося відшліфувати кілька дрібниць.')
+          : 'Ти продемонстрував глибоке володіння матеріалом. Залишилося відшліфувати кілька дрібниць.';
+      } else if (data.scaledScore >= 150) {
+        if (verdictBadge) {
+          verdictBadge.style.background = '';
+          verdictBadge.style.color = '';
+        }
+        const bText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.midBadge', '👍 Гарний рівень. Поріг подолано впевнено')
+          : '👍 Гарний рівень. Поріг подолано впевнено';
+        badgeHtml = bText.startsWith('👍') ? `<span>👍</span> <span>${bText.replace(/^👍\s*/, '')}</span>` : `<span>👍</span> <span>${bText}</span>`;
+
+        headlineText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.midHeadline', 'Впевнена робота! Але є потенціал рости до 185+!')
+          : 'Впевнена робота! Але є потенціал рости до 185+!';
+
+        subtextText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.midSub', 'Зверни увагу на теми з помилками нижче. Панда-репетитор допоможе розібрати тонкі моменти.')
+          : 'Зверни увагу на теми з помилками нижче. Панда-репетитор допоможе розібрати тонкі моменти.';
+      } else {
+        if (verdictBadge) {
+          verdictBadge.style.background = 'rgba(244, 63, 94, 0.2)';
+          verdictBadge.style.color = 'var(--accent-danger)';
+        }
+        const bText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.lowBadge', '⚠️ Потрібна увага до базових правил')
+          : '⚠️ Потрібна увага до базових правил';
+        badgeHtml = bText.startsWith('⚠️') ? `<span>⚠️</span> <span>${bText.replace(/^⚠️\s*/, '')}</span>` : `<span>⚠️</span> <span>${bText}</span>`;
+
+        headlineText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.lowHeadline', 'Тест складено. Не засмучуйся — помилки вказують шлях!')
+          : 'Тест складено. Не засмучуйся — помилки вказують шлях!';
+
+        subtextText = (isNotUk || isI18n)
+          ? window.StrictI18n.t('nmt.lowSub', 'Кожна помилка — це шанс стати сильнішим. Почни розбір із найпростіших правил просто зараз.')
+          : 'Кожна помилка — це шанс стати сильнішим. Почни розбір із найпростіших правил просто зараз.';
+      }
+
+      if (verdictBadge) verdictBadge.innerHTML = badgeHtml;
+      if (headline) {
+        headline.textContent = headlineText;
+        headline.setAttribute('data-verdict-rendered', 'true');
+      }
+      if (subtext) {
+        subtext.textContent = subtextText;
+        subtext.setAttribute('data-verdict-rendered', 'true');
       }
     }
 

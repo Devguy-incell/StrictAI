@@ -18,13 +18,13 @@
   width: 64px;
   height: 64px;
   border-radius: var(--radius-lg);
-  background: radial-gradient(circle at 40% 30%, #3D226B 0%, #201138 100%);
-  border: 2px solid var(--border-subtle);
+  background: radial-gradient(circle at 40% 30%, #282828 0%, #181818 100%);
+  border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.2rem;
-  box-shadow: 0 8px 24px rgba(10, 4, 20, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
   animation: hero-badge-float 4s ease-in-out infinite alternate;
 }
@@ -490,9 +490,9 @@
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 30%, #3D226B 0%, #201138 100%);
+  background: radial-gradient(circle at 40% 30%, #282828 0%, #181818 100%);
   border: 3px solid var(--accent-primary);
-  box-shadow: 0 0 35px rgba(242, 153, 74, 0.35);
+  box-shadow: 0 0 35px rgba(255, 161, 22, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -604,13 +604,13 @@
 }
 
 .chat-message-row.tutor .message-avatar {
-  background: radial-gradient(circle at 40% 30%, #3D226B 0%, #201138 100%);
-  border-color: rgba(242, 153, 74, 0.4);
+  background: radial-gradient(circle at 40% 30%, #282828 0%, #181818 100%);
+  border-color: rgba(255, 161, 22, 0.4);
 }
 
 .chat-message-row.user .message-avatar {
-  background: var(--accent-gradient-purple);
-  color: #FFFFFF;
+  background: var(--accent-primary);
+  color: #121212;
 }
 
 /* Message Bubble */
@@ -657,10 +657,10 @@
 
 .chat-message-row.user .message-bubble {
   background: var(--accent-primary);
-  color: #1E1035;
+  color: #121212;
   border-top-right-radius: 6px;
   font-weight: 600;
-  box-shadow: 0 4px 16px rgba(242, 153, 74, 0.25);
+  box-shadow: 0 4px 16px rgba(255, 161, 22, 0.25);
 }
 
 /* Tutor Message Formatting Elements */
@@ -2035,10 +2035,10 @@
 
 .btn-dict-audio:hover {
   background: var(--accent-primary);
-  color: #1A0E2E;
+  color: #121212;
   border-color: var(--accent-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(242, 153, 74, 0.35);
+  box-shadow: 0 4px 12px rgba(255, 161, 22, 0.35);
 }
 
 .btn-dict-audio .dict-ipa {
@@ -2148,7 +2148,7 @@
     padding: 9px 14px;
     border-radius: var(--radius-full);
     background: var(--accent-primary);
-    color: #1A0E2E;
+    color: #121212;
     font-weight: 700;
     font-size: 0.82rem;
     border: none;
@@ -2245,8 +2245,8 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: var(--accent-gradient-warm, linear-gradient(135deg, #F2994A 0%, #F2C94C 100%));
-    color: #1A0E2E;
+    background: var(--accent-gradient-warm, linear-gradient(135deg, #ffa116 0%, #ffc043 100%));
+    color: #121212;
     font-weight: 800;
     font-size: 0.92rem;
     border: none;
@@ -2367,3 +2367,21 @@
     font-size: 0.88rem;
   }
 }
+
+/* ==========================================================================
+   No Voice / TTS Synthesis Buttons (Per Directive "пока удали озвучку")
+   ========================================================================== */
+.btn-dict-audio,
+.btn-pronounce,
+.tts-btn,
+.voice-btn,
+.polyglot-tts-btn,
+[data-action="speak"],
+[data-action="tts"],
+.panda-voice-btn,
+#btn-tts-speak,
+.tutor-voice-toggle,
+.audio-pronounce-btn {
+  display: none !important;
+}
+

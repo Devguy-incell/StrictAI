@@ -91,14 +91,14 @@
             <!-- Rendered by window.PandaAvatar -->
           </div>
 
-          <div style="display: flex; gap: 10px; margin-top: 18px;">
-            <button class="btn btn-secondary btn-sm" id="hero-voice-btn" title="Прослухати голос Червоної Панди">
-              <span>🔊</span>
-              <span>Послухати голос Панди</span>
-            </button>
-            <a href="tutor.html" class="btn btn-primary btn-sm">
-              <span>💬</span>
-              <span>Відкрити чат</span>
+          <div style="display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;">
+            <a href="tutor.html" class="btn btn-primary btn-sm" id="hero-open-tutor-btn" style="height: 38px; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; padding: 0 16px; border-radius: var(--radius-md); background: var(--accent-primary, #ffa116); color: #121212;">
+              <span>🚀</span>
+              <span data-i18n="index.hero.openTutor">Відкрити ШІ-Репетитор</span>
+            </a>
+            <a href="nmt.html" class="btn btn-secondary btn-sm" id="hero-demo-anticheat-btn" style="height: 38px; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; padding: 0 16px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle, #333333); background: var(--bg-surface-elevated, #242424); color: var(--text-primary, #eff1f6);">
+              <span>🛡️</span>
+              <span data-i18n="index.hero.demoAnticheat">Демо Анти-Чит Тесту</span>
             </a>
           </div>
 
@@ -259,7 +259,7 @@
             <div class="bento-icon">🐼</div>
             <h3 class="bento-title">AI-Репетитор Червона Панда</h3>
             <p class="bento-desc">
-              9 характерів ШІ-репетитора (від доброго друга до сократівського детектива, RPG гейм-майстра та носія мови). Панда не видає готові відповіді для списування — вона використовує сократичний діалог, направляє запитаннями та пояснює кожен крок розв’язку. Голосове введення, озвучення та жива міміка.
+              9 характерів ШІ-репетитора (від доброго друга до сократівського детектива, RPG гейм-майстра та носія мови). Панда не видає готові відповіді для списування — вона використовує сократичний діалог, направляє запитаннями та пояснює кожен крок розв’язку. Інтерактивний діалог та жива міміка.
             </p>
             <div class="bento-footer">
               <div style="font-size: 0.88rem; color: var(--accent-primary); font-weight: 600;">
@@ -503,12 +503,12 @@
         </div>
 
         <div class="footer-col">
-          <h4>Безпека та конфіденційність</h4>
+          <div class="footer-col-title">Контроль & Прозорість</div>
           <ul class="footer-links">
-            <li><a href="javascript:StrictComponents.openApiKeyModal()">⚙️ Налаштування API-ключа</a></li>
-            <li><a href="parents.html">🛡 Захист PIN-кодом</a></li>
-            <li><a href="index.html#calc">📊 Офіційні коефіцієнти УЦОЯО</a></li>
-            <li><a href="tracker.html">⏱ Правила анти-прокрастинації</a></li>
+            <li><a href="parents.html">Батьківський кабінет</a></li>
+            <li><a href="parents.html#educational-contract">Освітній контракт</a></li>
+            <li><a href="parents.html#anticheat-monitoring">Анти-чит моніторинг</a></li>
+            <li><a href="parents.html#pin-change">Зміна PIN-коду</a></li>
           </ul>
         </div>
       </div>
@@ -526,13 +526,14 @@
     </div>
   </footer>
 
-  <!-- Scripts: Store -> i18n -> Avatar -> Notifications -> Components -> Landing -->
+  <!-- Scripts: Store -> i18n -> AntiCheat -> React -> Panda -> Notifications -> Components -> Landing -->
   <script src="js/store.js"></script>
   <script src="js/i18n.js"></script>
+  <script src="js/anti-cheat-engine.js"></script>
+  <script src="js/react-runtime.js"></script>
   <script src="js/panda-avatar.js"></script>
   <script src="js/notifications.js"></script>
   <script src="js/components.js"></script>
   <script src="js/landing.js"></script>
-  <script src="js/polyglot-tts.js"></script>
 </body>
 </html>

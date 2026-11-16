@@ -288,6 +288,7 @@
           title: 'Пройти 25 хв фокус-сесії без жодного перемикання вкладок',
           reward: 50,
           completed: true,
+          system: true,
           link: 'tracker.html'
         },
         {
@@ -295,6 +296,7 @@
           title: 'Розібрати 3 помилки з Математики разом із Пандою',
           reward: 40,
           completed: false,
+          system: true,
           link: 'tutor.html'
         },
         {
@@ -302,6 +304,7 @@
           title: 'Скласти тренувальний блок НМТ з Історії України',
           reward: 70,
           completed: false,
+          system: true,
           link: 'nmt.html'
         },
         {
@@ -309,6 +312,7 @@
           title: 'Закрити тему "Складнопідрядні речення" у Карті знань',
           reward: 60,
           completed: false,
+          system: true,
           link: 'knowledge.html'
         }
       ]
@@ -411,10 +415,29 @@
 
     parental: {
       pinCode: '1234',
+      pin: '1234',
       strictLockPersona: false,
       maxAllowedTabSwitches: 3,
       soundAlertOnBlur: true,
       telegramNotifications: true,
+      assignedLectures: [
+        {
+          id: 'lecture-1',
+          title: 'Рівняння з параметром: графічний метод (Завдання 22 НМТ)',
+          subject: 'Математика',
+          date: 'Сьогодні, 11:30',
+          completed: false,
+          link: 'tutor.html'
+        },
+        {
+          id: 'lecture-2',
+          title: 'Нормативні наголоси в іменниках (Орфоепічний мінімум УЦОЯО)',
+          subject: 'Українська мова',
+          date: 'Вчора, 18:20',
+          completed: true,
+          link: 'tutor.html'
+        }
+      ],
       contract: {
         title: 'Тижневий спринт підготовки до НМТ 2025',
         targetMinutesWeek: 450,
@@ -470,7 +493,18 @@
         const raw = storage.getItem(STORAGE_KEY);
         if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
         const parsed = JSON.parse(raw);
-        return deepMerge(DEFAULT_STATE, parsed);
+        const merged = deepMerge(DEFAULT_STATE, parsed);
+        if (merged.parental) {
+          if (!merged.parental.pinCode && merged.parental.pin) {
+            merged.parental.pinCode = merged.parental.pin;
+          } else if (!merged.parental.pin && merged.parental.pinCode) {
+            merged.parental.pin = merged.parental.pinCode;
+          }
+          if (!Array.isArray(merged.parental.assignedLectures) || merged.parental.assignedLectures.length === 0) {
+            merged.parental.assignedLectures = JSON.parse(JSON.stringify(DEFAULT_STATE.parental.assignedLectures));
+          }
+        }
+        return merged;
       } catch (err) {
         console.warn('Failed to parse localStorage state, resetting to defaults', err);
         return JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -747,6 +781,61 @@
           roleplayMissionStep: missionStep
         }
       }));
+    }
+
+    setParentalPin(newPin) {
+      return this.update((st) => ({
+        ...st,
+        parental: {
+          ...st.parental,
+          pinCode: newPin,
+          pin: newPin
+        }
+      }));
+    }
+
+    addAssignedLecture(lecture) {
+      return this.update((st) => {
+        const lectures = [lecture, ...(st.parental.assignedLectures || [])];
+        return {
+          ...st,
+          parental: {
+            ...st.parental,
+            assignedLectures: lectures
+          }
+        };
+      });
+    }
+
+    removeAssignedLecture(lectureId) {
+      return this.update((st) => {
+        const lectures = (st.parental.assignedLectures || []).filter(l => l.id !== lectureId);
+        return {
+          ...st,
+          parental: {
+            ...st.parental,
+            assignedLectures: lectures
+          }
+        };
+      });
+    }
+
+    toggleAssignedLectureStatus(lectureId) {
+      return this.update((st) => {
+        const lectures = (st.parental.assignedLectures || []).map(l => {
+          if (l.id === lectureId) {
+            return { ...l, completed: !l.completed };
+          }
+          return l;
+        });
+        return {
+          ...st,
+          parental: {
+            ...st.parental,
+            assignedLectures: lectures
+          }
+        };
+      });
     }
   }
 

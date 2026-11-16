@@ -26,7 +26,7 @@
         home: 'Головна',
         tutor: 'AI-Репетитор',
         placement: 'Рівень',
-        nmt: 'Тренажер НМТ',
+        nmt: 'Тести НМТ',
         tracker: 'Контроль & Фокус',
         parents: 'Батьківський кабінет',
         knowledge: 'Карта знань',
@@ -300,20 +300,40 @@
         skipped: 'Пропущено',
         resultsHeadline: 'Вітаємо із завершенням тесту!',
         resultsSub: 'Результат збережено у твоєму персональному профілі. Переглянь розгорнуту аналітику та розбери кожну проблемну тему з ШІ-репетитором.',
+        highBadge: '🌟 Тріумф! Рівень бюджетного місця',
+        highHeadline: 'Блискучий результат! Твої шанси на вступ — максимальні!',
+        highSub: 'Ти продемонстрував глибоке володіння матеріалом. Залишилося відшліфувати кілька дрібниць.',
+        midBadge: '👍 Гарний рівень. Поріг подолано впевнено',
+        midHeadline: 'Впевнена робота! Але є потенціал рости до 185+!',
+        midSub: 'Зверни увагу на теми з помилками нижче. Панда-репетитор допоможе розібрати тонкі моменти.',
+        lowBadge: '⚠️ Потрібна увага до базових правил',
+        lowHeadline: 'Тест складено. Не засмучуйся — помилки вказують шлях!',
+        lowSub: 'Кожна помилка — це шанс стати сильнішим. Почни розбір із найпростіших правил просто зараз.',
         scaledScoreLabel: 'Рейтинговий бал НМТ',
         metricAccuracy: 'Точність відповідей',
         metricMistakes: 'Кількість помилок',
         metricTime: 'Витрачений час',
         metricCoins: 'Зароблено бамбук-коїнів',
+        rawScoreSuffix: 'первинних балів',
+        minsSuffix: 'хв',
         btnRetake: 'Скласти інший варіант',
+        btnKnowledge: 'Переглянути Карту знань',
+        btnTutor: 'Перейти до AI-Репетитора',
+        filterAll: 'Всі завдання',
+        filterMistakes: 'Лише помилки ❌',
+        filterCorrect: 'Правильні ✅',
         reviewTitle: 'Детальний розбір відповідей',
+        reviewSub: 'Кожна помилка містить посилання на правила та можливість миттєвого опрацювання з Пандою',
+        taskLabel: 'Завдання',
+        yourAnswer: 'Твоя відповідь:',
+        officialAnswer: 'Еталонна відповідь УЦОЯО:',
+        explanationTitle: '💡 Коментар екзаменатора та пояснення:',
+        bridgeBtn: 'Розібрати цю помилку з Пандою-репетитором',
+        emptyMistakes: 'У цьому розділі немає завдань для відображення.',
         refMaterialsTitle: 'Офіційні довідкові матеріали УЦОЯО',
         refMaterialsSub: 'Дозволені формули та довідники для сертифікаційної роботи',
         scratchpadTitle: 'Інтерактивна чернетка для розв\'язків',
-        scratchpadSub: 'Твої чорнові нотатки та проміжні обчислення',
-        filterAll: 'Всі завдання',
-        filterMistakes: 'Лише помилки ❌',
-        filterCorrect: 'Правильні ✅'
+        scratchpadSub: 'Твої чорнові нотатки та проміжні обчислення'
       },
 
       tracker: {
@@ -431,7 +451,7 @@
         home: 'Home',
         tutor: 'AI Tutor',
         placement: 'Level',
-        nmt: 'NMT Simulator',
+        nmt: 'NMT Tests',
         tracker: 'Control & Focus',
         parents: 'Parents Hub',
         knowledge: 'Knowledge Map',
@@ -705,20 +725,40 @@
         skipped: 'Skipped',
         resultsHeadline: 'Congratulations on Finishing the Test!',
         resultsSub: 'Result saved to your profile. Review detailed analytics and work through every challenging topic with the AI tutor.',
+        highBadge: '🌟 Triumph! Budget Place Level',
+        highHeadline: 'Brilliant result! Your admission chances are maximal!',
+        highSub: 'You demonstrated deep mastery of the material. Just a few details left to polish.',
+        midBadge: '👍 Solid Level. Threshold passed with confidence',
+        midHeadline: 'Solid work! But there is potential to reach 185+!',
+        midSub: 'Pay attention to the mistake topics below. The Panda Tutor will help analyze key points.',
+        lowBadge: '⚠️ Attention needed for core fundamentals',
+        lowHeadline: 'Test completed. Don’t worry — mistakes light the path!',
+        lowSub: 'Every mistake is a chance to grow stronger. Start reviewing fundamental rules right now.',
         scaledScoreLabel: 'Scaled NMT Score',
         metricAccuracy: 'Answer Accuracy',
-        metricMistakes: 'Mistakes Count',
+        metricMistakes: 'Total Mistakes',
         metricTime: 'Time Spent',
         metricCoins: 'Bamboo Coins Earned',
+        rawScoreSuffix: 'raw points',
+        minsSuffix: 'min',
         btnRetake: 'Take Another Variant',
-        reviewTitle: 'Detailed Answers Breakdown',
+        btnKnowledge: 'View Knowledge Map',
+        btnTutor: 'Open AI Tutor',
+        filterAll: 'All Tasks',
+        filterMistakes: 'Mistakes Only ❌',
+        filterCorrect: 'Correct ✅',
+        reviewTitle: 'Detailed Answer Breakdown',
+        reviewSub: 'Each mistake links to reference rules with instant AI Panda practice',
+        taskLabel: 'Task',
+        yourAnswer: 'Your answer:',
+        officialAnswer: 'Official UCEQA answer:',
+        explanationTitle: '💡 Examiner commentary & explanation:',
+        bridgeBtn: 'Analyze this mistake with Panda Tutor',
+        emptyMistakes: 'No tasks to display in this section.',
         refMaterialsTitle: 'Official UCEQA Reference Materials',
         refMaterialsSub: 'Authorized formulas and cheat sheets for certification exams',
         scratchpadTitle: 'Interactive Task Scratchpad',
-        scratchpadSub: 'Your draft notes and intermediate equations',
-        filterAll: 'All Tasks',
-        filterMistakes: 'Mistakes Only ❌',
-        filterCorrect: 'Correct Only ✅'
+        scratchpadSub: 'Your draft notes and intermediate equations'
       },
 
       tracker: {
@@ -836,7 +876,7 @@
         home: 'Główna',
         tutor: 'Korepetytor AI',
         placement: 'Poziom',
-        nmt: 'Symulator NMT',
+        nmt: 'Testy NMT',
         tracker: 'Kontrola i skupienie',
         parents: 'Strefa Rodzica',
         knowledge: 'Mapa wiedzy',
@@ -1110,20 +1150,40 @@
         skipped: 'Pominięte',
         resultsHeadline: 'Gratulacje z okazji ukończenia testu!',
         resultsSub: 'Wynik zapisany w Twoim profilu. Przejrzyj szczegółowe analizy i przeanalizuj każdy problematyczny temat z korepetytorem AI.',
+        highBadge: '🌟 Triumf! Poziom miejsca bezpłatnego',
+        highHeadline: 'Genialny wynik! Twoje szanse na studia są maksymalne!',
+        highSub: 'Wykazałeś głębokie opanowanie materiału. Zostało dopracować kilka szczegółów.',
+        midBadge: '👍 Dobry poziom. Próg zdany pewnie',
+        midHeadline: 'Pewna praca! Ale masz potencjał, by osiągnąć 185+!',
+        midSub: 'Zwróć uwagę na tematy z błędami poniżej. Panda pomoże przeanalizować trudniejsze kwestie.',
+        lowBadge: '⚠️ Wymaga powtórzenia podstawowych zasad',
+        lowHeadline: 'Test ukończony. Nie martw się — błędy wskazują drogę!',
+        lowSub: 'Każdy błąd to szansa na rozwój. Rozpocznij powtórkę od podstawowych zasad już teraz.',
         scaledScoreLabel: 'Wynik rankingowy NMT',
-        metricAccuracy: 'Dokładność odpowiedzi',
+        metricAccuracy: 'Trafność odpowiedzi',
         metricMistakes: 'Liczba błędów',
         metricTime: 'Poświęcony czas',
         metricCoins: 'Zdobyte monety bambusowe',
+        rawScoreSuffix: 'punktów surowych',
+        minsSuffix: 'min',
         btnRetake: 'Rozwiąż inny wariant',
+        btnKnowledge: 'Zobacz Mapę Wiedzy',
+        btnTutor: 'Przejdź do Korepetytora AI',
+        filterAll: 'Wszystkie zadania',
+        filterMistakes: 'Tylko błędy ❌',
+        filterCorrect: 'Poprawne ✅',
         reviewTitle: 'Szczegółowa analiza odpowiedzi',
+        reviewSub: 'Każdy błąd zawiera link do zasad oraz natychmiastowe ćwiczenie z Pandą',
+        taskLabel: 'Zadanie',
+        yourAnswer: 'Twoja odpowiedź:',
+        officialAnswer: 'Wzorcowa odpowiedź UCEQA:',
+        explanationTitle: '💡 Komentarz egzaminatora i wyjaśnienie:',
+        bridgeBtn: 'Przeanalizuj ten błąd z Korepetytorem Panda',
+        emptyMistakes: 'W tej sekcji nie ma zadań do wyświetlenia.',
         refMaterialsTitle: 'Materiały pomocnicze UCEQA',
         refMaterialsSub: 'Dozwolone formuły i tablice na egzamin certyfikacyjny',
         scratchpadTitle: 'Interaktywny brudnopis do obliczeń',
-        scratchpadSub: 'Twoje notatki robocze i obliczenia',
-        filterAll: 'Wszystkie zadania',
-        filterMistakes: 'Tylko błędy ❌',
-        filterCorrect: 'Tylko poprawne ✅'
+        scratchpadSub: 'Twoje notatki robocze i obliczenia'
       },
 
       tracker: {
@@ -1241,7 +1301,7 @@
         home: 'Startseite',
         tutor: 'KI-Tutor',
         placement: 'Level',
-        nmt: 'NMT-Simulator',
+        nmt: 'NMT-Tests',
         tracker: 'Fokus & Kontrolle',
         parents: 'Elternbereich',
         knowledge: 'Wissenskarte',
@@ -1515,20 +1575,40 @@
         skipped: 'Übersprungen',
         resultsHeadline: 'Glückwunsch zum Abschluss des Tests!',
         resultsSub: 'Ergebnis im Profil gespeichert. Sieh dir detaillierte Analysen an und arbeite jedes schwierige Thema mit dem KI-Tutor durch.',
-        scaledScoreLabel: 'NMT-Rangpunktzahl',
+        highBadge: '🌟 Triumph! Niveau für Studienplatzgarantie',
+        highHeadline: 'Glänzendes Ergebnis! Maximale Zulassungschancen!',
+        highSub: 'Du hast fundiertes Fachwissen bewiesen. Nur noch wenige Feinheiten fehlen.',
+        midBadge: '👍 Gutes Niveau. Schwelle souverän bestanden',
+        midHeadline: 'Solide Leistung! Aber du hast Potenzial für 185+!',
+        midSub: 'Beachte die Fehlerthemen unten. Panda hilft dir, knifflige Punkte zu meistern.',
+        lowBadge: '⚠️ Grundlegende Regeln wiederholen',
+        lowHeadline: 'Test abgeschlossen. Nicht verzagen — Fehler zeigen den Weg!',
+        lowSub: 'Jeder Fehler ist eine Chance zu wachsen. Starte die Analyse der Grundlagen jetzt.',
+        scaledScoreLabel: 'NMT-Ranglistenpunktzahl',
         metricAccuracy: 'Antwortgenauigkeit',
-        metricMistakes: 'Anzahl der Fehler',
-        metricTime: 'Verbrauchte Zeit',
+        metricMistakes: 'Fehleranzahl',
+        metricTime: 'Benötigte Zeit',
         metricCoins: 'Verdiente Bambus-Münzen',
+        rawScoreSuffix: 'Rohpunkte',
+        minsSuffix: 'Min',
         btnRetake: 'Anderen Test absolvieren',
-        reviewTitle: 'Detaillierte Analyse der Antworten',
+        btnKnowledge: 'Wissenskarte ansehen',
+        btnTutor: 'Zum KI-Tutor wechseln',
+        filterAll: 'Alle Aufgaben',
+        filterMistakes: 'Nur Fehler ❌',
+        filterCorrect: 'Richtig ✅',
+        reviewTitle: 'Detaillierte Antwortanalyse',
+        reviewSub: 'Jeder Fehler verlinkt auf Regeln und sofortige Übung mit Panda',
+        taskLabel: 'Aufgabe',
+        yourAnswer: 'Deine Antwort:',
+        officialAnswer: 'Offizielle UCEQA-Musterantwort:',
+        explanationTitle: '💡 Prüferkommentar und Erklärung:',
+        bridgeBtn: 'Diesen Fehler mit Panda-Tutor analysieren',
+        emptyMistakes: 'In diesem Abschnitt gibt es keine Aufgaben anzuzeigen.',
         refMaterialsTitle: 'UCEQA-Hilfsmaterialien',
         refMaterialsSub: 'Zulässige Formeln und Übersichten für die Abschlussprüfung',
         scratchpadTitle: 'Interaktiver Notizblock für Lösungen',
-        scratchpadSub: 'Deine Entwurfsnotizen und Zwischenrechnungen',
-        filterAll: 'Alle Aufgaben',
-        filterMistakes: 'Nur Fehler ❌',
-        filterCorrect: 'Nur Richtige ✅'
+        scratchpadSub: 'Deine Entwurfsnotizen und Zwischenrechnungen'
       },
 
       tracker: {
@@ -1671,9 +1751,11 @@
    */
   class StrictI18nEngine {
     constructor() {
-      this.currentLocale = this._detectInitialLocale();
       this.translations = TRANSLATIONS;
       this.supportedLocales = SUPPORTED_LOCALES;
+      this._isTranslating = false;
+      this._observer = null;
+      this.currentLocale = this._detectInitialLocale();
 
       // Automatically hook into document when ready
       if (typeof document !== 'undefined') {
@@ -1687,43 +1769,133 @@
     }
 
     _detectInitialLocale() {
-      // 1. Try StrictStore if loaded
-      try {
-        if (typeof window !== 'undefined' && window.StrictStore && typeof window.StrictStore.get === 'function') {
-          const st = window.StrictStore.get();
-          if (st && st.locale && TRANSLATIONS[st.locale]) {
-            return st.locale;
-          }
-        }
-      } catch (e) {}
+      const validLocales = ['uk', 'en', 'pl', 'de'];
 
-      // 2. Try localStorage
+      // 1. Read localStorage FIRST
       try {
         if (typeof localStorage !== 'undefined') {
           const saved = localStorage.getItem(STORAGE_LOCALE_KEY);
-          if (saved && TRANSLATIONS[saved]) {
+          if (saved && validLocales.includes(saved)) {
+            // Synchronize with StrictStore if available
+            try {
+              if (typeof window !== 'undefined' && window.StrictStore && typeof window.StrictStore.get === 'function' && typeof window.StrictStore.update === 'function') {
+                const currentStoreLocale = window.StrictStore.get()?.locale;
+                if (currentStoreLocale !== saved) {
+                  window.StrictStore.update({ locale: saved });
+                }
+              }
+            } catch (storeErr) {}
             return saved;
           }
         }
       } catch (e) {}
 
-      // 3. Fallback to Ukrainian
+      // 2. Only if nothing in localStorage, read StrictStore.get().locale
+      try {
+        if (typeof window !== 'undefined' && window.StrictStore && typeof window.StrictStore.get === 'function') {
+          const st = window.StrictStore.get();
+          if (st && st.locale && validLocales.includes(st.locale)) {
+            try {
+              if (typeof localStorage !== 'undefined') {
+                localStorage.setItem(STORAGE_LOCALE_KEY, st.locale);
+              }
+            } catch (err) {}
+            return st.locale;
+          }
+        }
+      } catch (e) {}
+
+      // 3. Fallback to Ukrainian ('uk')
       return 'uk';
     }
 
     init() {
-      // Re-check store in case it loaded after i18n
+      // Re-check store / localStorage in case it loaded after i18n
       this.currentLocale = this._detectInitialLocale();
       this._applyHtmlAttributes();
-      this.applyToDOM();
+      this.refresh();
+      this._setupMutationObserver();
 
       // Listen for store updates to keep in sync
       if (typeof window !== 'undefined' && window.StrictStore && typeof window.StrictStore.subscribe === 'function') {
         window.StrictStore.subscribe((state) => {
-          if (state && state.locale && state.locale !== this.currentLocale && TRANSLATIONS[state.locale]) {
+          if (state && state.locale && state.locale !== this.currentLocale && this.translations[state.locale]) {
             this.setLocale(state.locale, { skipStoreUpdate: true });
           }
         });
+      }
+    }
+
+    _setupMutationObserver() {
+      if (typeof MutationObserver === 'undefined' || typeof document === 'undefined') {
+        return;
+      }
+
+      if (!document.body) {
+        if (typeof window !== 'undefined') {
+          window.addEventListener('DOMContentLoaded', () => this._setupMutationObserver(), { once: true });
+        }
+        return;
+      }
+
+      if (this._observer) {
+        try { this._observer.disconnect(); } catch (e) {}
+      }
+
+      let debounceTimer = null;
+
+      this._observer = new MutationObserver(() => {
+        if (this._isTranslating) return;
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          if (this._isTranslating) return;
+          this.refresh();
+        }, 80);
+      });
+
+      try {
+        this._observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          characterData: true,
+          attributeFilter: ['style', 'class', 'data-filter']
+        });
+      } catch (e) {
+        console.warn('[StrictI18n] Failed to attach MutationObserver:', e);
+      }
+    }
+
+    /**
+     * Public refresh method: translates DOM & dynamic screens with recursion guard
+     */
+    refresh() {
+      if (this._isTranslating) return;
+      this._isTranslating = true;
+
+      try {
+        if (this._observer) {
+          try { this._observer.disconnect(); } catch (e) {}
+        }
+
+        this.applyToDOM();
+        this._translateDynamicScreens();
+      } catch (err) {
+        console.error('[StrictI18n] Error during refresh:', err);
+      } finally {
+        if (this._observer && typeof document !== 'undefined' && document.body) {
+          try {
+            this._observer.observe(document.body, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+              characterData: true,
+              attributeFilter: ['style', 'class', 'data-filter']
+            });
+          } catch (e) {}
+        }
+        this._isTranslating = false;
       }
     }
 
@@ -1787,20 +1959,22 @@
 
       this.currentLocale = langCode;
 
-      // Save to localStorage
+      // Always save to localStorage
       try {
         if (typeof localStorage !== 'undefined') {
           localStorage.setItem(STORAGE_LOCALE_KEY, langCode);
         }
       } catch (e) {}
 
-      // Save to StrictStore
+      // Always save to StrictStore
       if (!options.skipStoreUpdate && typeof window !== 'undefined' && window.StrictStore && typeof window.StrictStore.update === 'function') {
-        window.StrictStore.update({ locale: langCode });
+        try {
+          window.StrictStore.update({ locale: langCode });
+        } catch (e) {}
       }
 
       this._applyHtmlAttributes();
-      this.applyToDOM();
+      this.refresh();
 
       // Dispatch global event
       if (typeof window !== 'undefined') {
@@ -1893,6 +2067,13 @@
       });
     }
 
+    /**
+     * Re-applies translations across the DOM tree. Alias for applyToDOM.
+     */
+    refresh(root = (typeof document !== 'undefined' ? document : null)) {
+      return this.applyToDOM(root);
+    }
+
     _applySelectorMappings(root) {
       if (!root || typeof root.querySelector !== 'function') return;
       const mappings = [
@@ -1973,8 +2154,8 @@
         { sel: '#btn-clear-choice span', key: 'nmt.btnClearChoice' },
         { sel: '#flag-btn-text', key: 'nmt.btnFlag' },
         { sel: '#btn-submit-exam-sidebar span:last-child', key: 'nmt.btnSubmitExam' },
-        { sel: '#results-headline', key: 'nmt.resultsHeadline' },
-        { sel: '#results-subtext', key: 'nmt.resultsSub' },
+        { sel: '#results-headline:not([data-verdict-rendered])', key: 'nmt.resultsHeadline' },
+        { sel: '#results-subtext:not([data-verdict-rendered])', key: 'nmt.resultsSub' },
         { sel: '.scaled-score-label', key: 'nmt.scaledScoreLabel' },
         { sel: '#btn-retake-exam span:last-child', key: 'nmt.btnRetake' },
 
@@ -2021,6 +2202,257 @@
             }
           }
         } catch (e) {}
+      }
+    }
+
+    /**
+     * Translates dynamic screens like #nmt-results-view and #nmt-exam-view
+     */
+    _translateDynamicScreens(root = (typeof document !== 'undefined' ? document : null)) {
+      if (!root || typeof root.querySelector !== 'function') return;
+
+      const loc = this.currentLocale;
+      const resultsView = root.querySelector('#nmt-results-view') || (root.id === 'nmt-results-view' ? root : null);
+
+      if (resultsView) {
+        const headlineEl = resultsView.querySelector('#results-headline');
+        const badgeEl = resultsView.querySelector('#results-verdict-badge');
+        const currentHeadline = headlineEl?.textContent || '';
+        const currentBadge = badgeEl?.textContent || '';
+        const combinedText = currentHeadline + ' ' + currentBadge;
+
+        // Foreign text detection to allow switching back to 'uk' cleanly
+        const isForeign = /Triumph|Brilliant|Solid|Attention|Test completed|Gratulacje|Triumf|Genialny|Glückwunsch|Ergebnis/i.test(combinedText);
+
+        if (loc !== 'uk' || isForeign) {
+          // 1. Determine Tier: High (>= 180), Mid (150-179), or Low (< 150)
+          let tier = 'low';
+          const scaledScoreEl = resultsView.querySelector('#results-scaled-score');
+          const scoreText = scaledScoreEl ? scaledScoreEl.textContent.trim() : '';
+          const score = parseInt(scoreText, 10);
+
+          if (!isNaN(score)) {
+            if (score >= 180) tier = 'high';
+            else if (score >= 150) tier = 'mid';
+            else tier = 'low';
+          } else {
+            if (/Тріумф|Блискучий|Triumph|Brilliant|Glänzendes|Genialny/i.test(combinedText)) {
+              tier = 'high';
+            } else if (/Гарний|Впевнена|Solid|Pewna|Gutes/i.test(combinedText)) {
+              tier = 'mid';
+            } else {
+              tier = 'low';
+            }
+          }
+
+          // 2. Verdict Badge (#results-verdict-badge)
+          if (badgeEl) {
+            const badgeVal = this.t(`nmt.${tier}Badge`);
+            const match = badgeVal.match(/^(\S+)\s+(.*)$/);
+            if (match) {
+              badgeEl.innerHTML = `<span>${match[1]}</span> <span>${match[2]}</span>`;
+            } else {
+              badgeEl.textContent = badgeVal;
+            }
+          }
+
+          // 3. Headline & Subtext (#results-verdict-title, #results-headline, #results-verdict-subtitle, #results-subtext)
+          if (headlineEl) {
+            headlineEl.textContent = this.t(`nmt.${tier}Headline`);
+          }
+
+          const subtextEl = resultsView.querySelector('#results-subtext');
+          if (subtextEl) {
+            subtextEl.textContent = this.t(`nmt.${tier}Sub`);
+          }
+
+          const verdictTitle = resultsView.querySelector('#results-verdict-title');
+          if (verdictTitle) {
+            verdictTitle.textContent = this.t(`nmt.${tier}Headline`);
+          }
+
+          const verdictSubtitle = resultsView.querySelector('#results-verdict-subtitle');
+          if (verdictSubtitle) {
+            verdictSubtitle.textContent = this.t(`nmt.${tier}Sub`);
+          }
+
+          // 4. Scaled Dial Label and Raw Score Suffix
+          const dialLabel = resultsView.querySelector('.scaled-score-label');
+          if (dialLabel) {
+            dialLabel.textContent = this.t('nmt.scaledScoreLabel');
+          }
+
+          const rawScoreEl = resultsView.querySelector('#results-raw-score');
+          if (rawScoreEl) {
+            const rawMatch = rawScoreEl.textContent.match(/(\d+\s*\/\s*\d+)/);
+            if (rawMatch) {
+              rawScoreEl.textContent = `${rawMatch[1]} ${this.t('nmt.rawScoreSuffix')}`;
+            }
+          }
+
+          // 5. Stat Metric Cards & Time suffix
+          const metricCards = resultsView.querySelectorAll('.stat-metric-card');
+          if (metricCards.length >= 4) {
+            const m0 = metricCards[0].querySelector('.stat-metric-title');
+            if (m0) m0.textContent = this.t('nmt.metricAccuracy');
+            const m1 = metricCards[1].querySelector('.stat-metric-title');
+            if (m1) m1.textContent = this.t('nmt.metricMistakes');
+            const m2 = metricCards[2].querySelector('.stat-metric-title');
+            if (m2) m2.textContent = this.t('nmt.metricTime');
+            const m3 = metricCards[3].querySelector('.stat-metric-title');
+            if (m3) m3.textContent = this.t('nmt.metricCoins');
+          }
+
+          const metricTimeEl = resultsView.querySelector('#metric-time');
+          if (metricTimeEl) {
+            const timeMatch = metricTimeEl.textContent.match(/(\d+(?:\.\d+)?)/);
+            if (timeMatch) {
+              metricTimeEl.textContent = `${timeMatch[1]} ${this.t('nmt.minsSuffix')}`;
+            }
+          }
+
+          // 6. Action CTAs
+          const btnRetake = resultsView.querySelector('#btn-retake-exam');
+          if (btnRetake) {
+            const span = btnRetake.querySelector('span:last-child');
+            if (span) span.textContent = this.t('nmt.btnRetake');
+            else btnRetake.textContent = this.t('nmt.btnRetake');
+          }
+
+          const btnKnowledge = resultsView.querySelector('a[href="knowledge.html"]');
+          if (btnKnowledge) {
+            const span = btnKnowledge.querySelector('span:last-child');
+            if (span) span.textContent = this.t('nmt.btnKnowledge');
+            else btnKnowledge.textContent = this.t('nmt.btnKnowledge');
+          }
+
+          const btnTutor = resultsView.querySelector('a[href="tutor.html"]');
+          if (btnTutor) {
+            const span = btnTutor.querySelector('span:last-child');
+            if (span) span.textContent = this.t('nmt.btnTutor');
+            else btnTutor.textContent = this.t('nmt.btnTutor');
+          }
+
+          // 7. Mistakes Review Header & Filter Pills
+          const reviewH3 = resultsView.querySelector('h3');
+          if (reviewH3 && (
+            reviewH3.textContent.includes('розбір') ||
+            reviewH3.textContent.includes('Breakdown') ||
+            reviewH3.textContent.includes('analiza') ||
+            reviewH3.textContent.includes('Analyse') ||
+            reviewH3.textContent.includes('Antwortanalyse')
+          )) {
+            reviewH3.textContent = this.t('nmt.reviewTitle');
+          }
+
+          const reviewP = reviewH3 ? reviewH3.nextElementSibling : null;
+          if (reviewP && reviewP.tagName === 'P') {
+            reviewP.textContent = this.t('nmt.reviewSub');
+          }
+
+          const filterAll = resultsView.querySelector('#results-filter-pills .filter-pill[data-filter="all"]');
+          if (filterAll) filterAll.textContent = this.t('nmt.filterAll');
+
+          const filterMistakes = resultsView.querySelector('#results-filter-pills .filter-pill[data-filter="mistakes"]');
+          if (filterMistakes) filterMistakes.textContent = this.t('nmt.filterMistakes');
+
+          const filterCorrect = resultsView.querySelector('#results-filter-pills .filter-pill[data-filter="correct"]');
+          if (filterCorrect) filterCorrect.textContent = this.t('nmt.filterCorrect');
+
+          // 8. Mistake Cards inside #results-cards-container
+          const cards = resultsView.querySelectorAll('#results-cards-container .mistake-card');
+          cards.forEach((card) => {
+            const taskNumEl = card.querySelector('.mistake-header-row > span:last-child');
+            if (taskNumEl) {
+              const numMatch = taskNumEl.textContent.match(/#(\d+)/);
+              if (numMatch) {
+                taskNumEl.textContent = `${this.t('nmt.taskLabel', 'Завдання')} #${numMatch[1]}`;
+              }
+            }
+
+            const ansBoxes = card.querySelectorAll('.ans-box');
+            if (ansBoxes.length >= 2) {
+              const userBoxTitle = ansBoxes[0].querySelector('div:first-child');
+              if (userBoxTitle) userBoxTitle.textContent = this.t('nmt.yourAnswer', 'Твоя відповідь:');
+              const correctBoxTitle = ansBoxes[1].querySelector('div:first-child');
+              if (correctBoxTitle) correctBoxTitle.textContent = this.t('nmt.officialAnswer', 'Еталонна відповідь УЦОЯО:');
+            }
+
+            const expBox = card.querySelector('.mistake-explanation-box > div:first-child');
+            if (expBox) {
+              expBox.textContent = this.t('nmt.explanationTitle', '💡 Коментар екзаменатора та пояснення:');
+            }
+
+            const bridgeBtn = card.querySelector('.tutor-bridge-btn span:last-child');
+            if (bridgeBtn) {
+              bridgeBtn.textContent = this.t('nmt.bridgeBtn', 'Розібрати цю помилку з Пандою-репетитором');
+            }
+          });
+
+          const emptyMsg = resultsView.querySelector('#results-cards-container > div:only-child');
+          if (emptyMsg && (
+            emptyMsg.textContent.includes('немає завдань') ||
+            emptyMsg.textContent.includes('No tasks') ||
+            emptyMsg.textContent.includes('brak zadań') ||
+            emptyMsg.textContent.includes('keine Aufgaben')
+          )) {
+            emptyMsg.textContent = this.t('nmt.emptyMistakes', 'У цьому розділі немає завдань для відображення.');
+          }
+        }
+      }
+
+      // Exam view translations
+      const examView = root.querySelector('#nmt-exam-view') || (root.id === 'nmt-exam-view' ? root : null);
+      if (examView && loc !== 'uk') {
+        const counterEl = examView.querySelector('#q-counter-badge');
+        if (counterEl) {
+          const match = counterEl.textContent.match(/(\d+)\s+(?:з|of|z|von)\s+(\d+)/i) || counterEl.textContent.match(/(\d+)\s*\/\s*(\d+)/);
+          if (match) {
+            const tTask = this.t('nmt.taskLabel', 'Завдання');
+            const tOf = loc === 'en' ? 'of' : loc === 'pl' ? 'z' : loc === 'de' ? 'von' : 'з';
+            counterEl.textContent = `${tTask} ${match[1]} ${tOf} ${match[2]}`;
+          }
+        }
+
+        const flagText = examView.querySelector('#flag-btn-text');
+        const flagBtn = examView.querySelector('#q-flag-btn');
+        if (flagText && flagBtn) {
+          const isFlagged = flagBtn.classList.contains('flagged');
+          flagText.textContent = isFlagged ? this.t('nmt.btnFlagActive', 'Прапорець активний') : this.t('nmt.btnFlag', 'Позначити прапорцем');
+        }
+
+        const prevBtn = examView.querySelector('#btn-prev-q span:last-child');
+        if (prevBtn) prevBtn.textContent = this.t('nmt.btnPrev');
+
+        const nextBtn = examView.querySelector('#btn-next-q span:first-child');
+        if (nextBtn) {
+          if (nextBtn.textContent.includes('перевірки') || nextBtn.textContent.includes('Review') || nextBtn.textContent.includes('sprawdzenia') || nextBtn.textContent.includes('Überprüfung')) {
+            nextBtn.textContent = loc === 'en' ? 'Proceed to Review' : loc === 'pl' ? 'Przejdź do sprawdzenia' : loc === 'de' ? 'Zur Überprüfung' : 'Перейти до перевірки';
+          } else {
+            nextBtn.textContent = this.t('nmt.btnNext');
+          }
+        }
+
+        const clearBtn = examView.querySelector('#btn-clear-choice span');
+        if (clearBtn) clearBtn.textContent = this.t('nmt.btnClearChoice');
+
+        const zenBtn = examView.querySelector('#btn-toggle-timer-zen');
+        if (zenBtn) zenBtn.textContent = loc === 'en' ? 'Zen Mode' : loc === 'pl' ? 'Tryb Zen' : loc === 'de' ? 'Zen-Modus' : 'Режим Zen';
+
+        const matrixHeader = examView.querySelector('.matrix-header-title');
+        if (matrixHeader) matrixHeader.textContent = this.t('nmt.matrixTitle');
+
+        const answeredLegend = examView.querySelector('.matrix-legend-item.legend-answered span:last-child');
+        if (answeredLegend) answeredLegend.textContent = this.t('nmt.answered');
+
+        const flaggedLegend = examView.querySelector('.matrix-legend-item.legend-flagged span:last-child');
+        if (flaggedLegend) flaggedLegend.textContent = this.t('nmt.flagged');
+
+        const skippedLegend = examView.querySelector('.matrix-legend-item.legend-skipped span:last-child');
+        if (skippedLegend) skippedLegend.textContent = this.t('nmt.skipped');
+
+        const submitBtn = examView.querySelector('#btn-submit-exam-sidebar span:last-child');
+        if (submitBtn) submitBtn.textContent = this.t('nmt.btnSubmitExam');
       }
     }
 

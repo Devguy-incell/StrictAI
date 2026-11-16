@@ -95,7 +95,6 @@
         pandaContainer: document.getElementById('tracker-panda-container'),
         pandaQuote: document.getElementById('panda-supervisor-quote'),
         pandaSupervisorName: document.getElementById('panda-supervisor-name'),
-        pandaVoiceBtn: document.getElementById('panda-speak-voice-btn'),
         strictLockBanner: document.getElementById('strict-persona-lock-banner'),
         eventsFeed: document.getElementById('tracker-events-feed'),
         clearLogBtn: document.getElementById('clear-session-log-btn'),
@@ -196,16 +195,6 @@
         this.els.addQuestBtn.addEventListener('click', () => this._handleAddNewQuest());
         this.els.newQuestInput.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') this._handleAddNewQuest();
-        });
-      }
-
-      // Panda voice read aloud
-      if (this.els.pandaVoiceBtn && this.els.pandaQuote) {
-        this.els.pandaVoiceBtn.addEventListener('click', () => {
-          const text = this.els.pandaQuote.textContent.trim();
-          if (window.PandaAvatar) {
-            window.PandaAvatar.speak(text);
-          }
         });
       }
 
@@ -746,35 +735,117 @@
       if (!this.els.questList) return;
 
       const store = window.StrictStore ? window.StrictStore.get() : null;
-      const quests = store && store.tracker.dailyQuests ? store.tracker.dailyQuests : [];
+      let quests = store && store.tracker.dailyQuests ? [...store.tracker.dailyQuests] : [];
 
-      this.els.questList.innerHTML = quests.map(q => `
-        <div class="quest-card-item ${q.completed ? 'completed' : ''}" data-quest-id="${q.id}">
-          <div class="quest-left-side">
-            <div class="quest-checkbox" title="Відзначити виконання квесту">
-              ${q.completed ? '✓' : ''}
+      // Auto-verification of system quests based on real activity in StrictStore
+      let stateUpdated = false;
+      quests = quests.map(q => {
+        const isSys = q.system || q.id === 'quest-1' || q.id === 'quest-2' || q.id === 'quest-3' || q.id === 'quest-4';
+        if (isSys && !q.completed && store) {
+          let verified = false;
+          if (q.id === 'quest-1') {
+            // 25 min focus without distractions
+            const logs = store.tracker.focusLogs || [];
+            verified = logs.some(l => l.durationMinutes >= 25 && (l.tabSwitches || 0) === 0 && l.status === 'completed');
+          } else if (q.id === 'quest-2') {
+            // Reviewed mistakes or had tutor lesson
+            const lessons = (store.tutor && store.tutor.lessonHistory) || [];
+            const msgs = (store.tutor && store.tutor.chatHistory) || [];
+            verified = lessons.length >= 1 || msgs.length >= 6;
+          } else if (q.id === 'quest-3') {
+            // Passed NMT training test
+            const exams = (store.nmt && store.nmt.completedExams) || [];
+            verified = exams.length > 0;
+          } else if (q.id === 'quest-4') {
+            // Mastered knowledge graph topic
+            const topics = (store.knowledge && store.knowledge.topics) || [];
+            verified = topics.some(t => t.mastery >= 75 || t.status === 'mastered');
+          }
+
+          if (verified) {
+            stateUpdated = true;
+            window.StrictStore.addCoins(q.reward || 50, `Автоматичне підтвердження: "${q.title}"`);
+            return { ...q, completed: true, system: true };
+          }
+        }
+        return q;
+      });
+
+      if (stateUpdated) {
+        window.StrictStore.update({ tracker: { dailyQuests: quests } });
+      }
+
+      this.els.questList.innerHTML = quests.map(q => {
+        const isSystem = q.system || q.id === 'quest-1' || q.id === 'quest-2' || q.id === 'quest-3' || q.id === 'quest-4';
+        return `
+        <div class="quest-card-item ${q.completed ? 'completed' : ''} ${isSystem ? 'system-protected' : ''}" data-quest-id="${q.id}" data-is-system="${isSystem}">
+          <div class="quest-left-side" style="align-items: flex-start; gap: 14px;">
+            <div class="quest-checkbox ${isSystem ? 'system-locked' : ''}" title="${isSystem ? (q.completed ? 'Підтверджено анти-чит системою' : '🔒 Квест захищено анти-читом!') : 'Відзначити виконання квесту'}" style="margin-top: 3px; cursor: ${isSystem ? 'not-allowed' : 'pointer'};">
+              ${q.completed ? '✓' : (isSystem ? '🔒' : '')}
             </div>
-            <div>
-              <div class="quest-title-text" style="font-weight: 600; font-size: 0.94rem;">
+            <div style="flex: 1; min-width: 0;">
+              <div class="quest-title-text" style="font-weight: 700; font-size: 0.94rem; line-height: 1.4; color: var(--text-primary);">
                 ${q.title}
               </div>
-              ${q.link ? `<a href="${q.link}" style="font-size: 0.78rem; color: var(--accent-primary);">Перейти до виконання ↗</a>` : ''}
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+                ${q.completed
+                  ? `<span class="bento-badge green" style="font-size: 0.72rem; padding: 2px 8px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">✅ Підтверджено системою</span>`
+                  : `<span class="bento-badge gray" style="font-size: 0.72rem; padding: 2px 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">⏳ 0/1 виконано</span>`
+                }
+                ${isSystem ? `<span class="bento-badge purple" style="font-size: 0.70rem; padding: 2px 6px;">🛡️ Anti-Cheat Protected</span>` : ''}
+                ${q.link ? `<a href="${q.link}" class="quest-action-link" style="font-size: 0.82rem; font-weight: 700; color: var(--accent-primary); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-sm); background: rgba(255, 161, 22, 0.08); border: 1px solid rgba(255, 161, 22, 0.25); transition: all 0.2s;">Виконати завдання ↗</a>` : ''}
+              </div>
             </div>
           </div>
-          <div class="quest-reward-pill">
+          <div class="quest-reward-pill" style="align-self: flex-start; margin-top: 2px;">
             <span>+${q.reward || 30}</span>
             <span>🎋</span>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
 
       // Add click handlers for checkboxes
       this.els.questList.querySelectorAll('.quest-card-item').forEach(item => {
         const questId = item.dataset.questId;
+        const isSystem = item.dataset.isSystem === 'true';
         const checkbox = item.querySelector('.quest-checkbox');
 
         checkbox.addEventListener('click', (e) => {
           e.stopPropagation();
+
+          if (isSystem) {
+            // Anti-cheat notification
+            if (window.StrictComponents) {
+              window.StrictComponents.playBeep('alert');
+              window.StrictComponents.toast('🔒 Квест захищено анти-читом! Він зарахується автоматично після реального виконання завдання.', 'warning');
+            }
+
+            // Highlight the action button
+            const actionBtn = item.querySelector('.quest-action-link');
+            if (actionBtn) {
+              actionBtn.style.transform = 'scale(1.12)';
+              actionBtn.style.boxShadow = '0 0 14px var(--accent-primary)';
+              actionBtn.style.borderColor = 'var(--accent-primary)';
+              setTimeout(() => {
+                actionBtn.style.transform = '';
+                actionBtn.style.boxShadow = '';
+                actionBtn.style.borderColor = '';
+              }, 1200);
+            }
+
+            // If timer quest, scroll to and highlight timer
+            const q = quests.find(x => x.id === questId);
+            if (q && (q.link === 'tracker.html' || q.link.includes('tracker'))) {
+              const timerEl = document.getElementById('timer-clock-display') || document.getElementById('timer-start-btn');
+              if (timerEl) {
+                timerEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }
+            return;
+          }
+
+          // Custom quest can be toggled
           this._toggleQuest(questId);
         });
       });
@@ -789,19 +860,28 @@
 
       if (!target) return;
 
+      const isSystem = target.system || target.id === 'quest-1' || target.id === 'quest-2' || target.id === 'quest-3' || target.id === 'quest-4';
+      if (isSystem) {
+        if (window.StrictComponents) {
+          window.StrictComponents.playBeep('alert');
+          window.StrictComponents.toast('🔒 Квест захищено анти-читом! Він зарахується автоматично після реального виконання завдання.', 'warning');
+        }
+        return;
+      }
+
       const wasCompleted = target.completed;
       target.completed = !wasCompleted;
 
       // Award or deduct bamboo coins
-      const reward = target.reward || 30;
+      const reward = target.reward || 40;
       if (!wasCompleted) {
-        window.StrictStore.addCoins(reward, `Виконання квесту: "${target.title}"`);
+        window.StrictStore.addCoins(reward, `Виконання цілі: "${target.title}"`);
         if (window.StrictComponents) {
           window.StrictComponents.playBeep('success');
-          window.StrictComponents.toast(`Квест виконано! Отримано +${reward} бамбук-коїнів 🎋`, 'success');
+          window.StrictComponents.toast(`Ціль виконано! Отримано +${reward} бамбук-коїнів 🎋`, 'success');
         }
       } else {
-        window.StrictStore.addCoins(-reward, `Скасування квесту`);
+        window.StrictStore.addCoins(-reward, `Скасування цілі`);
       }
 
       window.StrictStore.update({
@@ -825,6 +905,7 @@
         title: text,
         reward: 40,
         completed: false,
+        system: false,
         link: ''
       };
 
@@ -860,6 +941,9 @@
         window.StrictStore.addCoins(quest1.reward || 50, 'Виконання щоденного квесту без відволікань');
         window.StrictStore.update({ tracker: { dailyQuests: quests } });
         this._renderDailyQuests();
+        if (window.StrictComponents) {
+          window.StrictComponents.toast('🎉 Квест "25 хв фокус-сесії без перемикань" підтверджено анти-читом! +50 🎋', 'success');
+        }
       }
     }
 

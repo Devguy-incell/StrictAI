@@ -226,9 +226,9 @@
                 <span style="font-weight: 700; font-size: 0.95rem; color: var(--accent-primary);" id="panda-supervisor-name">
                   Панда-наставник
                 </span>
-                <button type="button" id="panda-speak-voice-btn" class="btn btn-outline btn-sm" style="padding: 8px 16px; min-height: 40px; font-size: 0.88rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" title="Озвучити голосом репетитора">
-                  🔊 Озвучити
-                </button>
+                <span class="bento-badge orange" style="font-size: 0.75rem; padding: 2px 8px;">
+                  Онлайн 🟢
+                </span>
               </div>
               <p id="panda-supervisor-quote" style="font-size: 0.9rem; line-height: 1.5; color: var(--text-primary); margin: 0;">
                 «Я уважно стежу за твоїм фокусом! Увімкни таймер, закрий зайві вкладки з іграми чи соцмережами — і покажи свій максимум!»
@@ -322,13 +322,13 @@
             <li><a href="knowledge.html">Карта знань та теми</a></li>
           </ul>
         </div>
-        <div>
+        <div class="footer-col">
           <div class="footer-col-title">Контроль & Прозорість</div>
           <ul class="footer-links">
             <li><a href="parents.html">Батьківський кабінет</a></li>
-            <li><a href="parents.html#contract">Освітній контракт</a></li>
-            <li><a href="parents.html#weak-topics">Діагностика слабких тем</a></li>
-            <li><a href="tracker.html">Анти-чит моніторинг</a></li>
+            <li><a href="parents.html#educational-contract">Освітній контракт</a></li>
+            <li><a href="parents.html#anticheat-monitoring">Анти-чит моніторинг</a></li>
+            <li><a href="parents.html#pin-change">Зміна PIN-коду</a></li>
           </ul>
         </div>
         <div>
@@ -357,10 +357,11 @@
   <!-- Core Scripts -->
   <script src="js/store.js"></script>
   <script src="js/i18n.js"></script>
+  <script src="js/anti-cheat-engine.js"></script>
+  <script src="js/react-runtime.js"></script>
   <script src="js/panda-avatar.js"></script>
   <script src="js/notifications.js"></script>
   <script src="js/components.js"></script>
   <script src="js/tracker.js"></script>
-  <script src="js/polyglot-tts.js"></script>
 </body>
 </html>

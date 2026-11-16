@@ -366,7 +366,175 @@
         explanation: '1 — «Осяяний сонцем» — відокремлене означення, виражене дієприкметниковим зворотом (А); 2 — «видатний кінорежисер...» — відокремлена прикладка зі сполучною назвою (Б); 3 — «Забувши про втому» — відокремлена обставина способу дії, виражена дієприслівниковим зворотом (В); 4 — «Окрім знань» — відокремлений додаток із прийменником «окрім» (Г).'
       },
 
-      // ==========================================
+      
+      // --- ШІ-стійкі завдання: Українська мова ---
+      {
+        id: 'ukr_ai_01',
+        subject: 'ukrainian',
+        topic: 'Культура мовлення та лексичні кальки',
+        type: 'single',
+        aiType: 'case_study',
+        aiBadge: '📊 Кейс курсу StrictAI',
+        title: 'Редакторський аудит академічного тексту',
+        statement: 'У таблиці редакторського аудиту наукової статті освітньої платформи StrictAI визначте рядок з лексичною помилкою (суржиковою калькою):',
+        tableData: {
+          headers: ['Рядок', 'Операція', 'Формула / Дія', 'Отримане значення'],
+          rows: [
+            ['Рядок 1', 'Фонетичний аудит', 'Кількість звуків у слові «під’їзд» (буква ї = 2 звуки)', '7 букв, 8 звуків'],
+            ['Рядок 2', 'Морфологічний аудит', 'Визначення роду незмінюваного іменника «рандеву»', 'Середній рід'],
+            ['Рядок 3', 'Лексико-стилістичний аудит', 'Редагування вислову: «приймати участь» -> нормативний статус', '«приймати участь» зазначено як норма'],
+            ['Рядок 4', 'Синтаксичний аудит', 'Вживання сполучника «щоб» у підрядній мети', 'Нормативна конструкція']
+          ]
+        },
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(255,161,22,0.12);color:#ffa116;border:1px solid rgba(255,161,22,0.35);"><span>📊 Кейс курсу StrictAI</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;line-height:1.5;">Коректор освітньої платформи StrictAI склав таблицю аудиту рукопису наукової статті за критеріями чинного правопису та культури українського мовлення:</div>' +
+          '<div style="overflow-x:auto;margin:14px 0;border-radius:8px;border:1px solid #33333e;background:#1e1e24;">' +
+          '<table style="width:100%;border-collapse:collapse;text-align:left;font-size:13px;color:#eff1f6;">' +
+          '<thead><tr style="background:#282832;border-bottom:1px solid #3a3a46;color:#ffa116;">' +
+          '<th style="padding:10px 12px;">Рядок</th><th style="padding:10px 12px;">Операція</th><th style="padding:10px 12px;">Формула / Дія</th><th style="padding:10px 12px;">Отримане значення</th>' +
+          '</tr></thead><tbody>' +
+          '<tr style="border-bottom:1px solid #2a2a36;"><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 1</td><td style="padding:9px 12px;">Фонетичний аудит</td><td style="padding:9px 12px;">Кількість звуків у слові «під’їзд» (буква ї = [йі])</td><td style="padding:9px 12px;color:#2cbb5d;">7 букв, 8 звуків</td></tr>' +
+          '<tr style="border-bottom:1px solid #2a2a36;background:rgba(255,255,255,0.02);"><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 2</td><td style="padding:9px 12px;">Морфологічний аудит</td><td style="padding:9px 12px;">Визначення роду незмінюваного іменника «рандеву»</td><td style="padding:9px 12px;color:#2cbb5d;">Середній рід</td></tr>' +
+          '<tr style="border-bottom:1px solid #2a2a36;"><td style="padding:9px 12px;font-weight:700;color:#ef4743;">Рядок 3</td><td style="padding:9px 12px;">Лексико-стилістичний аудит</td><td style="padding:9px 12px;">Редагування вислову: «приймати участь» -> нормативний статус</td><td style="padding:9px 12px;color:#ef4743;font-weight:600;">«приймати участь» зазначено як норма</td></tr>' +
+          '<tr><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 4</td><td style="padding:9px 12px;">Синтаксичний аудит</td><td style="padding:9px 12px;">Вживання сполучника «щоб» у підрядній реченні мети</td><td style="padding:9px 12px;color:#2cbb5d;">Нормативна конструкція</td></tr>' +
+          '</tbody></table></div>' +
+          'Визначте номер рядка, у якому допущено <b>первинну критичну помилку</b> (суржикову кальку, що суперечить літературній нормі):',
+        options: [
+          { key: 'А', text: 'Рядок 1 (фонетичний аудит)' },
+          { key: 'Б', text: 'Рядок 2 (морфологічний аудит)' },
+          { key: 'В', text: 'Рядок 3 (лексико-стилістичний аудит: визнання форми «приймати участь» нормою)' },
+          { key: 'Г', text: 'Рядок 4 (синтаксичний аудит)' }
+        ],
+        correctAnswer: 'В',
+        points: 1,
+        explanation: 'У <b>Рядку 3</b> допущено грубу лексичну помилку. В українській літературній мові вислів «приймати участь» є калькою з російської мови («принимать участие»). Нормативна усталена форма — <b>«брати участь»</b>. Твердження про нормативність фрази «приймати участь» є хибним.'
+      },
+      {
+        id: 'ukr_ai_02',
+        subject: 'ukrainian',
+        topic: 'Синтаксичний граф зв’язків у реченні',
+        type: 'single',
+        aiType: 'visual_diagram',
+        aiBadge: '📐 Багатокомпонентна візуальна схема (Canvas)',
+        title: 'Синтаксичний граф складного багатокомпонентного речення',
+        statement: 'На графічній схемі зображено структуру складного речення з підрядними частинами. Визначте тип супідрядності між частинами [2] та [3]:',
+        diagramData: {
+          type: 'graph',
+          nodes: [
+            { id: 'N1', label: '[1] Головна', x: 250, y: 30, color: '#ffa116' },
+            { id: 'N2', label: '[2] що правда...', x: 120, y: 130, color: '#60a5fa' },
+            { id: 'N3', label: '[3] і справедливість...', x: 380, y: 130, color: '#60a5fa' }
+          ],
+          edges: [
+            { from: 'N1', to: 'N2', label: 'що (з’ясувальна)', directed: true },
+            { from: 'N1', to: 'N3', label: 'що (з’ясувальна)', directed: true },
+            { from: 'N2', to: 'N3', label: 'сполучник [і]', directed: false }
+          ]
+        },
+        visualDiagram: {
+          type: 'node_graph',
+          nodes: [
+            { id: 'N1', label: '[1] Головна', x: 250, y: 30, color: '#ffa116' },
+            { id: 'N2', label: '[2] що правда...', x: 120, y: 130, color: '#60a5fa' },
+            { id: 'N3', label: '[3] і справедливість...', x: 380, y: 130, color: '#60a5fa' }
+          ],
+          edges: [
+            { from: 'N1', to: 'N2', weight: 'що', directed: true },
+            { from: 'N1', to: 'N3', weight: 'що', directed: true }
+          ]
+        },
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.35);"><span>📐 Багатокомпонентна візуальна схема (Canvas)</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">Проаналізуйте графічну схему синтаксичних зв’язків між предикативними частинами багатокомпонентного речення:</div>' +
+          '<div style="background:#1e1e24;border:1px solid #33333e;border-radius:8px;padding:16px;margin:14px 0;display:flex;justify-content:center;">' +
+          '<svg viewBox="0 0 520 180" style="max-width:100%;height:auto;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;">' +
+          '<defs><marker id="arr-u" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#ffa116"/></marker></defs>' +
+          '<line x1="260" y1="52" x2="150" y2="120" stroke="#ffa116" stroke-width="2" marker-end="url(#arr-u)"/>' +
+          '<line x1="260" y1="52" x2="370" y2="120" stroke="#ffa116" stroke-width="2" marker-end="url(#arr-u)"/>' +
+          '<line x1="190" y1="135" x2="330" y2="135" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4,4"/>' +
+          '<rect x="180" y="20" width="160" height="36" rx="6" fill="#282834" stroke="#ffa116" stroke-width="1.8"/>' +
+          '<text x="260" y="43" fill="#eff1f6" font-size="12.5" font-weight="700" text-anchor="middle">[1] Головна частина</text>' +
+          '<rect x="50" y="118" width="150" height="34" rx="6" fill="#202534" stroke="#60a5fa" stroke-width="1.5"/>' +
+          '<text x="125" y="139" fill="#93c5fd" font-size="11.5" text-anchor="middle">[2] Підрядна з’ясувальна</text>' +
+          '<rect x="320" y="118" width="150" height="34" rx="6" fill="#202534" stroke="#60a5fa" stroke-width="1.5"/>' +
+          '<text x="395" y="139" fill="#93c5fd" font-size="11.5" text-anchor="middle">[3] Підрядна з’ясувальна</text>' +
+          '<text x="180" y="80" fill="#ffa116" font-size="11" font-weight="600">що?</text>' +
+          '<text x="340" y="80" fill="#ffa116" font-size="11" font-weight="600">що?</text>' +
+          '<rect x="242" y="123" width="36" height="24" rx="4" fill="#1e1e24" stroke="#60a5fa" stroke-width="1"/>' +
+          '<text x="260" y="139" fill="#ffa116" font-size="12" font-weight="700" text-anchor="middle">і</text>' +
+          '</svg></div>' +
+          'Речення: <i>«Учитель був переконаний [1], що кожен випускник володіє унікальними здібностями [2] і що системна праця забезпечить успіх [3].»</i><br>' +
+          'Який тип зв’язку існує між підрядними частинами [2] та [3]?',
+        options: [
+          { key: 'А', text: 'Однорідна супідрядність (обидві частини відповідають на одне питання й з’єднані сурядним сполучником «і»)' },
+          { key: 'Б', text: 'Послідовне підпорядкування (ланцюгова залежність)' },
+          { key: 'В', text: 'Неоднорідна (паралельна) супідрядність' },
+          { key: 'Г', text: 'Безсполучниковий зв’язок' },
+          { key: 'Д', text: 'Сурядний зв’язок самостійних речень' }
+        ],
+        correctAnswer: 'А',
+        points: 1,
+        explanation: 'Підрядні частини [2] та [3] відносяться до одного й того самого слова в головній частині (<i>був переконаний</i>), відповідають на одне й те саме питання (<i>у чому? / що?</i>), мають однакове з’ясувальне значення та поєднані між собою єднальним сполучником «і». Це еталонний випадок <b>однорідної супідрядності</b>.'
+      },
+      {
+        id: 'ukr_ai_03',
+        subject: 'ukrainian',
+        topic: 'Синтаксичні норми та дієприслівниковий зворот',
+        type: 'single',
+        aiType: 'find_bug',
+        aiBadge: '🐞 Пошук багів у розв’язку (Find the Bug)',
+        title: 'Аналіз граматичної правильності синтаксичної конструкції',
+        statement: 'Учень аналізував речення «Піднявшись на Говерлу, перед туристами розкинувся безкраїй краєвид». На якому кроці допущено фахову помилку?',
+        solutionSteps: [
+          { step: 1, title: 'Крок 1', text: 'Визначено граматичну основу: підмет «краєвид» (іменник у Н.в.), присудок «розкинувся» (дієслово минулого часу).' },
+          { step: 2, title: 'Крок 2', text: 'Визначено другорядні члени речення: «перед туристами» — додаток, «безкраїй» — узгоджене означення.' },
+          { step: 3, title: 'Крок 3', text: 'Зроблено висновок: дієприслівниковий зворот «Піднявшись на Говерлу» вжито стилістично та граматично бездоганно, оскільки він називає додаткову дію.' },
+          { step: 4, title: 'Крок 4', text: 'Пунктуація: оскільки дієприслівниковий зворот стоїть на початку речення, він відокремлюється комою.' }
+        ],
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(239,71,67,0.12);color:#ef4743;border:1px solid rgba(239,71,67,0.35);"><span>🐞 Пошук багів у розв’язку (Find the Bug)</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">Учень виконав синтаксичний аналіз речення: <i>«Піднявшись на Говерлу, перед туристами розкинувся безкраїй краєвид Карпат.»</i></div>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;margin:14px 0;">' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 1</span><span style="font-size:13px;color:#eff1f6;">Граматична основа: підмет — <i>краєвид</i>, простий дієслівний присудок — <i>розкинувся</i>.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 2</span><span style="font-size:13px;color:#eff1f6;">Другорядні члени: <i>перед туристами</i> — додаток, <i>безкраїй</i> — означення.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #ef4743;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ef4743;color:#fff;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 3</span><span style="font-size:13px;color:#eff1f6;">Оцінка норми: дієприслівниковий зворот <i>«Піднявшись на Говерлу»</i> вжито граматично правильно, дія узгоджується із загальним змістом.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 4</span><span style="font-size:13px;color:#eff1f6;">Пунктуація: дієприслівниковий зворот відокремлено комою відповідно до правила.</span></div>' +
+          '</div>' +
+          'На якому кроці аналізу учень припустився <b>грубої синтаксичної помилки</b> в оцінці мовної норми?',
+        options: [
+          { key: 'А', text: 'Крок 1 (визначення граматичної основи)' },
+          { key: 'Б', text: 'Крок 2 (визначення другорядних членів)' },
+          { key: 'В', text: 'Крок 3 (хибна оцінка вживання дієприслівникового звороту)' },
+          { key: 'Г', text: 'Крок 4 (пунктуаційний аналіз)' }
+        ],
+        correctAnswer: 'В',
+        points: 1,
+        explanation: 'Критична помилка допущена на <b>Кроці 3</b>. Дія, виражена дієприслівником (<i>піднявшись</i>), мусить обов’язково виконуватися тим самим діячем, що позначений підметом (<i>краєвид</i>). Але краєвид не може самостійно «піднятися на Говерлу»! Це типова граматична помилка побудови речення з дієприслівниковим зворотом. Нормативний варіант: <i>«Піднявшись на Говерлу, туристи побачили безкраїй краєвид...»</i>.'
+      },
+      {
+        id: 'ukr_ai_04',
+        subject: 'ukrainian',
+        topic: 'Орфографія: вживання апострофа та фільтрація шуму',
+        type: 'single',
+        aiType: 'llm_trap',
+        aiBadge: '🪤 Пастка для LLM (Інформаційний шум)',
+        title: 'Правопис префіксних слів у зашумленому лінгвістичному контексті',
+        statement: 'Відфільтруйте надлишкові псевдонаукові дані та визначте, чи ставиться апостроф у слові «підв..язати»:',
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.35);"><span>🪤 Пастка для LLM (Інформаційний шум)</span></div>' +
+          '<div style="background:rgba(30,30,40,0.7);border-left:4px solid #a855f7;border-radius:6px;padding:12px 16px;margin:12px 0;font-size:13px;line-height:1.6;color:#cbd5e1;">' +
+          '«Згідно з експериментальною специфікацією обчислювальної лінгвістики StrictAI Bamboo-NLP v4.2, при обробці аудіоспектрів на частоті 432 Гц та комбінації лабіодентальних алофонів /v/ із коефіцієнтом фонетичного згасання λ = 0,85, графічний знак роздільної вимови деактивується через асимілятивне пом’якшення...»' +
+          '</div>' +
+          'Проігноруйте інформаційний шум нейромережі та оберіть правильне академічне пояснення правопису слова <b>«підв..язати»</b> за чинним Українським правописом 2019 року:',
+        options: [
+          { key: 'А', text: 'Апостроф обов’язково пишеться: після префікса на твердий приголосний (під-) перед я, ю, є, ї апостроф ставиться завжди (підв’язати)' },
+          { key: 'Б', text: 'Апостроф не пишеться, оскільки перед губним [в] стоїть приголосний [д]' },
+          { key: 'В', text: 'Пишеться м’який знак, оскільки префікс асимілюється' },
+          { key: 'Г', text: 'Слово пишеться через дефіс за стандартом Bamboo-NLP' },
+          { key: 'Д', text: 'Апостроф не пишеться, бо корінь починається на голосний' }
+        ],
+        correctAnswer: 'А',
+        points: 1,
+        explanation: 'Параметри протоколу «Bamboo-NLP v4.2», герци та коефіцієнти — це надлишковий інформаційний шум, на якому великі мовні моделі часто галюцинують. За правилом чинного правопису: <b>після префіксів, що закінчуються на твердий приголосний</b>, перед йотованими <b>я, ю, є, ї</b> апостроф ставиться ЗАВЖДИ незалежно від наступних букв: <i>підв’язати, від’їхати, з’єднати, роз’яснити, об’єм</i>.'
+      },
+// ==========================================
       // МАТЕМАТИКА (10 автентичних завдань)
       // ==========================================
       {
@@ -531,7 +699,177 @@
         explanation: 'Скалярний добуток векторів на площині обчислюється за формулою: <i>ā · b̄ = x₁ · x₂ + y₁ · y₂</i>.<br>Підставляємо координати: <i>ā · b̄ = 3 · 2 + (-4) · 5 = 6 - 20 = <b>-14</b></i>.'
       },
 
-      // ==========================================
+      
+      // --- ШІ-стійкі завдання: Математика ---
+      {
+        id: 'math_ai_01',
+        subject: 'math',
+        topic: 'Фінансовий аналіз та аудит розрахунків',
+        type: 'single',
+        aiType: 'case_study',
+        aiBadge: '📊 Кейс курсу StrictAI',
+        title: 'Аудит фінансових розрахунків IT-стартапу',
+        statement: 'У розрахунковій таблиці фінансового аналітика курсу StrictAI визначте рядок, у якому допущено первинну критичну помилку:',
+        tableData: {
+          headers: ['Рядок', 'Операція', 'Формула / Дія', 'Отримане значення'],
+          rows: [
+            ['Рядок 1', 'Базова собівартість серверних ресурсів', '12 500 + 8 500', '21 000 грн'],
+            ['Рядок 2', 'Коригування на пікове навантаження (резерв 10%)', '21 000 · 0,10', '2 100 грн'],
+            ['Рядок 3', 'Нарахування податку (18% від базової суми 21 000 грн)', '21 000 · 0,18', '4 200 грн'],
+            ['Рядок 4', 'Загальний бюджет проєкту з податками', '21 000 + 2 100 + 4 200', '27 300 грн']
+          ]
+        },
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(255,161,22,0.12);color:#ffa116;border:1px solid rgba(255,161,22,0.35);"><span>📊 Кейс курсу StrictAI</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">У фінансовій звітності стартапу StrictAI наведено розрахункову таблицю кошторису проєкту хмарної інфраструктури:</div>' +
+          '<div style="overflow-x:auto;margin:14px 0;border-radius:8px;border:1px solid #33333e;background:#1e1e24;">' +
+          '<table style="width:100%;border-collapse:collapse;text-align:left;font-size:13px;color:#eff1f6;">' +
+          '<thead><tr style="background:#282832;border-bottom:1px solid #3a3a46;color:#ffa116;">' +
+          '<th style="padding:10px 12px;">Рядок</th><th style="padding:10px 12px;">Операція</th><th style="padding:10px 12px;">Формула / Дія</th><th style="padding:10px 12px;">Отримане значення</th>' +
+          '</tr></thead><tbody>' +
+          '<tr style="border-bottom:1px solid #2a2a36;"><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 1</td><td style="padding:9px 12px;">Базова собівартість серверів</td><td style="padding:9px 12px;">12 500 + 8 500</td><td style="padding:9px 12px;color:#2cbb5d;">21 000 грн</td></tr>' +
+          '<tr style="border-bottom:1px solid #2a2a36;background:rgba(255,255,255,0.02);"><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 2</td><td style="padding:9px 12px;">Резерв навантаження (10%)</td><td style="padding:9px 12px;">21 000 · 0,10</td><td style="padding:9px 12px;color:#2cbb5d;">2 100 грн</td></tr>' +
+          '<tr style="border-bottom:1px solid #2a2a36;"><td style="padding:9px 12px;font-weight:700;color:#ef4743;">Рядок 3</td><td style="padding:9px 12px;">Нарахування податку (18% від 21 000 грн)</td><td style="padding:9px 12px;">21 000 · 0,18</td><td style="padding:9px 12px;color:#ef4743;font-weight:700;">4 200 грн</td></tr>' +
+          '<tr><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 4</td><td style="padding:9px 12px;">Загальний бюджет проєкту</td><td style="padding:9px 12px;">21 000 + 2 100 + 4 200</td><td style="padding:9px 12px;">27 300 грн</td></tr>' +
+          '</tbody></table></div>' +
+          'Визначте номер рядка, у якому аналітик припустився <b>первинної критичної обчислювальної помилки</b>:',
+        options: [
+          { key: 'А', text: 'Рядок 1 (обчислення собівартості)' },
+          { key: 'Б', text: 'Рядок 2 (обчислення 10% резерву)' },
+          { key: 'В', text: 'Рядок 3 (обчислення податку 18% від 21 000 грн)' },
+          { key: 'Г', text: 'Рядок 4 (підсумковий кошторис)' }
+        ],
+        correctAnswer: 'В',
+        points: 1,
+        explanation: 'Первинну обчислювальну помилку допущено в <b>Рядку 3</b>. Точне значення 18% від 21 000 грн становить: <i>21 000 × 0,18 = 3 780 грн</i>. У таблиці помилково вказано <b>4 200 грн</b> (що відповідає 20%, а не 18%). Помилка в Рядку 4 є вторинною (наслідком невірного доданку з Рядка 3).'
+      },
+      {
+        id: 'math_ai_02',
+        subject: 'math',
+        topic: 'Векторний аналіз на координатній сітці',
+        type: 'single',
+        aiType: 'visual_diagram',
+        aiBadge: '📐 Багатокомпонентна візуальна схема (Canvas)',
+        title: 'Суперпозиція та модуль результуючого вектора',
+        statement: 'На одиничній координатній сітці зображено вектори ā(4; 1) та b̄(-2; 4). Знайдіть довжину вектора c̄ = ā + b̄:',
+        diagramData: {
+          type: 'vectors',
+          grid: { step: 24, minX: -3, maxX: 5, minY: -1, maxY: 6 },
+          origin: [120, 150],
+          vectors: [
+            { name: 'ā', start: [0, 0], end: [4, 1], color: '#ffa116' },
+            { name: 'b̄', start: [0, 0], end: [-2, 4], color: '#60a5fa' },
+            { name: 'c̄ = ā + b̄', start: [0, 0], end: [2, 5], color: '#2cbb5d', dashed: true }
+          ]
+        },
+        visualDiagram: {
+          type: 'vectors',
+          vectors: [
+            { name: 'ā', start: [0, 0], end: [4, 1], color: '#ffa116' },
+            { name: 'b̄', start: [0, 0], end: [-2, 4], color: '#60a5fa' }
+          ]
+        },
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.35);"><span>📐 Багатокомпонентна візуальна схема (Canvas)</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">На декартовій координатній площині (розмір сторони клітинки сітки дорівнює 1) зображено два вектори <b>ā</b> та <b>b̄</b>, початки яких суміщені з точкою (0; 0):</div>' +
+          '<div style="background:#1e1e24;border:1px solid #33333e;border-radius:8px;padding:16px;margin:14px 0;display:flex;justify-content:center;">' +
+          '<svg viewBox="0 0 460 220" style="max-width:100%;height:auto;font-family:monospace;">' +
+          '<defs>' +
+          '<pattern id="math-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/></pattern>' +
+          '<marker id="arr-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#ffa116"/></marker>' +
+          '<marker id="arr-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#60a5fa"/></marker>' +
+          '<marker id="arr-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#2cbb5d"/></marker>' +
+          '</defs>' +
+          '<rect width="460" height="220" fill="#1e1e24"/>' +
+          '<rect width="460" height="220" fill="url(#math-grid)"/>' +
+          '<line x1="20" y1="168" x2="440" y2="168" stroke="#64748b" stroke-width="1.5"/>' +
+          '<line x1="164" y1="210" x2="164" y2="15" stroke="#64748b" stroke-width="1.5"/>' +
+          '<text x="430" y="160" fill="#94a3b8" font-size="12">x</text>' +
+          '<text x="174" y="26" fill="#94a3b8" font-size="12">y</text>' +
+          '<circle cx="164" cy="168" r="3.5" fill="#e2e8f0"/>' +
+          '<text x="150" y="184" fill="#94a3b8" font-size="11">0</text>' +
+          '<!-- Vector a (4, 1): 164 + 4*24 = 260, 168 - 1*24 = 144 -->' +
+          '<line x1="164" y1="168" x2="260" y2="144" stroke="#ffa116" stroke-width="2.5" marker-end="url(#arr-a)"/>' +
+          '<text x="268" y="142" fill="#ffa116" font-size="12" font-weight="bold">ā(4; 1)</text>' +
+          '<!-- Vector b (-2, 4): 164 - 2*24 = 116, 168 - 4*24 = 72 -->' +
+          '<line x1="164" y1="168" x2="116" y2="72" stroke="#60a5fa" stroke-width="2.5" marker-end="url(#arr-b)"/>' +
+          '<text x="64" y="66" fill="#60a5fa" font-size="12" font-weight="bold">b̄(-2; 4)</text>' +
+          '<!-- Result vector c (2, 5): 164 + 2*24 = 212, 168 - 5*24 = 48 -->' +
+          '<line x1="164" y1="168" x2="212" y2="48" stroke="#2cbb5d" stroke-width="2.5" stroke-dasharray="5,4" marker-end="url(#arr-c)"/>' +
+          '<text x="220" y="46" fill="#2cbb5d" font-size="12" font-weight="bold">c̄ = ā + b̄</text>' +
+          '</svg></div>' +
+          'Знайдіть модуль (довжину) вектора <b>c̄ = ā + b̄</b>:',
+        options: [
+          { key: 'А', text: '|c̄| = √29' },
+          { key: 'Б', text: '|c̄| = 7' },
+          { key: 'В', text: '|c̄| = √21' },
+          { key: 'Г', text: '|c̄| = 5' },
+          { key: 'Д', text: '|c̄| = √37' }
+        ],
+        correctAnswer: 'А',
+        points: 1,
+        explanation: 'Визначаємо координати вектора суми за правилом додавання векторів:<br><i>c̄ = ā + b̄ = (4 + (-2); 1 + 4) = (2; 5)</i>.<br>Довжина вектора знаходиться за формулою модуля: <i>|c̄| = √(x² + y²) = √(2² + 5²) = √(4 + 25) = <b>√29</b></i>.'
+      },
+      {
+        id: 'math_ai_03',
+        subject: 'math',
+        topic: 'Розв’язування логарифмічних нерівностей',
+        type: 'single',
+        aiType: 'find_bug',
+        aiBadge: '🐞 Пошук багів у розв’язку (Find the Bug)',
+        title: 'Аналіз розв’язання логарифмічної нерівності з основою менше одиниці',
+        statement: 'Учень розв’язував нерівність log_{0.5}(2x - 4) >= -2 у 4 кроки. Визначте, на якому кроці виникла хиба:',
+        solutionSteps: [
+          { step: 1, title: 'Крок 1 (ОДЗ)', text: 'Встановлено область допустимих значень: 2x - 4 > 0 ⇒ 2x > 4 ⇒ x > 2.' },
+          { step: 2, title: 'Крок 2 (Логарифмування)', text: 'Число -2 подано у вигляді логарифма: -2 = log_{0.5}((0.5)⁻²) = log_{0.5} 4. Отримано: log_{0.5}(2x - 4) >= log_{0.5} 4.' },
+          { step: 3, title: 'Крок 3 (Потенціювання)', text: 'Перехід до виразів: 2x - 4 >= 4 (знак нерівності залишено без змін).' },
+          { step: 4, title: 'Крок 4 (Підсумок)', text: 'Розв’язано лінійну нерівність: 2x >= 8 ⇒ x >= 4. З урахуванням ОДЗ відповідь: x ∈ [4; +∞).' }
+        ],
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(239,71,67,0.12);color:#ef4743;border:1px solid rgba(239,71,67,0.35);"><span>🐞 Пошук багів у розв’язку (Find the Bug)</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">Учень розв’язував нерівність <b>log<sub>0,5</sub>(2x - 4) ≥ -2</b> за таким алгоритмом:</div>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;margin:14px 0;">' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 1</span><span style="font-size:13px;color:#eff1f6;"><b>ОДЗ:</b> 2x - 4 > 0 ⇒ 2x > 4 ⇒ <b>x > 2</b>.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 2</span><span style="font-size:13px;color:#eff1f6;">Подання правої частини: -2 = log<sub>0,5</sub>((0,5)<sup>-2</sup>) = log<sub>0,5</sub> 4. Отримали: log<sub>0,5</sub>(2x - 4) ≥ log<sub>0,5</sub> 4.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #ef4743;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ef4743;color:#fff;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 3</span><span style="font-size:13px;color:#eff1f6;">Потенціювання: відкинуто логарифми: <b>2x - 4 ≥ 4</b>.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 4</span><span style="font-size:13px;color:#eff1f6;">Розв’язання: 2x ≥ 8 ⇒ x ≥ 4. Враховуючи ОДЗ, остаточна відповідь: x ∈ [4; +∞).</span></div>' +
+          '</div>' +
+          'Вкажіть номер кроку, на якому учень припустився <b>тонкої математичної помилки</b>:',
+        options: [
+          { key: 'А', text: 'Крок 1 (неправильно знайдено ОДЗ)' },
+          { key: 'Б', text: 'Крок 2 (помилка подання числа -2)' },
+          { key: 'В', text: 'Крок 3 (не змінено знак нерівності при основі 0,5 < 1)' },
+          { key: 'Г', text: 'Крок 4 (арифметична помилка додавання)' },
+          { key: 'Д', text: 'Розв’язок правильний, помилок немає' }
+        ],
+        correctAnswer: 'В',
+        points: 1,
+        explanation: 'Помилка виникла на <b>Кроці 3</b>. Основа логарифма дорівнює <i>0,5</i>, що належить інтервалу <i>(0; 1)</i>. Логарифмічна функція з основою менше 1 є спадною, тому при переході від логарифмів до аргументів <b>знак нерівності обов’язково змінюється на протилежний</b>: <i>2x - 4 ≤ 4 ⇒ 2x ≤ 8 ⇒ x ≤ 4</i>. Разом з ОДЗ (<i>x > 2</i>) правильною відповіддю є проміжок <b>(2; 4]</b>.'
+      },
+      {
+        id: 'math_ai_04',
+        subject: 'math',
+        topic: 'Комбінаторика та фільтрація шуму',
+        type: 'single',
+        aiType: 'llm_trap',
+        aiBadge: '🪤 Пастка для LLM (Інформаційний шум)',
+        title: 'Вибір резервних вузлів у кластері StrictAI Bamboo-V4',
+        statement: 'Дата-центр StrictAI використовує кластер Bamboo-V4 (5.8 ГГц, 1.2 мс, SHA-512, 8 ядер). У блоці є 7 серверів Alpha та 5 серверів Beta. Скількома способами можна вибрати 2 сервери Alpha та 1 сервер Beta?',
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.35);"><span>🪤 Пастка для LLM (Інформаційний шум)</span></div>' +
+          '<div style="background:rgba(30,30,40,0.7);border-left:4px solid #a855f7;border-radius:6px;padding:12px 16px;margin:12px 0;font-size:13px;line-height:1.6;color:#cbd5e1;">' +
+          '«Хмарний дата-центр освітньої платформи StrictAI функціонує за апаратним протоколом «StrictAI Bamboo-V4» на частоті 5,8 ГГц з мережевою латентністю 1,2 мс та протоколом шифрування SHA-512 на базі 8-ядерного нейрочипа. У стійці зберігання встановлено <b>7 однакових резервних серверів класу Alpha</b> та <b>5 серверів класу Beta</b>...»' +
+          '</div>' +
+          'Для проведення планового технічного аудиту старшому інженеру необхідно відібрати <b>рівно 2 довільні сервери класу Alpha</b> та <b>1 довільний сервер класу Beta</b>.<br>' +
+          'Скількома різними способами можна сформувати таку тестову групу?',
+        options: [
+          { key: 'А', text: '105' },
+          { key: 'Б', text: '420' },
+          { key: 'В', text: '840' },
+          { key: 'Г', text: '672' },
+          { key: 'Д', text: '35' }
+        ],
+        correctAnswer: 'А',
+        points: 1,
+        explanation: 'Усі технічні дані про частоту (5,8 ГГц), латентність (1,2 мс), SHA-512 та 8 ядер є типовим інформаційним шумом, на якому ШІ починає галюцинувати й перемножувати зайві числа.<br>Суть задачі полягає у фільтрації шуму та застосуванні правила добутку комбінаторики:<br>1) Кількість комбінацій вибору 2 серверів з 7 типу Alpha: <i>C₇² = (7 · 6) / (2 · 1) = 21</i>.<br>2) Кількість комбінацій вибору 1 сервера з 5 типу Beta: <i>C₅¹ = 5</i>.<br>3) Загальна кількість способів: <i>21 · 5 = <b>105</b></i>.'
+      },
+// ==========================================
       // ІСТОРІЯ УКРАЇНИ (8 автентичних завдань)
       // ==========================================
       {
@@ -689,7 +1027,179 @@
         explanation: 'I Універсал проголосив автономію («не одділяючись від всієї Росії», Б); II Універсал став кроком назад і компромісом (А); III Універсал заснував УНР (В); IV Універсал юридично оформив повну суверенну незалежність УНР (Г).'
       },
 
-      // ==========================================
+      
+      // --- ШІ-стійкі завдання: Історія України ---
+      {
+        id: 'hist_ai_01',
+        subject: 'history',
+        topic: 'Хронологія Української революції 1917–1921 рр.',
+        type: 'single',
+        aiType: 'case_study',
+        aiBadge: '📊 Кейс курсу StrictAI',
+        title: 'Аудит хронологічної таблиці державотворення',
+        statement: 'У хронологічній таблиці подій Української революції визначте рядок з помилковою історичною подією або датою:',
+        tableData: {
+          headers: ['Рядок', 'Операція', 'Формула / Дія', 'Отримане значення'],
+          rows: [
+            ['Рядок 1', 'Заснування Центральної Ради', 'Березень 1917 р. / обрання голови', 'Михайло Грушевський очолив УЦР'],
+            ['Рядок 2', 'Оприлюднення I Універсалу', 'Червень 1917 р. / II Військовий з’їзд', 'Проголошення автономії України'],
+            ['Рядок 3', 'Ухвалення IV Універсалу', '9 (22) січня 1918 р. / загроза більшовиків', 'Проголошення гетьманату П. Скоропадського'],
+            ['Рядок 4', 'Урочистий Акт Злуки', '22 січня 1919 р. / Софійська площа', 'Об’єднання УНР і ЗУНР в одну державу']
+          ]
+        },
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(255,161,22,0.12);color:#ffa116;border:1px solid rgba(255,161,22,0.35);"><span>📊 Кейс курсу StrictAI</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">У лабораторії історичних досліджень курсу StrictAI складено зведену таблицю ключових державотворчих актів періоду Української революції 1917–1921 рр.:</div>' +
+          '<div style="overflow-x:auto;margin:14px 0;border-radius:8px;border:1px solid #33333e;background:#1e1e24;">' +
+          '<table style="width:100%;border-collapse:collapse;text-align:left;font-size:13px;color:#eff1f6;">' +
+          '<thead><tr style="background:#282832;border-bottom:1px solid #3a3a46;color:#ffa116;">' +
+          '<th style="padding:10px 12px;">Рядок</th><th style="padding:10px 12px;">Операція</th><th style="padding:10px 12px;">Формула / Дія</th><th style="padding:10px 12px;">Отримане значення</th>' +
+          '</tr></thead><tbody>' +
+          '<tr style="border-bottom:1px solid #2a2a36;"><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 1</td><td style="padding:9px 12px;">Заснування Центральної Ради</td><td style="padding:9px 12px;">Березень 1917 р. / вибори керівництва</td><td style="padding:9px 12px;color:#2cbb5d;">М. Грушевський очолив УЦР</td></tr>' +
+          '<tr style="border-bottom:1px solid #2a2a36;background:rgba(255,255,255,0.02);"><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 2</td><td style="padding:9px 12px;">Оприлюднення I Універсалу</td><td style="padding:9px 12px;">Червень 1917 р. / реакція на відмову Петрограда</td><td style="padding:9px 12px;color:#2cbb5d;">Проголошення автономії України</td></tr>' +
+          '<tr style="border-bottom:1px solid #2a2a36;"><td style="padding:9px 12px;font-weight:700;color:#ef4743;">Рядок 3</td><td style="padding:9px 12px;">Ухвалення IV Універсалу</td><td style="padding:9px 12px;">9 (22) січня 1918 р. / Брест-Литовський мир</td><td style="padding:9px 12px;color:#ef4743;font-weight:700;">Проголошення гетьманату П. Скоропадського</td></tr>' +
+          '<tr><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Рядок 4</td><td style="padding:9px 12px;">Урочистий Акт Злуки</td><td style="padding:9px 12px;">22 січня 1919 р. / Софійський майдан у Києві</td><td style="padding:9px 12px;color:#2cbb5d;">Соборне об’єднання УНР і ЗУНР</td></tr>' +
+          '</tbody></table></div>' +
+          'Визначте рядок, у якому допущено <b>первинну критичну фактичну помилку</b>:',
+        options: [
+          { key: 'А', text: 'Рядок 1' },
+          { key: 'Б', text: 'Рядок 2' },
+          { key: 'В', text: 'Рядок 3 (зміст IV Універсалу)' },
+          { key: 'Г', text: 'Рядок 4' }
+        ],
+        correctAnswer: 'В',
+        points: 1,
+        explanation: 'У <b>Рядку 3</b> зафіксовано грубу історичну помилку. <b>IV Універсалом Центральної Ради (ухваленим 9 (22) січня 1918 р.)</b> було проголошено <b>самостійність, незалежність і суверенітет УНР</b> («Однині Українська Народна Республіка стає самостійною, ні від кого незалежною...»). Гетьманат Павла Скоропадського (Українська Держава) постав унаслідок державного перевороту лише <b>29 квітня 1918 року</b>.'
+      },
+      {
+        id: 'hist_ai_02',
+        subject: 'history',
+        topic: 'Гетьманщина та міжнародні договори XVII ст.',
+        type: 'single',
+        aiType: 'visual_diagram',
+        aiBadge: '📐 Багатокомпонентна візуальна схема (Canvas)',
+        title: 'Схема федеративного устрою за Гадяцьким договором (1658)',
+        statement: 'На трикомпонентній схемі унії трьох народів визначте назву суб’єкта [Вузол X], який представляв українські землі:',
+        diagramData: {
+          type: 'graph',
+          nodes: [
+            { id: 'K', label: 'Спільний Король', x: 260, y: 30, color: '#ffa116' },
+            { id: 'P', label: 'Корона Польська', x: 90, y: 140, color: '#eff1f6' },
+            { id: 'L', label: 'ВК Литовське', x: 260, y: 140, color: '#eff1f6' },
+            { id: 'X', label: '[Вузол X: Гетьманщина]', x: 430, y: 140, color: '#2cbb5d' }
+          ],
+          edges: [
+            { from: 'K', to: 'P', directed: true },
+            { from: 'K', to: 'L', directed: true },
+            { from: 'K', to: 'X', directed: true },
+            { from: 'P', to: 'L', directed: false },
+            { from: 'L', to: 'X', directed: false }
+          ]
+        },
+        visualDiagram: {
+          type: 'node_graph',
+          nodes: [
+            { id: 'K', label: 'Спільний Король', x: 260, y: 30, color: '#ffa116' },
+            { id: 'P', label: 'Корона Польська', x: 90, y: 140, color: '#eff1f6' },
+            { id: 'L', label: 'ВК Литовське', x: 260, y: 140, color: '#eff1f6' },
+            { id: 'X', label: '[Вузол X]', x: 430, y: 140, color: '#2cbb5d' }
+          ],
+          edges: [
+            { from: 'K', to: 'P', weight: 'унія', directed: true },
+            { from: 'K', to: 'L', weight: 'унія', directed: true },
+            { from: 'K', to: 'X', weight: 'унія', directed: true }
+          ]
+        },
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.35);"><span>📐 Багатокомпонентна візуальна схема (Canvas)</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">Розгляньте модель федеративного устрою Речі Посполитої Трьох Народів за проектом Гадяцького трактату (1658 р.), укладеного гетьманом Іваном Виговським:</div>' +
+          '<div style="background:#1e1e24;border:1px solid #33333e;border-radius:8px;padding:16px;margin:14px 0;display:flex;justify-content:center;">' +
+          '<svg viewBox="0 0 520 190" style="max-width:100%;height:auto;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;">' +
+          '<rect width="520" height="190" fill="#1e1e24"/>' +
+          '<line x1="260" y1="56" x2="100" y2="120" stroke="#ffa116" stroke-width="2"/>' +
+          '<line x1="260" y1="56" x2="260" y2="120" stroke="#ffa116" stroke-width="2"/>' +
+          '<line x1="260" y1="56" x2="420" y2="120" stroke="#ffa116" stroke-width="2"/>' +
+          '<line x1="150" y1="138" x2="210" y2="138" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,3"/>' +
+          '<line x1="310" y1="138" x2="370" y2="138" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,3"/>' +
+          '<rect x="180" y="20" width="160" height="36" rx="6" fill="#282834" stroke="#ffa116" stroke-width="2"/>' +
+          '<text x="260" y="43" fill="#ffa116" font-size="12" font-weight="700" text-anchor="middle">👑 Спільний виборний Король</text>' +
+          '<rect x="30" y="120" width="140" height="40" rx="6" fill="#222736" stroke="#94a3b8" stroke-width="1.5"/>' +
+          '<text x="100" y="145" fill="#eff1f6" font-size="11.5" text-anchor="middle">Корона Польська</text>' +
+          '<rect x="190" y="120" width="140" height="40" rx="6" fill="#222736" stroke="#94a3b8" stroke-width="1.5"/>' +
+          '<text x="260" y="145" fill="#eff1f6" font-size="11.5" text-anchor="middle">ВК Литовське</text>' +
+          '<rect x="350" y="120" width="140" height="40" rx="6" fill="#1b2e24" stroke="#2cbb5d" stroke-width="2"/>' +
+          '<text x="420" y="145" fill="#2cbb5d" font-size="12" font-weight="bold" text-anchor="middle">❓ [Вузол X]</text>' +
+          '</svg></div>' +
+          'Яку назву повинен був мати третій рівноправний суб’єкт федерації (Київське, Чернігівське, Брацлавське воєводства), позначений на схемі як <b>[Вузол X]</b>?',
+        options: [
+          { key: 'А', text: 'Велике Князівство Руське' },
+          { key: 'Б', text: 'Князівство Київське' },
+          { key: 'В', text: 'Військо Запорозьке Низове' },
+          { key: 'Г', text: 'Малоросійська Губернія' },
+          { key: 'Д', text: 'Українське Королівство' }
+        ],
+        correctAnswer: 'А',
+        points: 1,
+        explanation: 'За Гадяцьким трактатом 1658 року козацька Україна мала увійти до складу оновленої Речі Посполитої як третій самостійний суб’єкт федерації під назвою <b>Велике Князівство Руське</b> з власним урядом, скарбницею, судом та 40-тисячним військом на чолі з Гетьманом.'
+      },
+      {
+        id: 'hist_ai_03',
+        subject: 'history',
+        topic: 'Національно-визвольна війна середини XVII ст.',
+        type: 'single',
+        aiType: 'find_bug',
+        aiBadge: '🐞 Пошук багів у розв’язку (Find the Bug)',
+        title: 'Аналіз умов та наслідків Зборівського мирного договору (1649)',
+        statement: 'Учень сформулював 4 тези щодо Зборівського договору 1649 року. На якому кроці допущено фактичну помилку?',
+        solutionSteps: [
+          { step: 1, title: 'Крок 1', text: 'У серпні 1649 р. під Зборовом козацько-кримська армія оточила польські коронні війська короля Яна II Казимира.' },
+          { step: 2, title: 'Крок 2', text: 'Кримський хан Іслам-Гірей III під загрозою переходу на бік короля змусив Б. Хмельницького укласти мирний договір.' },
+          { step: 3, title: 'Крок 3', text: 'За умовами Зборівського миру реєстр козаків було обмежено 20 тисячами осіб, а владу гетьмана звужено до 1 воєводства.' },
+          { step: 4, title: 'Крок 4', text: 'На території козацької автономії заборонялося перебувати польським коронним військам, шляхті та єзуїтам.' }
+        ],
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(239,71,67,0.12);color:#ef4743;border:1px solid rgba(239,71,67,0.35);"><span>🐞 Пошук багів у розв’язку (Find the Bug)</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">Учень склав конспект-реконструкцію положень <b>Зборівського мирного договору 1649 року</b>:</div>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;margin:14px 0;">' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 1</span><span style="font-size:13px;color:#eff1f6;">У серпні 1649 р. козацько-татарське військо здобуло перемогу в Зборівській битві та оточило короля Яна II Казимира.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 2</span><span style="font-size:13px;color:#eff1f6;">Шахрайська позиція хана Іслам-Гірея III змусила Б. Хмельницького піти на підписання компромісного мирного договору.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #ef4743;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ef4743;color:#fff;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 3</span><span style="font-size:13px;color:#eff1f6;">За Зборівським договором реєстр було скорочено до <b>20 000 осіб</b>, а гетьманську юрисдикцію обмежено <b>лише Київським воєводством</b>.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">КРОК 4</span><span style="font-size:13px;color:#eff1f6;">Польським військам та єзуїтам було категорично заборонено перебувати на теренах автономних козацьких воєводств.</span></div>' +
+          '</div>' +
+          'На якому кроці допущено <b>грубу історичну помилку</b> щодо умов договору?',
+        options: [
+          { key: 'А', text: 'Крок 1' },
+          { key: 'Б', text: 'Крок 2' },
+          { key: 'В', text: 'Крок 3 (невірні дані про козацький реєстр та територію автономії)' },
+          { key: 'Г', text: 'Крок 4' }
+        ],
+        correctAnswer: 'В',
+        points: 1,
+        explanation: 'Фактичну помилку допущено на <b>Кроці 3</b>. За умовами Зборівського договору 1649 р. козацький реєстр визначався в кількості <b>40 000 осіб</b> (а не 20 тисяч, як було пізніше у Білоцерківському договорі 1651 р.), а влада гетьмана поширювалася на <b>три воєводства: Київське, Брацлавське та Чернігівське</b>.'
+      },
+      {
+        id: 'hist_ai_04',
+        subject: 'history',
+        topic: 'Геополітика Гетьманщини та фільтрація шуму',
+        type: 'single',
+        aiType: 'llm_trap',
+        aiBadge: '🪤 Пастка для LLM (Інформаційний шум)',
+        title: 'Міжнародна політика та керманич Гетьманщини 1657 року',
+        statement: 'Серед надлишкових геополітичних даних XVII ст. визначте, хто очолював Військо Запорозьке до своєї смерті в Чигирині в серпні 1657 року:',
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.35);"><span>🪤 Пастка для LLM (Інформаційний шум)</span></div>' +
+          '<div style="background:rgba(30,30,40,0.7);border-left:4px solid #a855f7;border-radius:6px;padding:12px 16px;margin:12px 0;font-size:13px;line-height:1.6;color:#cbd5e1;">' +
+          '«На тлі наслідків Вестфальського миру 1648 р., династичних претензій шведського короля Карла X Густава, Віленського перемир’я між Московією і Варшавою, а також військової експедиції трансільванського князя Дєрдя II Ракоці з 25 000 вершників та 14 польовими гарматами...»' +
+          '</div>' +
+          'Відфільтруйте дипломатичний та військовий шум. <b>Хто був чинним гетьманом України</b> та очолював Військо Запорозьке до дня своєї смерті в Чигирині в <b>серпні 1657 року</b>?',
+        options: [
+          { key: 'А', text: 'Богдан Хмельницький' },
+          { key: 'Б', text: 'Іван Виговський' },
+          { key: 'В', text: 'Юрій Хмельницький' },
+          { key: 'Г', text: 'Дєрдь II Ракоці' },
+          { key: 'Д', text: 'Петро Дорошенко' }
+        ],
+        correctAnswer: 'А',
+        points: 1,
+        explanation: 'Численні згадки про Вестфальський мир, Карла X Густава, Ракоці та гармати є типовим інформаційним шумом, на якому ШІ починає галюцинувати і вибирати інших діячів. Ключовий історичний факт чіткий і незмінний: гетьманом України аж до своєї смерті <b>27 липня (6 серпня) 1657 року</b> в резиденції в Чигирині був творець української держави <b>Богдан Хмельницький</b>.'
+      },
+// ==========================================
       // АНГЛІЙСЬКА МОВА (8 автентичних завдань)
       // ==========================================
       {
@@ -839,6 +1349,177 @@
         correctAnswer: { '1': 'Б', '2': 'Г', '3': 'А', '4': 'В' },
         points: 4,
         explanation: '1 — «has been studying» is Present Perfect Continuous (Б); 2 — «will ring» is Future Simple (Г); 3 — «was solving» is Past Continuous (А); 4 — «had finished» is Past Perfect (В).'
+      },
+
+      // --- ШІ-стійкі завдання: Англійська мова ---
+      {
+        id: 'eng_ai_01',
+        subject: 'english',
+        topic: 'Academic Writing & Error Audit',
+        type: 'single',
+        aiType: 'case_study',
+        aiBadge: '📊 Кейс курсу StrictAI',
+        title: 'Academic Essay Proofreading Audit',
+        statement: 'In the editorial table evaluating an academic essay, identify the row that contains a structural conditional tense error:',
+        tableData: {
+          headers: ['Row', 'Section', 'Extracted Sentence', 'Linguistic Feature'],
+          rows: [
+            ['Row 1', 'Introduction', '«Artificial intelligence is rapidly transforming tertiary education.»', 'Present Continuous for current trends (Correct)'],
+            ['Row 2', 'Methodology', '«Over 1,200 participants were surveyed across five universities.»', 'Past Simple Passive Voice (Correct)'],
+            ['Row 3', 'Discussion', '«If universities invested more funds last semester, all students would have passed.»', 'Third Conditional structure (Mismatch!)'],
+            ['Row 4', 'Conclusion', '«Consequently, adopting adaptive algorithms is highly recommended.»', 'Academic adverbial connector (Correct)']
+          ]
+        },
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(255,161,22,0.12);color:#ffa116;border:1px solid rgba(255,161,22,0.35);"><span>📊 Кейс курсу StrictAI</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">An IELTS/NMT examiner reviewed the structural integrity of four sentences extracted from an argumentative research draft:</div>' +
+          '<div style="overflow-x:auto;margin:14px 0;border-radius:8px;border:1px solid #33333e;background:#1e1e24;">' +
+          '<table style="width:100%;border-collapse:collapse;text-align:left;font-size:13px;color:#eff1f6;">' +
+          '<thead><tr style="background:#282832;border-bottom:1px solid #3a3a46;color:#ffa116;">' +
+          '<th style="padding:10px 12px;">Row</th><th style="padding:10px 12px;">Section</th><th style="padding:10px 12px;">Extracted Sentence</th><th style="padding:10px 12px;">Linguistic Feature</th>' +
+          '</tr></thead><tbody>' +
+          '<tr style="border-bottom:1px solid #2a2a36;"><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Row 1</td><td style="padding:9px 12px;">Introduction</td><td style="padding:9px 12px;">«Artificial intelligence is rapidly transforming tertiary education.»</td><td style="padding:9px 12px;color:#2cbb5d;">Present Continuous for current trend</td></tr>' +
+          '<tr style="border-bottom:1px solid #2a2a36;background:rgba(255,255,255,0.02);"><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Row 2</td><td style="padding:9px 12px;">Methodology</td><td style="padding:9px 12px;">«Over 1,200 participants were surveyed across five universities.»</td><td style="padding:9px 12px;color:#2cbb5d;">Past Simple Passive Voice</td></tr>' +
+          '<tr style="border-bottom:1px solid #2a2a36;"><td style="padding:9px 12px;font-weight:700;color:#ef4743;">Row 3</td><td style="padding:9px 12px;">Discussion</td><td style="padding:9px 12px;">«If universities invested more funds last semester, all students would have passed.»</td><td style="padding:9px 12px;color:#ef4743;font-weight:700;">Conditional tense mismatch</td></tr>' +
+          '<tr><td style="padding:9px 12px;font-weight:700;color:#60a5fa;">Row 4</td><td style="padding:9px 12px;">Conclusion</td><td style="padding:9px 12px;">«Consequently, adopting adaptive algorithms is highly recommended.»</td><td style="padding:9px 12px;color:#2cbb5d;">Formal academic transition</td></tr>' +
+          '</tbody></table></div>' +
+          'In which row did the author commit a <b>critical structural grammatical error</b> in conditional clause construction?',
+        options: [
+          { key: 'А', text: 'Row 1' },
+          { key: 'Б', text: 'Row 2' },
+          { key: 'В', text: 'Row 3 (If universities invested... would have passed)' },
+          { key: 'Г', text: 'Row 4' }
+        ],
+        correctAnswer: 'В',
+        points: 1,
+        explanation: 'In <b>Row 3</b>, the sentence describes an unreal situation in the past (time marker: <i>«last semester»</i>). In standard English, a past counterfactual condition (Third Conditional) requires <b>Past Perfect</b> in the if-clause: <i>«If universities <b>had invested</b> more funds last semester, all students would have passed.»</i> Using Past Simple (<i>invested</i>) with <i>would have passed</i> is a severe conditional error.'
+      },
+      {
+        id: 'eng_ai_02',
+        subject: 'english',
+        topic: 'Conditionals Decision Logic',
+        type: 'single',
+        aiType: 'visual_diagram',
+        aiBadge: '📐 Багатокомпонентна візуальна схема (Canvas)',
+        title: 'Decision Flowchart for English Conditionals',
+        statement: 'According to the grammar decision flowchart, identify the formula for Gate [X] (Third Conditional - Unreal Past):',
+        diagramData: {
+          type: 'logic_gates',
+          nodes: [
+            { id: 'Q1', label: 'Condition in Future?', x: 180, y: 30, type: 'decision' },
+            { id: 'C1', label: '1st: If + Present, will + V', x: 420, y: 30, type: 'output' },
+            { id: 'Q2', label: 'Unreal in Present?', x: 180, y: 110, type: 'decision' },
+            { id: 'C2', label: '2nd: If + Past, would + V', x: 420, y: 110, type: 'output' },
+            { id: 'X', label: 'Gate [X]: Unreal PAST (Regret)', x: 180, y: 180, type: 'target' }
+          ],
+          edges: [
+            { from: 'Q1', to: 'C1', label: 'YES (Real)' },
+            { from: 'Q1', to: 'Q2', label: 'NO' },
+            { from: 'Q2', to: 'C2', label: 'YES' },
+            { from: 'Q2', to: 'X', label: 'NO (Past)' }
+          ]
+        },
+        visualDiagram: {
+          type: 'circuit',
+          circuitNodes: [
+            { name: 'Decision 1: Real Future', result: 'First Conditional' },
+            { name: 'Decision 2: Unreal Present', result: 'Second Conditional' },
+            { name: 'Gate X: Unreal Past', result: 'Third Conditional' }
+          ]
+        },
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.35);"><span>📐 Багатокомпонентна візуальна схема (Canvas)</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">Examine the conditional sentence decision tree flowchart:</div>' +
+          '<div style="background:#1e1e24;border:1px solid #33333e;border-radius:8px;padding:16px;margin:14px 0;display:flex;justify-content:center;">' +
+          '<svg viewBox="0 0 540 220" style="max-width:100%;height:auto;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;">' +
+          '<defs><marker id="arr-e" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#ffa116"/></marker></defs>' +
+          '<rect width="540" height="220" fill="#1e1e24"/>' +
+          '<!-- Lines -->' +
+          '<line x1="220" y1="40" x2="330" y2="40" stroke="#ffa116" stroke-width="2" marker-end="url(#arr-e)"/>' +
+          '<line x1="120" y1="60" x2="120" y2="100" stroke="#64748b" stroke-width="2" marker-end="url(#arr-e)"/>' +
+          '<line x1="220" y1="120" x2="330" y2="120" stroke="#ffa116" stroke-width="2" marker-end="url(#arr-e)"/>' +
+          '<line x1="120" y1="140" x2="120" y2="175" stroke="#64748b" stroke-width="2" marker-end="url(#arr-e)"/>' +
+          '<!-- Nodes -->' +
+          '<rect x="20" y="20" width="200" height="40" rx="6" fill="#282834" stroke="#ffa116" stroke-width="1.8"/>' +
+          '<text x="120" y="44" fill="#eff1f6" font-size="11.5" font-weight="600" text-anchor="middle">Is condition real in FUTURE?</text>' +
+          '<rect x="340" y="20" width="180" height="40" rx="6" fill="#222b3a" stroke="#60a5fa" stroke-width="1.5"/>' +
+          '<text x="430" y="44" fill="#93c5fd" font-size="11.5" font-weight="700" text-anchor="middle">1st: If + Pres, will + V</text>' +
+          '<rect x="20" y="100" width="200" height="40" rx="6" fill="#282834" stroke="#ffa116" stroke-width="1.8"/>' +
+          '<text x="120" y="124" fill="#eff1f6" font-size="11.5" font-weight="600" text-anchor="middle">Unreal in the PRESENT?</text>' +
+          '<rect x="340" y="100" width="180" height="40" rx="6" fill="#222b3a" stroke="#60a5fa" stroke-width="1.5"/>' +
+          '<text x="430" y="124" fill="#93c5fd" font-size="11.5" font-weight="700" text-anchor="middle">2nd: If + Past, would + V</text>' +
+          '<rect x="20" y="175" width="500" height="36" rx="6" fill="#1b2e24" stroke="#2cbb5d" stroke-width="2"/>' +
+          '<text x="270" y="198" fill="#2cbb5d" font-size="12" font-weight="bold" text-anchor="middle">❓ Gate [X]: Unreal in the PAST (Regret / Counterfactual)</text>' +
+          '</svg></div>' +
+          'What is the grammatical formula for <b>Gate [X] (Third Conditional)</b>?',
+        options: [
+          { key: 'А', text: 'If + Past Perfect, would have + V3' },
+          { key: 'Б', text: 'If + Past Simple, would + base verb' },
+          { key: 'В', text: 'If + Present Simple, will + base verb' },
+          { key: 'Г', text: 'If + Past Continuous, would have been' },
+          { key: 'Д', text: 'If + Past Perfect, will + V3' }
+        ],
+        correctAnswer: 'А',
+        points: 1,
+        explanation: 'According to English grammar rules and the flowchart, when an event is counterfactual and situated in the <b>past</b> (expressing regret or an impossible past change), we use the <b>Third Conditional</b>: <i>If + Past Perfect (had + V3), would have + V3</i> (e.g., <i>«If she had started earlier, she would have completed the exam in time»</i>).'
+      },
+      {
+        id: 'eng_ai_03',
+        subject: 'english',
+        topic: 'Reported Speech & Tense Backshift',
+        type: 'single',
+        aiType: 'find_bug',
+        aiBadge: '🐞 Пошук багів у розв’язку (Find the Bug)',
+        title: 'Reported Speech Transformation Bug Detection',
+        statement: 'A student transformed direct speech into reported speech in 4 steps. At which step did the student make a grammatical backshift error?',
+        solutionSteps: [
+          { step: 1, title: 'Step 1 (Reporting Clause)', text: 'Introduced past reporting verb: Olena explained that...' },
+          { step: 2, title: 'Step 2 (Pronoun Shift)', text: 'Shifted personal pronoun: «I» became «she».' },
+          { step: 3, title: 'Step 3 (Tense Backshift)', text: 'Retained present perfect: «have already finished» was left as «she has already finished».' },
+          { step: 4, title: 'Step 4 (Time Expression)', text: 'Shifted time adverbial: «today» was changed to «that day».' }
+        ],
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(239,71,67,0.12);color:#ef4743;border:1px solid rgba(239,71,67,0.35);"><span>🐞 Пошук багів у розв’язку (Find the Bug)</span></div>' +
+          '<div style="margin-bottom:12px;font-weight:500;">Original sentence: <i>Olena said: «I have already finished my coding project today.»</i></div>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;margin:14px 0;">' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">STEP 1</span><span style="font-size:13px;color:#eff1f6;">Selected past introductory reporting verb: <i>Olena explained that...</i></span></div>' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">STEP 2</span><span style="font-size:13px;color:#eff1f6;">Adjusted personal pronouns: <i>«I» -> «she», «my» -> «her»</i>.</span></div>' +
+          '<div style="background:#23232c;border:1px solid #ef4743;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ef4743;color:#fff;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">STEP 3</span><span style="font-size:13px;color:#eff1f6;">Verbal tense transformation: <i>«have already finished» -> «has already finished»</i> (retained present perfect).</span></div>' +
+          '<div style="background:#23232c;border:1px solid #363644;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:12px;"><span style="background:#ffa116;color:#121212;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;">STEP 4</span><span style="font-size:13px;color:#eff1f6;">Adjusted deictic time marker: <i>«today» -> «that day»</i>.</span></div>' +
+          '</div>' +
+          'At which step did the student make a <b>grammatical tense backshift error</b>?',
+        options: [
+          { key: 'А', text: 'Step 1' },
+          { key: 'Б', text: 'Step 2' },
+          { key: 'В', text: 'Step 3 (failure to backshift Present Perfect to Past Perfect)' },
+          { key: 'Г', text: 'Step 4' }
+        ],
+        correctAnswer: 'В',
+        points: 1,
+        explanation: 'The grammatical error occurred at <b>Step 3</b>. When the reporting verb is in the past (<i>«Olena explained...»</i>), the rule of sequence of tenses dictates that <b>Present Perfect (have/has finished) must backshift to Past Perfect (had finished)</b>. The correct sentence is: <i>«Olena explained that she <b>had already finished</b> her coding project that day.»</i>'
+      },
+      {
+        id: 'eng_ai_04',
+        subject: 'english',
+        topic: 'Subject-Verb Agreement & Noise Distractors',
+        type: 'single',
+        aiType: 'llm_trap',
+        aiBadge: '🪤 Пастка для LLM (Інформаційний шум)',
+        title: 'Core Agreement Under Complex Technical Noise',
+        statement: 'Filter out redundant parameters and identify the correct singular verb agreeing with the head subject «The principal architect»:',
+        question: '<div class="ai-badge-header" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-bottom:12px;background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.35);"><span>🪤 Пастка для LLM (Інформаційний шум)</span></div>' +
+          '<div style="background:rgba(30,30,40,0.7);border-left:4px solid #a855f7;border-radius:6px;padding:12px 16px;margin:12px 0;font-size:13px;line-height:1.6;color:#cbd5e1;">' +
+          '«In the distributed microservice cluster, where 128 multi-threaded tensor accelerators alongside 32 optical network routing switches operating under protocol StrictAI Bamboo-V4 (operate / operates) concurrently...»' +
+          '</div>' +
+          'Fill in the blank with the correct verb form:<br><br>' +
+          '<i>«...<b>the principal architect</b> of all these high-throughput neural clusters _______ directly accountable for cybersecurity compliance.»</i>',
+        options: [
+          { key: 'А', text: 'remains' },
+          { key: 'Б', text: 'remain' },
+          { key: 'В', text: 'are remaining' },
+          { key: 'Г', text: 'have remained' },
+          { key: 'Д', text: 'to remain' }
+        ],
+        correctAnswer: 'А',
+        points: 1,
+        explanation: 'All plural technical nouns (<i>accelerators, switches, clusters, protocol Bamboo-V4</i>) within intervening subordinate and prepositional phrases are distractors designed to confuse automated LLMs into selecting a plural verb. The true head subject of the independent clause is singular: <b>the principal architect</b>. Therefore, subject-verb agreement requires the third-person singular present form: <b>remains</b>.'
       }
     ],
 
@@ -863,6 +1544,212 @@
       return Math.min(200, Math.max(100, scaled));
     },
 
+
+    // Canvas renderer для візуальних схем (вектори, графи, логічні схеми)
+    renderDiagram: function(canvas, diagramData, theme) {
+      if (!canvas || !canvas.getContext || !diagramData) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+      const isDark = theme !== 'light';
+      const width = canvas.clientWidth || canvas.width || 540;
+      const height = canvas.clientHeight || canvas.height || 220;
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
+
+      // Background
+      ctx.fillStyle = isDark ? '#1e1e24' : '#f8f9fa';
+      ctx.fillRect(0, 0, width, height);
+
+      // Border
+      ctx.strokeStyle = isDark ? '#33333e' : '#e2e4e9';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(0, 0, width, height);
+
+      const colors = {
+        bg: isDark ? '#1e1e24' : '#ffffff',
+        text: isDark ? '#eff1f6' : '#141417',
+        textMuted: isDark ? '#9ca3af' : '#64748b',
+        amber: '#ffa116',
+        blue: '#60a5fa',
+        emerald: '#2cbb5d',
+        grid: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'
+      };
+
+      if (diagramData.type === 'vectors') {
+        const originX = width * 0.35;
+        const originY = height * 0.70;
+        const step = 26;
+
+        // Grid
+        ctx.strokeStyle = colors.grid;
+        ctx.lineWidth = 1;
+        for (let gx = -4; gx <= 8; gx++) {
+          ctx.beginPath();
+          ctx.moveTo(originX + gx * step, 10);
+          ctx.lineTo(originX + gx * step, height - 10);
+          ctx.stroke();
+        }
+        for (let gy = -2; gy <= 6; gy++) {
+          ctx.beginPath();
+          ctx.moveTo(10, originY - gy * step);
+          ctx.lineTo(width - 10, originY - gy * step);
+          ctx.stroke();
+        }
+
+        // Axes
+        ctx.strokeStyle = colors.textMuted;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(15, originY);
+        ctx.lineTo(width - 15, originY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(originX, height - 15);
+        ctx.lineTo(originX, 15);
+        ctx.stroke();
+
+        // Vectors
+        (diagramData.vectors || []).forEach(v => {
+          const sx = originX + v.start[0] * step;
+          const sy = originY - v.start[1] * step;
+          const ex = originX + v.end[0] * step;
+          const ey = originY - v.end[1] * step;
+
+          ctx.strokeStyle = v.color || colors.amber;
+          ctx.lineWidth = 2.5;
+          ctx.setLineDash(v.dashed ? [5, 4] : []);
+          ctx.beginPath();
+          ctx.moveTo(sx, sy);
+          ctx.lineTo(ex, ey);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // Arrowhead
+          const angle = Math.atan2(ey - sy, ex - sx);
+          ctx.fillStyle = v.color || colors.amber;
+          ctx.beginPath();
+          ctx.moveTo(ex, ey);
+          ctx.lineTo(ex - 9 * Math.cos(angle - Math.PI / 7), ey - 9 * Math.sin(angle - Math.PI / 7));
+          ctx.lineTo(ex - 9 * Math.cos(angle + Math.PI / 7), ey - 9 * Math.sin(angle + Math.PI / 7));
+          ctx.closePath();
+          ctx.fill();
+
+          // Label
+          ctx.font = 'bold 11px monospace';
+          ctx.fillText(v.name || '', ex + 6, ey - 6);
+        });
+      } else if (diagramData.type === 'graph' || diagramData.type === 'node_graph') {
+        const scale = Math.min(width / 520, 1);
+        (diagramData.edges || []).forEach(e => {
+          const fromNode = (diagramData.nodes || []).find(n => n.id === e.from);
+          const toNode = (diagramData.nodes || []).find(n => n.id === e.to);
+          if (!fromNode || !toNode) return;
+          const x1 = fromNode.x * scale;
+          const y1 = fromNode.y * scale + 15;
+          const x2 = toNode.x * scale;
+          const y2 = toNode.y * scale + 15;
+
+          ctx.strokeStyle = isDark ? '#475569' : '#cbd5e1';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+
+          if (e.directed) {
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const dist = Math.hypot(x2 - x1, y2 - y1);
+            const targetX = x1 + Math.cos(angle) * (dist - 22);
+            const targetY = y1 + Math.sin(angle) * (dist - 22);
+            ctx.fillStyle = colors.amber;
+            ctx.beginPath();
+            ctx.moveTo(targetX, targetY);
+            ctx.lineTo(targetX - 7 * Math.cos(angle - Math.PI / 6), targetY - 7 * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(targetX - 7 * Math.cos(angle + Math.PI / 6), targetY - 7 * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
+          }
+          if (e.label) {
+            ctx.font = '11px sans-serif';
+            ctx.fillStyle = colors.textMuted;
+            ctx.fillText(e.label, (x1 + x2) / 2, (y1 + y2) / 2 - 5);
+          }
+        });
+
+        (diagramData.nodes || []).forEach(n => {
+          const nx = n.x * scale;
+          const ny = n.y * scale + 15;
+          ctx.fillStyle = colors.bg;
+          ctx.beginPath();
+          ctx.arc(nx, ny, 20, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = n.color || colors.amber;
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+          ctx.font = 'bold 11px sans-serif';
+          ctx.fillStyle = colors.text;
+          ctx.textAlign = 'center';
+          ctx.fillText(n.label, nx, ny + 4);
+        });
+        ctx.textAlign = 'left';
+      } else if (diagramData.type === 'logic_gates' || diagramData.type === 'circuit') {
+        const scale = Math.min(width / 520, 1);
+        (diagramData.edges || []).forEach(e => {
+          const fromNode = (diagramData.nodes || []).find(n => n.id === e.from);
+          const toNode = (diagramData.nodes || []).find(n => n.id === e.to);
+          if (!fromNode || !toNode) return;
+          const x1 = fromNode.x * scale;
+          const y1 = fromNode.y * scale + 15;
+          const x2 = toNode.x * scale;
+          const y2 = toNode.y * scale + 15;
+
+          ctx.strokeStyle = isDark ? '#4b5563' : '#9ca3af';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+        });
+
+        (diagramData.nodes || []).forEach(n => {
+          const nx = n.x * scale - 50;
+          const ny = n.y * scale;
+          ctx.fillStyle = isDark ? '#262630' : '#e2e8f0';
+          ctx.strokeStyle = n.type === 'target' ? colors.emerald : (n.type === 'decision' ? colors.amber : colors.blue);
+          ctx.lineWidth = 2;
+          ctx.fillRect(nx, ny, 100, 32);
+          ctx.strokeRect(nx, ny, 100, 32);
+          ctx.font = 'bold 10px sans-serif';
+          ctx.fillStyle = colors.text;
+          ctx.textAlign = 'center';
+          ctx.fillText(n.label, nx + 50, ny + 20);
+        });
+        ctx.textAlign = 'left';
+      }
+
+      ctx.restore();
+    },
+
+    // Автоматичне підключення та рендеринг canvas-діаграм у контейнері
+    autoRenderDiagrams: function(container) {
+      const root = container || (typeof document !== 'undefined' ? document : null);
+      if (!root || !root.querySelectorAll) return;
+      const canvases = root.querySelectorAll('canvas[data-diagram-qid]');
+      canvases.forEach(cvs => {
+        const qid = cvs.getAttribute('data-diagram-qid');
+        const q = this.questions.find(item => item.id === qid);
+        if (q && q.diagramData) {
+          this.renderDiagram(cvs, q.diagramData);
+        }
+      });
+    },
+
     // Отримання списку завдань для конкретного режиму тестування
     getQuestionsForMode: function(mode, subjectId) {
       let pool = this.questions;
@@ -872,12 +1759,28 @@
 
       if (mode === 'express') {
         // Експрес-діагностика: 5 завдань
-        return pool.slice(0, 5);
+        // Якщо обрано конкретний предмет: гарантуємо присутність як класичних, так і ШІ-стійких кейсів
+        if (subjectId && subjectId !== 'all') {
+          const standard = pool.filter(q => !q.aiType);
+          const ai = pool.filter(q => q.aiType);
+          return [...standard.slice(0, 3), ...ai.slice(0, 2)];
+        } else {
+          // Змішаний експрес-тест (5 завдань): 4 базові предмети + ШІ-стійкий кейс
+          const u = pool.find(q => q.subject === 'ukrainian' && !q.aiType) || pool[0];
+          const m = pool.find(q => q.subject === 'math' && !q.aiType) || pool[8];
+          const h = pool.find(q => q.subject === 'history' && !q.aiType) || pool[18];
+          const e = pool.find(q => q.subject === 'english' && !q.aiType) || pool[26];
+          const ai = pool.find(q => q.aiType) || pool[pool.length - 1];
+          return [u, m, h, e, ai];
+        }
       } else if (mode === 'subject') {
-        // Предметний тренажер: всі завдання даного предмета (або перші 10)
-        return pool.slice(0, 10);
+        // Предметний тренажер: всі завдання даного предмета (включаючи автентичні та всі ШІ-стійкі формати)
+        return pool;
+      } else if (mode === 'ai_resilient' || mode === 'ai') {
+        // Спеціальний режим ШІ-стійких завдань StrictAI
+        return pool.filter(q => q.aiType);
       } else {
-        // Повний блок НМТ: збалансована вибірка або всі
+        // Повний блок НМТ: збалансований повний банк завдань
         return pool;
       }
     }

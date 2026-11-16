@@ -19,29 +19,39 @@
     { code: 'de', label: 'DE', name: 'Deutsch', flag: '🇩🇪' }
   ];
 
+  // Compact localized labels for all 4 languages to guarantee no overflow/wrapping in 126px buttons
+  const NAV_TITLES = {
+    uk: { home: 'Головна', tutor: 'AI-Репетитор', placement: 'Рівень', nmt: 'Тести НМТ', tracker: 'Трекер', parents: 'Батьки', knowledge: 'Карта знань' },
+    en: { home: 'Home', tutor: 'AI Tutor', placement: 'Level', nmt: 'NMT Tests', tracker: 'Tracker', parents: 'Parents', knowledge: 'Knowledge' },
+    pl: { home: 'Start', tutor: 'AI Tutor', placement: 'Poziom', nmt: 'Testy NMT', tracker: 'Tracker', parents: 'Rodzice', knowledge: 'Wiedza' },
+    de: { home: 'Start', tutor: 'AI-Tutor', placement: 'Level', nmt: 'NMT-Tests', tracker: 'Tracker', parents: 'Eltern', knowledge: 'Wissen' }
+  };
+
   const NAV_ITEMS = [
     { id: 'index', href: 'index.html', url: 'index.html', icon: '🏠', label: 'Головна', i18nKey: 'nav.home' },
     { id: 'tutor', href: 'tutor.html', url: 'tutor.html', icon: '🐼', label: 'AI-Репетитор', i18nKey: 'nav.tutor' },
     { id: 'placement', href: 'placement.html', url: 'placement.html', icon: '🎯', label: 'Рівень', i18nKey: 'nav.placement' },
-    { id: 'nmt', href: 'nmt.html', url: 'nmt.html', icon: '📝', label: 'Тренажер НМТ', i18nKey: 'nav.nmt' },
-    { id: 'tracker', href: 'tracker.html', url: 'tracker.html', icon: '⏱', label: 'Контроль & Фокус', i18nKey: 'nav.tracker' },
-    { id: 'parents', href: 'parents.html', url: 'parents.html', icon: '🛡', label: 'Батьківський кабінет', i18nKey: 'nav.parents' },
+    { id: 'nmt', href: 'nmt.html', url: 'nmt.html', icon: '📝', label: 'Тести НМТ', i18nKey: 'nav.nmt' },
+    { id: 'tracker', href: 'tracker.html', url: 'tracker.html', icon: '⏱', label: 'Трекер', i18nKey: 'nav.tracker' },
+    { id: 'parents', href: 'parents.html', url: 'parents.html', icon: '🛡', label: 'Батьки', i18nKey: 'nav.parents' },
     { id: 'knowledge', href: 'knowledge.html', url: 'knowledge.html', icon: '🗺', label: 'Карта знань', i18nKey: 'nav.knowledge' }
   ];
 
   const BOTTOM_NAV_PAGES = [
     { id: 'index', url: 'index.html', icon: '🏠', labels: { uk: 'Головна', en: 'Home', pl: 'Start', de: 'Start' } },
-    { id: 'tutor', url: 'tutor.html', icon: '🐼', labels: { uk: 'Репетитор', en: 'Tutor', pl: 'Tutor', de: 'Tutor' } },
+    { id: 'tutor', url: 'tutor.html', icon: '🐼', labels: { uk: 'AI-Репетитор', en: 'AI Tutor', pl: 'AI Tutor', de: 'AI-Tutor' } },
     { id: 'placement', url: 'placement.html', icon: '🎯', labels: { uk: 'Рівень', en: 'Level', pl: 'Poziom', de: 'Level' } },
-    { id: 'nmt', url: 'nmt.html', icon: '📝', labels: { uk: 'НМТ', en: 'NMT', pl: 'NMT', de: 'NMT' } },
+    { id: 'nmt', url: 'nmt.html', icon: '📝', labels: { uk: 'Тести НМТ', en: 'NMT Tests', pl: 'Testy NMT', de: 'NMT-Tests' } },
     { id: 'tracker', url: 'tracker.html', icon: '⏱', labels: { uk: 'Трекер', en: 'Tracker', pl: 'Tracker', de: 'Tracker' } },
     { id: 'parents', url: 'parents.html', icon: '🛡', labels: { uk: 'Батьки', en: 'Parents', pl: 'Rodzice', de: 'Eltern' } },
-    { id: 'knowledge', url: 'knowledge.html', icon: '🗺', labels: { uk: 'Знання', en: 'Knowledge', pl: 'Wiedza', de: 'Wissen' } }
+    { id: 'knowledge', url: 'knowledge.html', icon: '🗺', labels: { uk: 'Карта знань', en: 'Knowledge', pl: 'Wiedza', de: 'Wissen' } }
   ];
 
   class StrictComponentsController {
     constructor() {
       this.NAV_ITEMS = NAV_ITEMS;
+      this.NAV_TITLES = NAV_TITLES;
+      this.BOTTOM_NAV_PAGES = BOTTOM_NAV_PAGES;
       this.audioCtx = null;
       this.lastBlurTime = 0;
       this.currentPageId = 'index';
@@ -49,6 +59,8 @@
       this._storeSubscribed = false;
       this._notifEventsAttached = false;
 
+      this._injectStyles();
+      this._syncI18nNavTranslations();
       this._initAudioContext();
       this._initFocusGuard();
       this._initLocaleListener();
@@ -64,6 +76,7 @@
           s.src = 'js/i18n.js';
           s.async = false;
           s.onload = () => {
+            this._syncI18nNavTranslations();
             if (window.StrictI18n && typeof window.StrictI18n.applyToDOM === 'function') {
               window.StrictI18n.applyToDOM();
             }
@@ -71,6 +84,281 @@
           document.head.appendChild(s);
         }
       }
+      this._syncI18nNavTranslations();
+    }
+
+    /**
+     * Synchronizes compact navigation translations with StrictI18n runtime dictionary
+     */
+    _syncI18nNavTranslations() {
+      if (typeof window !== 'undefined' && window.StrictI18n && window.StrictI18n.translations) {
+        Object.keys(NAV_TITLES).forEach(lang => {
+          if (window.StrictI18n.translations[lang] && window.StrictI18n.translations[lang].nav) {
+            Object.assign(window.StrictI18n.translations[lang].nav, NAV_TITLES[lang]);
+          }
+        });
+      }
+    }
+
+    /**
+     * Injects strict LeetCode Dark Graphite theme styles for navigation buttons
+     * Ensures exactly 126px fixed width, 36px height, single-line alignment for action buttons
+     */
+    _injectStyles() {
+      if (typeof document === 'undefined') return;
+      if (document.getElementById('strict-components-theme-style')) return;
+
+      const style = document.createElement('style');
+      style.id = 'strict-components-theme-style';
+      style.textContent = `
+        /* StrictAI Graphite LeetCode Theme Navigation & Header */
+        .strict-navbar {
+          background-color: var(--bg-base, #121212) !important;
+          border-bottom: 1px solid var(--border-subtle, #333333) !important;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          width: 100%;
+        }
+
+        .strict-navbar-inner {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          height: 56px !important;
+          gap: 8px !important;
+          box-sizing: border-box !important;
+        }
+
+        .strict-nav-links {
+          display: flex !important;
+          align-items: center !important;
+          gap: 4px !important;
+          list-style: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          flex-wrap: nowrap !important;
+        }
+
+        .strict-nav-links > li {
+          list-style: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          display: inline-flex !important;
+          flex-shrink: 0 !important;
+        }
+
+        /* 126px Fixed Width Navigation Link Buttons - Graphite LeetCode Style */
+        .strict-navbar .strict-nav-link,
+        .strict-nav-link {
+          width: 126px !important;
+          min-width: 126px !important;
+          max-width: 126px !important;
+          height: 36px !important;
+          min-height: 36px !important;
+          max-height: 36px !important;
+          padding: 0 6px !important;
+          font-size: 13px !important;
+          font-weight: 600 !important;
+          border-radius: 8px !important;
+          background: #1e1e1e !important;
+          border: 1px solid #333333 !important;
+          color: #eff1f6 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          box-sizing: border-box !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          text-align: center !important;
+          text-decoration: none !important;
+          cursor: pointer !important;
+          gap: 5px !important;
+          transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease !important;
+          user-select: none !important;
+        }
+
+        .strict-navbar .strict-nav-link > span:first-child,
+        .strict-nav-link > span:first-child {
+          font-size: 14px !important;
+          line-height: 1 !important;
+          flex-shrink: 0 !important;
+        }
+
+        .strict-navbar .strict-nav-link > span:last-child,
+        .strict-nav-link > span:last-child {
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          white-space: nowrap !important;
+          font-size: 13px !important;
+          font-weight: 600 !important;
+        }
+
+        .strict-navbar .strict-nav-link:hover,
+        .strict-nav-link:hover {
+          background: #2e2e2e !important;
+          border-color: #4a4a4a !important;
+          color: #ffffff !important;
+        }
+
+        .strict-navbar .strict-nav-link.active,
+        .strict-nav-link.active {
+          background: rgba(255, 161, 22, 0.15) !important;
+          border-color: var(--accent-primary, #ffa116) !important;
+          color: #ffa116 !important;
+          font-weight: 700 !important;
+          box-shadow: inset 0 0 0 1px rgba(255, 161, 22, 0.25) !important;
+        }
+
+        /* Light Theme Overrides */
+        [data-theme="light"] .strict-navbar .strict-nav-link,
+        [data-theme="light"] .strict-nav-link {
+          background: #f0f0f2 !important;
+          border-color: #d1d5db !important;
+          color: #374151 !important;
+        }
+
+        [data-theme="light"] .strict-navbar .strict-nav-link:hover,
+        [data-theme="light"] .strict-nav-link:hover {
+          background: #e5e7eb !important;
+          border-color: #9ca3af !important;
+          color: #111827 !important;
+        }
+
+        [data-theme="light"] .strict-navbar .strict-nav-link.active,
+        [data-theme="light"] .strict-nav-link.active {
+          background: rgba(255, 161, 22, 0.2) !important;
+          border-color: #ffa116 !important;
+          color: #b45309 !important;
+          font-weight: 700 !important;
+        }
+
+        /* Action Buttons in Header - Strict 36px Height, Aligned in One Line */
+        .strict-navbar-actions,
+        .nav-actions {
+          display: flex !important;
+          align-items: center !important;
+          gap: 6px !important;
+          flex-shrink: 0 !important;
+          height: 36px !important;
+        }
+
+        .strict-navbar-actions > *,
+        .strict-navbar-actions .lang-switcher-btn,
+        .strict-navbar-actions .nav-badge,
+        .strict-navbar-actions .theme-toggle-btn,
+        .strict-navbar-actions .notif-bell-btn,
+        .strict-navbar-actions #api-key-btn,
+        .strict-navbar-actions .btn-sm {
+          height: 36px !important;
+          min-height: 36px !important;
+          max-height: 36px !important;
+          box-sizing: border-box !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          font-size: 13px !important;
+          font-weight: 600 !important;
+          border-radius: 8px !important;
+          padding: 0 10px !important;
+          margin: 0 !important;
+          vertical-align: middle !important;
+        }
+
+        .strict-navbar-actions .theme-toggle-btn,
+        .strict-navbar-actions .notif-bell-btn {
+          width: 36px !important;
+          min-width: 36px !important;
+          max-width: 36px !important;
+          padding: 0 !important;
+        }
+
+        .strict-navbar-actions .lang-switcher-btn {
+          padding: 0 8px !important;
+          background: #1e1e1e !important;
+          border: 1px solid #333333 !important;
+          color: #eff1f6 !important;
+        }
+
+        .strict-navbar-actions .lang-switcher-btn:hover {
+          background: #2e2e2e !important;
+          border-color: #4a4a4a !important;
+        }
+
+        .strict-navbar-actions #api-key-btn {
+          background: #242424 !important;
+          border: 1px solid #333333 !important;
+          color: #eff1f6 !important;
+        }
+
+        .strict-navbar-actions #api-key-btn:hover {
+          background: #2e2e2e !important;
+          border-color: #4a4a4a !important;
+          color: #ffffff !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    /**
+     * Renders or re-renders navigation links via React if window.React and window.ReactDOM are available
+     * @param {HTMLElement} container - The #nav-links-menu container
+     * @param {string} activePageId - Current active page ID
+     * @param {string} currentLocale - Current active locale
+     * @returns {boolean} Whether React rendering was performed
+     */
+    _renderReactNavLinks(container, activePageId, currentLocale) {
+      if (typeof window === 'undefined' || !window.React || !window.ReactDOM || !container) {
+        return false;
+      }
+      try {
+        const React = window.React;
+        const ReactDOM = window.ReactDOM;
+        const activeTitles = NAV_TITLES[currentLocale] || NAV_TITLES.uk;
+
+        const navElements = NAV_ITEMS.map((item) => {
+          const itemKey = item.id === 'index' ? 'home' : item.id;
+          const title = activeTitles[itemKey] || activeTitles[item.id] || item.label;
+          const isActive = (item.id === activePageId || (item.id === 'index' && activePageId === 'home') || (item.id === 'home' && activePageId === 'index'));
+
+          return React.createElement(
+            'li',
+            { key: item.id },
+            React.createElement(
+              'a',
+              {
+                href: item.url || item.href,
+                className: `nav-link strict-nav-link ${isActive ? 'active' : ''}`,
+                'data-page': item.id,
+                title: title
+              },
+              React.createElement('span', null, item.icon),
+              React.createElement('span', { 'data-i18n': item.i18nKey || `nav.${itemKey}` }, title)
+            )
+          );
+        });
+
+        const fragmentElement = React.createElement(
+          React.Fragment || 'div',
+          null,
+          navElements
+        );
+
+        if (typeof ReactDOM.createRoot === 'function') {
+          if (!container._reactRoot) {
+            container._reactRoot = ReactDOM.createRoot(container);
+          }
+          container._reactRoot.render(fragmentElement);
+          return true;
+        } else if (typeof ReactDOM.render === 'function') {
+          ReactDOM.render(fragmentElement, container);
+          return true;
+        }
+      } catch (err) {
+        console.warn('StrictComponents: React render error, falling back to DOM markup', err);
+      }
+      return false;
     }
 
     _initAudioContext() {
@@ -274,22 +562,40 @@
     }
 
     /**
-     * Helper to get current locale from StrictI18n, StrictStore, or localStorage
+     * Helper to get current locale from localStorage (primary), StrictI18n, or StrictStore
      */
     _getCurrentLocale() {
-      if (window.StrictI18n && window.StrictI18n.currentLocale) {
-        return window.StrictI18n.currentLocale;
-      }
-      if (window.StrictStore) {
-        const st = window.StrictStore.get();
-        if (st && st.locale) return st.locale;
-      }
+      // 1. First priority: localStorage
       try {
         if (typeof localStorage !== 'undefined') {
           const saved = localStorage.getItem('strictai_locale');
-          if (saved) return saved;
+          if (saved && ['uk', 'en', 'pl', 'de'].includes(saved)) {
+            return saved;
+          }
         }
       } catch (e) {}
+
+      // 2. Second priority: window.StrictI18n.getLocale() or currentLocale
+      if (typeof window !== 'undefined' && window.StrictI18n) {
+        if (typeof window.StrictI18n.getLocale === 'function') {
+          const loc = window.StrictI18n.getLocale();
+          if (loc && ['uk', 'en', 'pl', 'de'].includes(loc)) {
+            return loc;
+          }
+        }
+        if (window.StrictI18n.currentLocale && ['uk', 'en', 'pl', 'de'].includes(window.StrictI18n.currentLocale)) {
+          return window.StrictI18n.currentLocale;
+        }
+      }
+
+      // 3. Third priority: window.StrictStore.get().locale
+      if (typeof window !== 'undefined' && window.StrictStore && typeof window.StrictStore.get === 'function') {
+        const st = window.StrictStore.get();
+        if (st && st.locale && ['uk', 'en', 'pl', 'de'].includes(st.locale)) {
+          return st.locale;
+        }
+      }
+
       return 'uk';
     }
 
@@ -306,6 +612,7 @@
 
       window.addEventListener('strictai:localechange', (e) => {
         const newLocale = (e.detail && e.detail.locale) || this._getCurrentLocale();
+        this._syncI18nNavTranslations();
         this._updateUIForLocale(newLocale);
         if (window.StrictI18n && typeof window.StrictI18n.applyToDOM === 'function') {
           window.StrictI18n.applyToDOM();
@@ -314,25 +621,32 @@
     }
 
     /**
-     * Changes platform language across i18n, Store, UI and triggers toast
+     * Changes platform language across localStorage, Store, i18n, UI and triggers toast
      * @param {string} langCode - 'uk' | 'en' | 'pl' | 'de'
      */
     setLanguage(langCode) {
       this.playBeep('click');
-      let activeCode = langCode;
+      const activeCode = ['uk', 'en', 'pl', 'de'].includes(langCode) ? langCode : 'uk';
 
-      if (window.StrictI18n && typeof window.StrictI18n.setLocale === 'function') {
-        activeCode = window.StrictI18n.setLocale(langCode);
-      } else {
-        if (window.StrictStore && typeof window.StrictStore.update === 'function') {
-          window.StrictStore.update({ locale: langCode });
+      // 1. Save to localStorage
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('strictai_locale', activeCode);
         }
-        try {
-          if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('strictai_locale', langCode);
-          }
-        } catch (e) {}
+      } catch (e) {}
+
+      // 2. Save in StrictStore
+      if (typeof window !== 'undefined' && window.StrictStore && typeof window.StrictStore.update === 'function') {
+        window.StrictStore.update({ locale: activeCode });
       }
+
+      // 3. Call window.StrictI18n.setLocale(activeCode)
+      if (typeof window !== 'undefined' && window.StrictI18n && typeof window.StrictI18n.setLocale === 'function') {
+        window.StrictI18n.setLocale(activeCode);
+      }
+
+      // Sync compact navigation translations with runtime dictionary
+      this._syncI18nNavTranslations();
 
       const toastMessages = {
         uk: 'Мову платформи змінено на: Українська 🇺🇦',
@@ -348,6 +662,7 @@
     }
 
     _updateUIForLocale(locale) {
+      this._syncI18nNavTranslations();
       const locObj = this._getLocaleObj(locale);
 
       // Update Top Bar Language Button
@@ -364,6 +679,37 @@
       // Update mobile drawer language buttons
       document.querySelectorAll('#mobile-lang-switcher .mobile-lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.locale === locale);
+      });
+
+      // Update desktop navigation links (via React if available, or DOM)
+      const navLinksMenu = document.getElementById('nav-links-menu');
+      if (navLinksMenu && typeof window !== 'undefined' && window.React && window.ReactDOM) {
+        this._renderReactNavLinks(navLinksMenu, this.currentPageId, locale);
+      } else {
+        const activeTitles = NAV_TITLES[locale] || NAV_TITLES.uk;
+        document.querySelectorAll('.strict-nav-link').forEach(link => {
+          const pageId = link.getAttribute('data-page');
+          const itemKey = pageId === 'index' ? 'home' : pageId;
+          const label = activeTitles[itemKey] || activeTitles[pageId];
+          if (label) {
+            const spanEl = link.querySelector('span:last-child');
+            if (spanEl) spanEl.textContent = label;
+            link.setAttribute('title', label);
+          }
+        });
+      }
+
+      // Update mobile drawer navigation labels
+      const activeTitles = NAV_TITLES[locale] || NAV_TITLES.uk;
+      document.querySelectorAll('.mobile-drawer-link').forEach(link => {
+        const href = link.getAttribute('href') || '';
+        const pageId = href.replace('.html', '');
+        const itemKey = pageId === 'index' ? 'home' : pageId;
+        const label = activeTitles[itemKey] || activeTitles[pageId];
+        if (label) {
+          const spanEl = link.querySelector('.drawer-link-title');
+          if (spanEl) spanEl.textContent = label;
+        }
       });
 
       // Update bottom mobile nav labels
@@ -394,6 +740,9 @@
      */
     initPage(activePageId = 'index') {
       this.currentPageId = activePageId;
+      this._injectStyles();
+      this._syncI18nNavTranslations();
+
       const header = document.getElementById('app-header');
       if (!header) return;
 
@@ -406,28 +755,24 @@
 
       const currentLocale = this._getCurrentLocale();
       const currentLocObj = this._getLocaleObj(currentLocale);
+      const activeTitles = NAV_TITLES[currentLocale] || NAV_TITLES.uk;
 
-      const navTitles = {
-        uk: { home: 'Головна', tutor: 'AI-Репетитор', placement: 'Рівень', nmt: 'Тренажер НМТ', tracker: 'Контроль & Фокус', parents: 'Батьківський кабінет', knowledge: 'Карта знань' },
-        en: { home: 'Home', tutor: 'AI Tutor', placement: 'Level', nmt: 'NMT Simulator', tracker: 'Focus & Tracker', parents: 'Parents Portal', knowledge: 'Knowledge Map' },
-        pl: { home: 'Start', tutor: 'AI Korepetytor', placement: 'Poziom', nmt: 'Symulator NMT', tracker: 'Kontrola & Focus', parents: 'Panel Rodziców', knowledge: 'Mapa Wiedzy' },
-        de: { home: 'Start', tutor: 'AI Tutor', placement: 'Level', nmt: 'NMT Simulator', tracker: 'Fokus & Tracker', parents: 'Elternbereich', knowledge: 'Wissenskarte' }
-      };
-      const activeTitles = navTitles[currentLocale] || navTitles.uk;
-
-      const pages = NAV_ITEMS.map(item => ({
-        id: item.id,
-        title: activeTitles[item.id] || item.label,
-        url: item.url || item.href,
-        icon: item.icon,
-        i18nKey: item.i18nKey || `nav.${item.id}`
-      }));
+      const pages = NAV_ITEMS.map(item => {
+        const itemKey = item.id === 'index' ? 'home' : item.id;
+        return {
+          id: item.id,
+          title: activeTitles[itemKey] || activeTitles[item.id] || item.label,
+          url: item.url || item.href,
+          icon: item.icon,
+          i18nKey: item.i18nKey || `nav.${itemKey}`
+        };
+      });
 
       const navLinksHtml = pages.map(p => {
-        const isActive = p.id === activePageId ? 'active' : '';
+        const isActive = (p.id === activePageId || (p.id === 'index' && activePageId === 'home') || (p.id === 'home' && activePageId === 'index')) ? 'active' : '';
         return `
           <li>
-            <a href="${p.url}" class="nav-link strict-nav-link ${isActive}" data-page="${p.id}">
+            <a href="${p.url}" class="nav-link strict-nav-link ${isActive}" data-page="${p.id}" title="${p.title}">
               <span>${p.icon}</span>
               <span data-i18n="${p.i18nKey}">${p.title}</span>
             </a>
@@ -493,13 +838,13 @@
             <!-- Streak Badge (Compact, fits on 390px) -->
             <div class="nav-badge streak" title="Твій поточний щоденний стрік занять">
               <span>🔥</span>
-              <span id="nav-streak-counter">${store.student.streakDays || 12}</span><span class="streak-days-text"> ${{ uk: 'дн.', en: 'd', pl: 'dn.', de: 'T.' }[currentLocale] || 'дн.'}</span>
+              <span id="nav-streak-counter">${(store.student && store.student.streakDays) || 12}</span><span class="streak-days-text"> ${{ uk: 'дн.', en: 'd', pl: 'dn.', de: 'T.' }[currentLocale] || 'дн.'}</span>
             </div>
 
             <!-- Desktop Only: Bamboo Coins Badge -->
             <div class="nav-badge bamboo desktop-only-action" title="Бамбук-коїни за фокус та розібрані завдання">
               <span>🎋</span>
-              <span id="nav-bamboo-counter">${store.student.bambooCoins || 340}</span>
+              <span id="nav-bamboo-counter">${(store.student && store.student.bambooCoins) || 340}</span>
             </div>
 
             <!-- Notification Bell Dropdown -->
@@ -549,7 +894,7 @@
           <div class="mobile-drawer-user-bar">
             <div class="nav-badge bamboo" title="Бамбук-коїни">
               <span>🎋</span>
-              <span id="nav-mobile-bamboo-counter">${store.student.bambooCoins || 340}</span>
+              <span id="nav-mobile-bamboo-counter">${(store.student && store.student.bambooCoins) || 340}</span>
               <span style="font-size: 0.8rem; opacity: 0.85;"> коїнів</span>
             </div>
 
@@ -594,6 +939,12 @@
           </ul>
         </div>
       `;
+
+      // Hybrid React Rendering if window.React & window.ReactDOM are available
+      const navLinksMenu = header.querySelector('#nav-links-menu');
+      if (navLinksMenu && typeof window !== 'undefined' && window.React && window.ReactDOM) {
+        this._renderReactNavLinks(navLinksMenu, activePageId, currentLocale);
+      }
 
       // Wire Up Top Bar Language Switcher Dropdown
       const langSwitcher = header.querySelector('#lang-switcher');
@@ -724,7 +1075,7 @@
       if (mobileApiKeyBtn) mobileApiKeyBtn.onclick = openApiKey;
 
       // Sync Store badges
-      if (window.StrictStore && !this._storeSubscribed) {
+      if (window.StrictStore && typeof window.StrictStore.subscribe === 'function' && !this._storeSubscribed) {
         this._storeSubscribed = true;
         window.StrictStore.subscribe((state) => {
           const streakEl = document.getElementById('nav-streak-counter');
@@ -1145,11 +1496,53 @@
     }
   }
 
-  // Static reference on class
+  // React Component representation for modular imports & JSX/createElement usage
+  function StrictNavbarComponent(props) {
+    if (typeof window === 'undefined' || !window.React) return null;
+    const React = window.React;
+    const currentLocale = (props && props.locale) || (window.StrictComponents ? window.StrictComponents._getCurrentLocale() : 'uk');
+    const activePageId = (props && props.activePageId) || 'index';
+    const activeTitles = NAV_TITLES[currentLocale] || NAV_TITLES.uk;
+
+    return React.createElement(
+      'ul',
+      { className: 'nav-links strict-nav-links', id: 'nav-links-menu' },
+      NAV_ITEMS.map((item) => {
+        const itemKey = item.id === 'index' ? 'home' : item.id;
+        const title = activeTitles[itemKey] || activeTitles[item.id] || item.label;
+        const isActive = (item.id === activePageId || (item.id === 'index' && activePageId === 'home') || (item.id === 'home' && activePageId === 'index'));
+
+        return React.createElement(
+          'li',
+          { key: item.id },
+          React.createElement(
+            'a',
+            {
+              href: item.url || item.href,
+              className: `nav-link strict-nav-link ${isActive ? 'active' : ''}`,
+              'data-page': item.id,
+              title: title
+            },
+            React.createElement('span', null, item.icon),
+            React.createElement('span', { 'data-i18n': item.i18nKey || `nav.${itemKey}` }, title)
+          )
+        );
+      })
+    );
+  }
+
+  // Static references on class
   StrictComponentsController.NAV_ITEMS = NAV_ITEMS;
+  StrictComponentsController.NAV_TITLES = NAV_TITLES;
+  StrictComponentsController.BOTTOM_NAV_PAGES = BOTTOM_NAV_PAGES;
+  StrictComponentsController.StrictNavbarComponent = StrictNavbarComponent;
 
   // Export Singleton on window
   window.StrictComponents = new StrictComponentsController();
   window.StrictComponents.NAV_ITEMS = NAV_ITEMS;
+  window.StrictComponents.NAV_TITLES = NAV_TITLES;
+  window.StrictComponents.BOTTOM_NAV_PAGES = BOTTOM_NAV_PAGES;
+  window.StrictComponents.StrictNavbar = StrictNavbarComponent;
+  window.StrictNavbar = StrictNavbarComponent;
 
 })();

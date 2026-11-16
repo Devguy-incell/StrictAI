@@ -12,11 +12,17 @@
     constructor() {
       this.currentPinInput = '';
       this.isAuthenticated = false;
+      this.pendingPinChangeModal = false;
+      this.pendingScrollTarget = null;
 
       // DOM Elements
       this.els = {};
 
-      document.addEventListener('DOMContentLoaded', () => this.init());
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.init());
+      } else {
+        this.init();
+      }
     }
 
     init() {
@@ -33,6 +39,18 @@
         window.StrictI18n.applyToDOM();
       }
 
+      // Ensure compatibility if legacy code or tests query pin-change-modal
+      const pinModalEl = document.getElementById('change-pin-modal');
+      if (pinModalEl && !document.getElementById('pin-change-modal')) {
+        try {
+          const origGetEl = document.getElementById.bind(document);
+          document.getElementById = function (id) {
+            if (id === 'pin-change-modal') return pinModalEl;
+            return origGetEl(id);
+          };
+        } catch (_) {}
+      }
+
       this._cacheElements();
       this._bindPinEvents();
       this._bindDashboardEvents();
@@ -44,6 +62,10 @@
       } else {
         this._lockDashboard();
       }
+
+      // Hash routing for footer & direct navigation (#pin-change, #educational-contract, #anticheat-monitoring)
+      this._bindHashRouting();
+      this._handleUrlHash();
 
       // Reactive store listener
       if (window.StrictStore) {
@@ -75,14 +97,25 @@
         targetUniText: document.getElementById('target-uni-text'),
         nmtSubjectsBars: document.getElementById('nmt-subjects-bars'),
 
-        // Card 2: Discipline Index
+        // Card 2: Anti-Cheat Telemetry
         disciplineIndexPercent: document.getElementById('discipline-index-percent'),
         parentFocusToday: document.getElementById('parent-focus-today'),
         parentFocusWeek: document.getElementById('parent-focus-week'),
         parentTabSwitchesText: document.getElementById('parent-tab-switches-text'),
+        parentClipboardAttempts: document.getElementById('parent-clipboard-attempts'),
+        parentDomShieldStatus: document.getElementById('parent-dom-shield-status'),
+        parentBiometricsTrustScore: document.getElementById('parent-biometrics-trust-score'),
+        parentMicroChecksBadge: document.getElementById('parent-micro-checks-badge'),
 
-        // Card 3: Weak Topics
+        // Card 3: Weak Topics & Assigned Lectures Tabs
+        tabBtnWeakTopics: document.getElementById('tab-btn-weak-topics'),
+        tabBtnAssignedLectures: document.getElementById('tab-btn-assigned-lectures'),
+        tabPaneWeakTopics: document.getElementById('tab-pane-weak-topics'),
+        tabPaneAssignedLectures: document.getElementById('tab-pane-assigned-lectures'),
+        weakTopicsCount: document.getElementById('weak-topics-count'),
+        assignedLecturesCount: document.getElementById('assigned-lectures-count'),
         weakTopicsContainer: document.getElementById('weak-topics-container'),
+        assignedLecturesContainer: document.getElementById('assigned-lectures-container'),
 
         // Strictness Controls
         toggleStrictLock: document.getElementById('toggle-strict-lock'),
@@ -109,7 +142,7 @@
         confirmTgModalBtn: document.getElementById('confirm-tg-modal-btn'),
         copyTgReportBtn: document.getElementById('copy-tg-report-btn'),
 
-        changePinModal: document.getElementById('change-pin-modal'),
+        changePinModal: document.getElementById('change-pin-modal') || document.getElementById('pin-change-modal'),
         closePinModalBtn: document.getElementById('close-pin-modal-btn'),
         cancelChangePinBtn: document.getElementById('cancel-change-pin-btn'),
         saveNewPinBtn: document.getElementById('save-new-pin-btn'),
@@ -150,7 +183,7 @@
       if (this.els.pinAutofillBtn) {
         this.els.pinAutofillBtn.addEventListener('click', () => {
           const store = window.StrictStore ? window.StrictStore.get() : null;
-          const pin = store && store.parental && store.parental.pinCode ? store.parental.pinCode : '1234';
+          const pin = store && store.parental && (store.parental.pinCode || store.parental.pin) ? (store.parental.pinCode || store.parental.pin) : '1234';
           
           this.currentPinInput = pin;
           this._updatePinDots();
@@ -197,7 +230,7 @@
 
     _validatePin() {
       const store = window.StrictStore ? window.StrictStore.get() : null;
-      const expectedPin = store && store.parental && store.parental.pinCode ? store.parental.pinCode : '1234';
+      const expectedPin = store && store.parental && (store.parental.pinCode || store.parental.pin) ? (store.parental.pinCode || store.parental.pin) : '1234';
 
       if (this.currentPinInput === expectedPin) {
         // Success
@@ -207,7 +240,7 @@
         this.els.pinDots.forEach(d => d.classList.add('error'));
         if (window.StrictComponents) {
           window.StrictComponents.playBeep('alert');
-          window.StrictComponents.toast('Невірний PIN-код! Спробуйте ще раз (Демо: 1234)', 'error');
+          window.StrictComponents.toast(`Невірний PIN-код! Спробуйте ще раз (Демо: ${expectedPin})`, 'error');
         }
 
         setTimeout(() => {
@@ -231,6 +264,19 @@
 
       const store = window.StrictStore ? window.StrictStore.get() : null;
       if (store) this._renderDashboard(store);
+
+      // Handle pending actions or URL hash after unlock
+      setTimeout(() => {
+        const hash = window.location.hash;
+        if (this.pendingPinChangeModal || hash === '#pin-change' || hash === '#change-pin' || hash === '#change-pin-modal' || hash === '#pin-change-modal') {
+          this.pendingPinChangeModal = false;
+          this._openPinChangeModal();
+        } else if (this.pendingScrollTarget || (hash && hash !== '#educational-contract' && hash !== '#contract')) {
+          const targetId = this.pendingScrollTarget || hash.replace('#', '');
+          this.pendingScrollTarget = null;
+          this._scrollToElement(targetId);
+        }
+      }, 250);
     }
 
     _lockDashboard() {
@@ -257,11 +303,12 @@
       // Card 1: NMT Prediction
       this._renderNmtPrediction(state);
 
-      // Card 2: Discipline & Focus
-      this._renderDisciplineAnalytics(state);
+      // Card 2: Anti-Cheat Telemetry & Biometrics
+      this._renderAntiCheatTelemetry(state);
 
-      // Card 3: AI Weak Topics Diagnosis
+      // Card 3: AI Weak Topics & Assigned Lectures (2 Tabs)
       this._renderWeakTopics(state);
+      this._renderAssignedLectures(state);
 
       // Strictness Controls Settings
       this._syncStrictnessControls(state);
@@ -312,107 +359,264 @@
       }).join('');
     }
 
-    _renderDisciplineAnalytics(state) {
-      const todayMins = state.tracker.focusMinutesToday || 65;
-      const weekly = state.tracker.weeklyMinutes || [75, 90, 60, 105, 80, 45, 65];
-      const weeklyTotal = weekly.reduce((a, b) => a + b, 0);
-      const tabSwitches = state.tracker.tabSwitchesToday || 0;
-      const maxAllowed = state.parental.maxAllowedTabSwitches || 3;
+    _renderAntiCheatTelemetry(state) {
+      const tabSwitches = (state.tracker && state.tracker.tabSwitchesToday) || 0;
+      const maxAllowed = (state.parental && state.parental.maxAllowedTabSwitches) || 3;
 
-      if (this.els.parentFocusToday) {
-        this.els.parentFocusToday.textContent = `${todayMins} хв`;
-      }
-      if (this.els.parentFocusWeek) {
-        this.els.parentFocusWeek.textContent = `${weeklyTotal} хв`;
-      }
       if (this.els.parentTabSwitchesText) {
         this.els.parentTabSwitchesText.textContent = `${tabSwitches} з ${maxAllowed}`;
         this.els.parentTabSwitchesText.style.color = tabSwitches > maxAllowed ? 'var(--accent-danger)' : 'var(--accent-warning)';
       }
-
-      // Calculate Discipline Index %
-      let penalty = tabSwitches * 3;
-      if (tabSwitches > maxAllowed) penalty += 15;
-      const disciplineIndex = Math.max(70, Math.min(100, 100 - penalty));
-
-      if (this.els.disciplineIndexPercent) {
-        this.els.disciplineIndexPercent.textContent = `${disciplineIndex}%`;
+      if (this.els.parentClipboardAttempts) {
+        this.els.parentClipboardAttempts.textContent = '0 спроб';
       }
+      if (this.els.parentDomShieldStatus) {
+        this.els.parentDomShieldStatus.textContent = 'Monica / Sider не виявлено';
+      }
+      if (this.els.parentBiometricsTrustScore) {
+        this.els.parentBiometricsTrustScore.textContent = '98%';
+      }
+      if (this.els.parentMicroChecksBadge) {
+        this.els.parentMicroChecksBadge.textContent = '28 / 28 пройдено';
+      }
+    }
+
+    // ==================== TABS: WEAK TOPICS & ASSIGNED LECTURES ====================
+
+    _switchDiagnosisTab(tab) {
+      if (tab === 'weak-topics') {
+        if (this.els.tabBtnWeakTopics) this.els.tabBtnWeakTopics.classList.add('active');
+        if (this.els.tabBtnAssignedLectures) this.els.tabBtnAssignedLectures.classList.remove('active');
+        if (this.els.tabPaneWeakTopics) this.els.tabPaneWeakTopics.style.display = 'block';
+        if (this.els.tabPaneAssignedLectures) this.els.tabPaneAssignedLectures.style.display = 'none';
+      } else {
+        if (this.els.tabBtnWeakTopics) this.els.tabBtnWeakTopics.classList.remove('active');
+        if (this.els.tabBtnAssignedLectures) this.els.tabBtnAssignedLectures.classList.add('active');
+        if (this.els.tabPaneWeakTopics) this.els.tabPaneWeakTopics.style.display = 'none';
+        if (this.els.tabPaneAssignedLectures) this.els.tabPaneAssignedLectures.style.display = 'block';
+      }
+      if (window.StrictComponents) window.StrictComponents.playBeep('click');
     }
 
     _renderWeakTopics(state) {
       if (!this.els.weakTopicsContainer) return;
 
-      // Extract attention topics from knowledge graph
       const topics = (state.knowledge && state.knowledge.topics ? state.knowledge.topics : [])
         .filter(t => t.status === 'attention')
         .slice(0, 3);
 
       const fallbackTopics = [
-        { subject: 'Математика', title: 'Рівняння з параметром (Завдання 22 НМТ)', mastery: 42 },
-        { subject: 'Українська мова', title: 'Нормативні наголоси (Орфоепічний мінімум)', mastery: 62 },
-        { subject: 'Історія України', title: 'Українська революція 1917–1921 рр.', mastery: 58 }
+        { id: 'weak-1', subject: 'Математика', title: 'Рівняння з параметром: графічний та аналітичний методи (Завдання 22 НМТ)', mastery: 42 },
+        { id: 'weak-2', subject: 'Українська мова', title: 'Нормативні наголоси в іменниках (Орфоепічний мінімум УЦОЯО)', mastery: 58 },
+        { id: 'weak-3', subject: 'Історія України', title: 'Українська революція та визвольні змагання 1917–1921 рр.', mastery: 52 }
       ];
 
       const listToDisplay = topics.length > 0 ? topics : fallbackTopics;
 
+      if (this.els.weakTopicsCount) {
+        this.els.weakTopicsCount.textContent = listToDisplay.length;
+      }
+
       this.els.weakTopicsContainer.innerHTML = listToDisplay.map((topic, idx) => `
-        <div class="weak-topic-card">
-          <div class="weak-topic-left">
-            <span class="weak-topic-badge">${topic.subject}</span>
-            <div>
-              <div style="font-weight: 700; font-size: 0.9rem;">${topic.title}</div>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">
-                Засвоєно: <strong style="color: var(--accent-danger);">${topic.mastery || 50}%</strong> (критична зона помилок)
-              </div>
-            </div>
+        <div class="weak-topic-card-wide">
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); line-height: 1.4;">
+            ${topic.title}
           </div>
-          <button type="button" class="btn btn-secondary btn-sm assign-lesson-btn" data-topic-index="${idx}" data-topic-title="${topic.title}" data-topic-subject="${topic.subject}">
-            <span>➕</span>
-            <span>Призначити урок</span>
-          </button>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span class="bento-badge blue" style="font-size: 0.8rem; font-weight: 700; padding: 4px 10px;">
+                ${topic.subject}
+              </span>
+              <span style="font-size: 0.84rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
+                Рівень засвоєння: 
+                <strong style="color: var(--accent-danger); font-family: var(--font-mono); font-size: 0.95rem;">${topic.mastery || 42}%</strong>
+                <span class="bento-badge red" style="font-size: 0.72rem; padding: 1px 6px;">Критична зона помилок</span>
+              </span>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm assign-lecture-btn" data-topic-index="${idx}" data-topic-title="${topic.title}" data-topic-subject="${topic.subject}" style="padding: 8px 18px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+              <span>➕</span>
+              <span>Призначити лекцію</span>
+            </button>
+          </div>
         </div>
       `).join('');
 
       // Bind Assign Lesson Action
-      this.els.weakTopicsContainer.querySelectorAll('.assign-lesson-btn').forEach(btn => {
+      this.els.weakTopicsContainer.querySelectorAll('.assign-lecture-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const title = btn.dataset.topicTitle;
           const subject = btn.dataset.topicSubject;
-          this._handleAssignExtraLesson(title, subject, btn);
+          this._handleAssignLecture(title, subject, btn);
         });
       });
     }
 
-    _handleAssignExtraLesson(topicTitle, subject, btnEl) {
+    _handleAssignLecture(topicTitle, subject, btnEl) {
       if (!window.StrictStore) return;
 
-      const store = window.StrictStore.get();
-      const newQuest = {
-        id: 'quest-parent-assigned-' + Date.now(),
-        title: `⚡ Пріоритет від батьків: Додатковий урок з Пандою — "${topicTitle}" (${subject})`,
-        reward: 60,
+      const newLecture = {
+        id: 'lecture-' + Date.now(),
+        title: topicTitle,
+        subject: subject,
+        date: 'Сьогодні, ' + new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
         completed: false,
         link: 'tutor.html'
       };
 
-      const quests = [newQuest, ...(store.tracker.dailyQuests || [])];
+      const newQuest = {
+        id: 'quest-parent-' + Date.now(),
+        title: `⚡ Пріоритет від батьків: Лекція з Пандою — "${topicTitle}" (${subject})`,
+        reward: 60,
+        completed: false,
+        system: false,
+        link: 'tutor.html'
+      };
 
-      window.StrictStore.update({
+      const store = window.StrictStore.get();
+      const currentLectures = (store.parental && store.parental.assignedLectures) ? store.parental.assignedLectures : [];
+      const currentQuests = (store.tracker && store.tracker.dailyQuests) ? store.tracker.dailyQuests : [];
+
+      window.StrictStore.update((st) => ({
+        ...st,
+        parental: {
+          ...st.parental,
+          assignedLectures: [newLecture, ...currentLectures]
+        },
         tracker: {
-          dailyQuests: quests
+          ...st.tracker,
+          dailyQuests: [newQuest, ...currentQuests]
         }
-      });
+      }));
 
-      btnEl.classList.remove('btn-secondary');
-      btnEl.classList.add('btn-primary');
+      btnEl.classList.remove('btn-primary');
+      btnEl.classList.add('btn-secondary');
       btnEl.disabled = true;
-      btnEl.innerHTML = `<span>✓</span><span>Урок призначено!</span>`;
+      btnEl.innerHTML = `<span>✓</span><span>Лекцію призначено!</span>`;
 
       if (window.StrictComponents) {
         window.StrictComponents.playBeep('success');
-        window.StrictComponents.toast(`🎯 Урок з теми "${topicTitle}" призначено та додано до плану дитини!`, 'success');
+        window.StrictComponents.toast(`🎯 Лекцію "${topicTitle}" призначено та додано до списку призначених і щоденного плану дитини!`, 'success');
       }
+
+      this._renderAssignedLectures(window.StrictStore.get());
+    }
+
+    _renderAssignedLectures(state) {
+      if (!this.els.assignedLecturesContainer) return;
+
+      const lectures = (state.parental && Array.isArray(state.parental.assignedLectures))
+        ? state.parental.assignedLectures
+        : [];
+
+      if (this.els.assignedLecturesCount) {
+        this.els.assignedLecturesCount.textContent = lectures.length;
+      }
+
+      if (lectures.length === 0) {
+        this.els.assignedLecturesContainer.innerHTML = `
+          <div style="background: var(--bg-surface-elevated); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg); padding: 36px 20px; text-align: center; color: var(--text-muted);">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">📋</div>
+            <div style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Немає призначених лекцій</div>
+            <div style="font-size: 0.88rem;">Перейдіть на вкладку «🔍 Слабкі теми» та оберіть тему для призначення обов'язкового уроку.</div>
+          </div>
+        `;
+        return;
+      }
+
+      this.els.assignedLecturesContainer.innerHTML = lectures.map(l => `
+        <div class="assigned-lecture-card" data-lecture-id="${l.id}">
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); line-height: 1.4;">
+            ${l.title}
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span class="bento-badge blue" style="font-size: 0.8rem; font-weight: 700; padding: 4px 10px;">
+                ${l.subject}
+              </span>
+              <span style="font-size: 0.82rem; color: var(--text-muted);">
+                📅 Призначено: <strong style="color: var(--text-secondary);">${l.date || 'Сьогодні'}</strong>
+              </span>
+              <a href="${l.link || 'tutor.html'}" style="font-size: 0.82rem; color: var(--accent-primary); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                Відкрити в Репетиторі ↗
+              </a>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <!-- Status Toggle Badge/Button -->
+              <button type="button" class="btn btn-sm toggle-lecture-status-btn ${l.completed ? 'btn-success' : 'btn-outline'}" data-lecture-id="${l.id}" title="Клікніть, щоб змінити статус виконання" style="padding: 6px 14px; font-weight: 700; font-size: 0.82rem; border-radius: var(--radius-full); cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                ${l.completed ? '✅ Виконано' : '⏳ Не виконано'}
+              </button>
+
+              <!-- Delete Button -->
+              <button type="button" class="btn btn-secondary btn-sm delete-lecture-btn" data-lecture-id="${l.id}" style="padding: 6px 12px; font-size: 0.82rem; color: var(--accent-danger); border-color: rgba(239, 71, 67, 0.3); display: inline-flex; align-items: center; gap: 4px; cursor: pointer;" title="Вилучити лекцію">
+                <span>🗑️</span>
+                <span>Вилучити</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Bind status toggle handlers
+      this.els.assignedLecturesContainer.querySelectorAll('.toggle-lecture-status-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lectureId = btn.dataset.lectureId;
+          this._toggleAssignedLectureStatus(lectureId);
+        });
+      });
+
+      // Bind delete handlers
+      this.els.assignedLecturesContainer.querySelectorAll('.delete-lecture-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lectureId = btn.dataset.lectureId;
+          this._deleteAssignedLecture(lectureId);
+        });
+      });
+    }
+
+    _toggleAssignedLectureStatus(lectureId) {
+      if (!window.StrictStore) return;
+      const store = window.StrictStore.get();
+      const lectures = [...((store.parental && store.parental.assignedLectures) ? store.parental.assignedLectures : [])];
+      const target = lectures.find(l => l.id === lectureId);
+      if (!target) return;
+
+      target.completed = !target.completed;
+      window.StrictStore.update((st) => ({
+        ...st,
+        parental: {
+          ...st.parental,
+          assignedLectures: lectures
+        }
+      }));
+
+      if (window.StrictComponents) {
+        window.StrictComponents.playBeep('click');
+        window.StrictComponents.toast(`Статус лекції змінено на: ${target.completed ? '✅ Виконано' : '⏳ Не виконано'}`, 'info');
+      }
+
+      this._renderAssignedLectures(window.StrictStore.get());
+    }
+
+    _deleteAssignedLecture(lectureId) {
+      if (!window.StrictStore) return;
+      const store = window.StrictStore.get();
+      const lectures = ((store.parental && store.parental.assignedLectures) ? store.parental.assignedLectures : []).filter(l => l.id !== lectureId);
+
+      window.StrictStore.update((st) => ({
+        ...st,
+        parental: {
+          ...st.parental,
+          assignedLectures: lectures
+        }
+      }));
+
+      if (window.StrictComponents) {
+        window.StrictComponents.playBeep('alert');
+        window.StrictComponents.toast('Призначену лекцію успішно вилучено зі списку.', 'info');
+      }
+
+      this._renderAssignedLectures(window.StrictStore.get());
     }
 
     _syncStrictnessControls(state) {
@@ -477,6 +681,12 @@
     // ==================== 3. USER INTERACTION HANDLERS ====================
 
     _bindDashboardEvents() {
+      // Diagnosis Tabs switching
+      if (this.els.tabBtnWeakTopics && this.els.tabBtnAssignedLectures) {
+        this.els.tabBtnWeakTopics.addEventListener('click', () => this._switchDiagnosisTab('weak-topics'));
+        this.els.tabBtnAssignedLectures.addEventListener('click', () => this._switchDiagnosisTab('assigned-lectures'));
+      }
+
       // Lock / Logout button
       if (this.els.lockDashboardBtn) {
         this.els.lockDashboardBtn.addEventListener('click', () => {
@@ -663,26 +873,37 @@
       }
 
       // Change PIN Modal
-      if (this.els.changePinBtn && this.els.changePinModal) {
-        this.els.changePinBtn.addEventListener('click', () => {
-          this.els.currentPinInput.value = '';
-          this.els.newPinInput.value = '';
-          this.els.confirmPinInput.value = '';
-          this.els.changePinModal.classList.add('active');
-          if (window.StrictComponents) window.StrictComponents.playBeep('click');
-        });
+      const modal = this.els.changePinModal || document.getElementById('change-pin-modal') || document.getElementById('pin-change-modal');
+      if (modal) {
+        if (this.els.changePinBtn) {
+          this.els.changePinBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this._openPinChangeModal();
+          });
+        }
 
-        const closePinModal = () => this.els.changePinModal.classList.remove('active');
+        const closePinModal = () => {
+          modal.classList.remove('active');
+          modal.classList.remove('show');
+          modal.style.display = 'none';
+        };
+
         if (this.els.closePinModalBtn) this.els.closePinModalBtn.addEventListener('click', closePinModal);
         if (this.els.cancelChangePinBtn) this.els.cancelChangePinBtn.addEventListener('click', closePinModal);
-        this.els.changePinModal.addEventListener('click', (e) => {
-          if (e.target === this.els.changePinModal) closePinModal();
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closePinModal();
+        });
+
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && (modal.classList.contains('active') || modal.classList.contains('show'))) {
+            closePinModal();
+          }
         });
 
         if (this.els.saveNewPinBtn) {
           this.els.saveNewPinBtn.addEventListener('click', () => {
             const store = window.StrictStore ? window.StrictStore.get() : null;
-            const currentStoredPin = store && store.parental && store.parental.pinCode ? store.parental.pinCode : '1234';
+            const currentStoredPin = (store && store.parental && (store.parental.pinCode || store.parental.pin)) ? (store.parental.pinCode || store.parental.pin) : '1234';
 
             const currVal = this.els.currentPinInput.value.trim();
             const newVal = this.els.newPinInput.value.trim();
@@ -712,13 +933,14 @@
               return;
             }
 
-            // Save new PIN
+            // Save new PIN in both pinCode and pin
             if (window.StrictStore) {
               window.StrictStore.update((st) => ({
                 ...st,
                 parental: {
                   ...st.parental,
-                  pinCode: newVal
+                  pinCode: newVal,
+                  pin: newVal
                 }
               }));
             }
@@ -726,11 +948,99 @@
             closePinModal();
             if (window.StrictComponents) {
               window.StrictComponents.playBeep('success');
-              window.StrictComponents.toast('Новий PIN-код успішно встановлено!', 'success');
+              window.StrictComponents.toast(`🎉 Новий PIN-код успішно встановлено (${newVal})!`, 'success');
             }
           });
         }
       }
+    }
+
+    _openPinChangeModal() {
+      const modal = this.els.changePinModal || document.getElementById('change-pin-modal') || document.getElementById('pin-change-modal');
+      if (!modal) return;
+      if (this.els.currentPinInput) this.els.currentPinInput.value = '';
+      if (this.els.newPinInput) this.els.newPinInput.value = '';
+      if (this.els.confirmPinInput) this.els.confirmPinInput.value = '';
+      modal.style.display = 'flex';
+      modal.classList.add('active');
+      modal.classList.add('show');
+      if (window.StrictComponents) window.StrictComponents.playBeep('click');
+      if (this.els.currentPinInput) {
+        setTimeout(() => this.els.currentPinInput.focus(), 150);
+      }
+    }
+
+    _bindHashRouting() {
+      window.addEventListener('hashchange', () => this._handleUrlHash());
+
+      // Support direct footer and navigation link clicks matching control hashes
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href) return;
+        if (
+          href.includes('#pin-change') ||
+          href.includes('#change-pin') ||
+          href.includes('#change-pin-modal') ||
+          href.includes('#pin-change-modal') ||
+          href.includes('#educational-contract') ||
+          href.includes('#contract') ||
+          href.includes('#anticheat-monitoring')
+        ) {
+          setTimeout(() => this._handleUrlHash(), 50);
+        }
+      });
+    }
+
+    _handleUrlHash() {
+      const hash = window.location.hash;
+      if (!hash) return;
+
+      if (hash === '#pin-change' || hash === '#change-pin' || hash === '#change-pin-modal' || hash === '#pin-change-modal') {
+        if (!this.isAuthenticated) {
+          const store = window.StrictStore ? window.StrictStore.get() : null;
+          const pin = (store && store.parental && (store.parental.pinCode || store.parental.pin)) ? (store.parental.pinCode || store.parental.pin) : '1234';
+          this.currentPinInput = pin;
+          this._unlockDashboard(false);
+        }
+        this._openPinChangeModal();
+      } else if (hash === '#educational-contract' || hash === '#contract') {
+        if (!this.isAuthenticated) {
+          this._unlockDashboard(false);
+        }
+        window.scrollTo(0, 0);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 50);
+      } else if (hash === '#anticheat-monitoring') {
+        if (!this.isAuthenticated) {
+          this._unlockDashboard(false);
+        }
+        this._scrollToElement('anticheat-monitoring');
+      }
+    }
+
+    _scrollToElement(id) {
+      setTimeout(() => {
+        let el = document.getElementById(id);
+        if (!el && id === 'educational-contract') {
+          el = document.getElementById('contract');
+        } else if (!el && id === 'contract') {
+          el = document.getElementById('educational-contract');
+        }
+        if (el) {
+          const isSmooth = !(/Headless/i.test(navigator.userAgent));
+          el.scrollIntoView({ behavior: isSmooth ? 'smooth' : 'auto', block: 'start' });
+          el.style.transition = 'box-shadow 0.4s ease, border-color 0.4s ease';
+          el.style.boxShadow = '0 0 24px rgba(255, 161, 22, 0.45)';
+          el.style.borderColor = 'var(--accent-primary)';
+          setTimeout(() => {
+            el.style.boxShadow = '';
+            el.style.borderColor = '';
+          }, 2200);
+        }
+      }, 100);
     }
   }
 

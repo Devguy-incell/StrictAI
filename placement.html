@@ -13,28 +13,29 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <style>
+    /* Dark Graphite (LeetCode / Brilliant) Theme Tokens */
     :root {
-      --bg-primary: var(--bg-canvas, #1E1035);
-      --bg-card: var(--bg-surface, #2B184A);
-      --bg-card-hover: var(--bg-hover, #3D2466);
-      --accent-orange: var(--accent-primary, #F2994A);
-      --accent-bamboo: var(--bamboo-green, #22C55E);
-      --text-main: var(--text-primary, #FFFFFF);
-      --text-sub: var(--text-secondary, #C8B6E2);
-      --border-card: var(--border-subtle, rgba(255, 255, 255, 0.12));
-      --border-card-hover: rgba(242, 153, 74, 0.45);
-      --shadow-card-glow: 0 8px 32px rgba(10, 4, 20, 0.45);
+      --bg-primary: var(--bg-canvas, #121212);
+      --bg-card: var(--bg-surface, #1e1e1e);
+      --bg-card-hover: var(--bg-hover, #282828);
+      --accent-orange: var(--accent-primary, #ffa116);
+      --accent-bamboo: var(--bamboo-green, #2cbb5d);
+      --text-main: var(--text-primary, #eff1f6);
+      --text-sub: var(--text-secondary, #9ca3af);
+      --border-card: var(--border-subtle, #333333);
+      --border-card-hover: rgba(255, 161, 22, 0.45);
+      --shadow-card-glow: 0 8px 32px rgba(0, 0, 0, 0.45);
     }
 
     [data-theme="light"] {
-      --bg-primary: var(--bg-canvas, #FBF9F5);
-      --bg-card: var(--bg-surface, #FFFFFF);
-      --bg-card-hover: var(--bg-hover, #EAE3D5);
-      --accent-orange: var(--accent-primary, #E67E22);
+      --bg-primary: #FBF9F5;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #EAE3D5;
+      --accent-orange: #E67E22;
       --accent-bamboo: #16A34A;
-      --text-main: var(--text-primary, #1E1035);
-      --text-sub: var(--text-secondary, #4A3869);
-      --border-card: var(--border-subtle, rgba(30, 16, 53, 0.12));
+      --text-main: #121212;
+      --text-sub: #4A3869;
+      --border-card: rgba(0, 0, 0, 0.12);
       --border-card-hover: rgba(230, 126, 34, 0.45);
       --shadow-card-glow: 0 8px 32px rgba(0, 0, 0, 0.08);
     }
@@ -65,7 +66,7 @@
       gap: 28px;
       background: var(--bg-card);
       border: 1px solid var(--border-card);
-      border-radius: var(--radius-xl, 24px);
+      border-radius: var(--radius-xl, 20px);
       padding: 28px 32px;
       margin-bottom: 32px;
       box-shadow: var(--shadow-card-glow);
@@ -80,7 +81,7 @@
       right: -50px;
       width: 220px;
       height: 220px;
-      background: radial-gradient(circle, rgba(242, 153, 74, 0.22) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 161, 22, 0.18) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -88,12 +89,17 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       flex-shrink: 0;
+      width: 104px;
+      height: 104px;
     }
 
     #placement-panda-mount {
       width: 100px;
       height: 100px;
+      max-width: 100px;
+      max-height: 100px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.04);
       border: 2px solid var(--accent-orange);
@@ -102,7 +108,19 @@
       justify-content: center;
       overflow: hidden;
       position: relative;
-      box-shadow: 0 4px 18px rgba(242, 153, 74, 0.25);
+      box-shadow: 0 4px 18px rgba(255, 161, 22, 0.25);
+      flex-shrink: 0;
+    }
+
+    #placement-panda-mount svg,
+    #result-panda-mount svg,
+    #quiz-panda-mini svg {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      display: block;
+      object-fit: contain;
     }
 
     .placement-hero-body {
@@ -115,8 +133,8 @@
       gap: 6px;
       padding: 4px 12px;
       border-radius: 9999px;
-      background: rgba(242, 153, 74, 0.14);
-      border: 1px solid rgba(242, 153, 74, 0.3);
+      background: rgba(255, 161, 22, 0.14);
+      border: 1px solid rgba(255, 161, 22, 0.3);
       color: var(--accent-orange);
       font-size: 0.8rem;
       font-weight: 700;
@@ -217,8 +235,8 @@
     .subject-select-card.active,
     .subject-btn.active {
       border-color: var(--accent-orange);
-      background: rgba(242, 153, 74, 0.16);
-      box-shadow: 0 0 20px rgba(242, 153, 74, 0.25);
+      background: rgba(255, 161, 22, 0.16);
+      box-shadow: 0 0 20px rgba(255, 161, 22, 0.25);
     }
 
     .subject-select-card .subj-icon,
@@ -273,8 +291,8 @@
     .mode-card.selected,
     .mode-card:has(input[type="radio"]:checked) {
       border-color: var(--accent-orange);
-      background: rgba(242, 153, 74, 0.08);
-      box-shadow: 0 0 20px rgba(242, 153, 74, 0.2);
+      background: rgba(255, 161, 22, 0.08);
+      box-shadow: 0 0 20px rgba(255, 161, 22, 0.2);
     }
 
     .mode-card-header {
@@ -310,8 +328,8 @@
     }
 
     .mode-time-badge.ai-time-badge {
-      background: rgba(242, 153, 74, 0.14);
-      border-color: rgba(242, 153, 74, 0.3);
+      background: rgba(255, 161, 22, 0.14);
+      border-color: rgba(255, 161, 22, 0.3);
       color: var(--accent-orange);
     }
 
@@ -357,34 +375,34 @@
     #current-seed-label {
       font-family: 'JetBrains Mono', monospace;
       color: var(--accent-orange);
-      background: rgba(242, 153, 74, 0.15);
+      background: rgba(255, 161, 22, 0.15);
       padding: 3px 8px;
       border-radius: 6px;
       font-weight: 700;
     }
 
-    /* Button Primary & Secondary Custom Styling */
+    /* CTA Buttons */
     .btn-placement-cta {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      background: linear-gradient(135deg, var(--accent-orange) 0%, #EB5757 100%);
-      color: #FFFFFF;
+      background: linear-gradient(135deg, var(--accent-orange) 0%, #ff7816 100%);
+      color: #121212;
       border: none;
       border-radius: 14px;
       padding: 18px 36px;
       font-size: 1.1rem;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(242, 153, 74, 0.35);
+      box-shadow: 0 8px 24px rgba(255, 161, 22, 0.35);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       text-decoration: none;
     }
 
     .btn-placement-cta:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(242, 153, 74, 0.45);
+      box-shadow: 0 12px 28px rgba(255, 161, 22, 0.45);
     }
 
     .btn-placement-cta:active {
@@ -465,11 +483,12 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     #quiz-step-badge {
-      background: rgba(242, 153, 74, 0.15);
-      border: 1px solid rgba(242, 153, 74, 0.3);
+      background: rgba(255, 161, 22, 0.15);
+      border: 1px solid rgba(255, 161, 22, 0.3);
       color: var(--accent-orange);
       padding: 4px 12px;
       border-radius: 8px;
@@ -478,8 +497,8 @@
     }
 
     #quiz-difficulty-badge {
-      background: rgba(34, 197, 94, 0.15);
-      border: 1px solid rgba(34, 197, 94, 0.3);
+      background: rgba(44, 187, 93, 0.15);
+      border: 1px solid rgba(44, 187, 93, 0.3);
       color: var(--accent-bamboo);
       padding: 4px 12px;
       border-radius: 8px;
@@ -490,8 +509,8 @@
 
     #btn-abort-placement {
       background: transparent;
-      border: 1px solid rgba(244, 63, 94, 0.4);
-      color: #F43F5E;
+      border: 1px solid rgba(239, 71, 67, 0.4);
+      color: #ef4743;
       padding: 6px 14px;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -501,7 +520,7 @@
     }
 
     #btn-abort-placement:hover {
-      background: rgba(244, 63, 94, 0.12);
+      background: rgba(239, 71, 67, 0.12);
     }
 
     .progress-track {
@@ -517,39 +536,6 @@
       background: linear-gradient(90deg, var(--accent-orange) 0%, var(--accent-bamboo) 100%);
       border-radius: 9999px;
       transition: width 0.3s ease;
-    }
-
-    /* Audio question box */
-    #quiz-audio-box {
-      margin-bottom: 20px;
-      padding: 16px 20px;
-      background: rgba(242, 153, 74, 0.08);
-      border: 1px solid rgba(242, 153, 74, 0.25);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    #btn-play-question-audio {
-      background: var(--accent-orange);
-      color: #FFFFFF;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: opacity 0.2s ease, transform 0.1s ease;
-    }
-
-    #btn-play-question-audio:hover {
-      opacity: 0.92;
-      transform: scale(1.02);
     }
 
     /* Question details */
@@ -609,20 +595,20 @@
     .quiz-option-btn.selected,
     .option-btn.selected {
       border-color: var(--accent-orange);
-      background: rgba(242, 153, 74, 0.16);
+      background: rgba(255, 161, 22, 0.16);
     }
 
     .quiz-option-btn.correct,
     .option-btn.correct {
       border-color: var(--accent-bamboo) !important;
-      background: rgba(34, 197, 94, 0.18) !important;
+      background: rgba(44, 187, 93, 0.18) !important;
       color: #FFFFFF !important;
     }
 
     .quiz-option-btn.incorrect,
     .option-btn.incorrect {
-      border-color: #F43F5E !important;
-      background: rgba(244, 63, 94, 0.18) !important;
+      border-color: #ef4743 !important;
+      background: rgba(239, 71, 67, 0.18) !important;
       color: #FFFFFF !important;
     }
 
@@ -648,7 +634,7 @@
 
     .quiz-option-btn.incorrect .option-letter,
     .option-btn.incorrect .option-letter {
-      background: #F43F5E;
+      background: #ef4743;
       color: #FFFFFF;
     }
 
@@ -703,7 +689,7 @@
       align-items: center;
       gap: 10px;
       background: var(--accent-orange);
-      color: #FFFFFF;
+      color: #121212;
       border: none;
       border-radius: 12px;
       padding: 14px 28px;
@@ -726,10 +712,10 @@
     /* Step 3: Result Certificate */
     .result-certificate {
       background: var(--bg-card);
-      border: 2px solid rgba(242, 153, 74, 0.4);
+      border: 2px solid rgba(255, 161, 22, 0.4);
       border-radius: 28px;
       padding: 40px 32px;
-      box-shadow: 0 16px 48px rgba(10, 4, 20, 0.6);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -742,7 +728,7 @@
       left: 0;
       right: 0;
       height: 6px;
-      background: linear-gradient(90deg, var(--accent-orange) 0%, #E94057 50%, var(--accent-bamboo) 100%);
+      background: linear-gradient(90deg, var(--accent-orange) 0%, #ff7816 50%, var(--accent-bamboo) 100%);
     }
 
     .cert-badge-pill,
@@ -750,8 +736,8 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(34, 197, 94, 0.15);
-      border: 1px solid rgba(34, 197, 94, 0.35);
+      background: rgba(44, 187, 93, 0.15);
+      border: 1px solid rgba(44, 187, 93, 0.35);
       color: var(--accent-bamboo);
       padding: 6px 16px;
       border-radius: 9999px;
@@ -773,7 +759,7 @@
       font-size: 2.4rem;
       font-weight: 900;
       color: var(--accent-orange);
-      background: rgba(242, 153, 74, 0.12);
+      background: rgba(255, 161, 22, 0.12);
       border: 2px solid var(--accent-orange);
       border-radius: 16px;
       padding: 12px 32px;
@@ -877,6 +863,8 @@
     #result-panda-mount {
       width: 70px;
       height: 70px;
+      max-width: 70px;
+      max-height: 70px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.05);
       border: 2px solid var(--accent-orange);
@@ -910,7 +898,7 @@
       font-size: 1.05rem;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+      box-shadow: 0 8px 24px rgba(44, 187, 93, 0.3);
       transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
@@ -919,7 +907,7 @@
 
     #btn-apply-level-tutor:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(34, 197, 94, 0.4);
+      box-shadow: 0 12px 28px rgba(44, 187, 93, 0.4);
     }
 
     #btn-retake-new-seed {
@@ -947,6 +935,18 @@
         flex-direction: column;
         text-align: center;
         padding: 20px;
+        gap: 16px;
+      }
+      .placement-panda-wrap {
+        width: 84px;
+        height: 84px;
+        margin: 0 auto;
+      }
+      #placement-panda-mount {
+        width: 80px;
+        height: 80px;
+        max-width: 80px;
+        max-height: 80px;
       }
       .mode-grid {
         grid-template-columns: 1fr;
@@ -1075,12 +1075,12 @@
               <span class="mode-badge">Варіант 1</span>
               <input type="radio" name="test-mode" value="cefr" checked>
             </div>
-            <div class="mode-time-badge">⏱ ~5–7 хв • 8 завдань + аудіювання</div>
+            <div class="mode-time-badge">⏱ ~5–7 хв • 8 структурованих завдань</div>
             <h3 class="mode-card-title">
               <span>🌍</span> Міжнародний стандарт (CEFR A1–C2 / Матриця УЦОЯО)
             </h3>
             <p class="mode-card-desc">
-              8–10 структурованих питань: граматика, лексика, читання та аудіювання з вбудованим синтезом мовлення (TTS).
+              8–10 структурованих питань: граматика, лексика, контекстні завдання та аналітичне читання з анти-чит верифікацією.
             </p>
           </label>
 
@@ -1139,8 +1139,10 @@
       <div class="quiz-progress-panel">
         <div class="quiz-top-bar">
           <div class="quiz-meta-group">
+            <div id="quiz-panda-mini" style="width: 32px; height: 32px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,0.06); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;"></div>
             <span id="quiz-step-badge">Питання 1 з 10</span>
             <span id="quiz-difficulty-badge">Рівень: A1 -> C2</span>
+            <span class="badge-tag" id="q-ai-badge" style="display: none; background: rgba(242, 153, 74, 0.15); color: var(--accent-orange); border-color: rgba(242, 153, 74, 0.35); font-weight: 700; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem;"></span>
           </div>
           <button type="button" id="btn-abort-placement">
             ✕ Завершити достроково
@@ -1154,16 +1156,19 @@
       <!-- Question Card -->
       <div class="placement-card">
         
-        <!-- Audio Box (Displayed for listening tasks) -->
-        <div id="quiz-audio-box" style="display:none;">
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: var(--text-main);">
-            <span>🎧</span>
-            <span>Завдання на слухове сприйняття (TTS):</span>
+        <!-- Per-Question 45s Hard Countdown Timer -->
+        <div class="per-question-timer-box" style="margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-sub); margin-bottom: 6px;">
+            <span>⏱️ Таймер питання (Анти-чит ліміт 45с)</span>
+            <span id="question-timer-countdown" style="font-family: monospace; font-weight: 700; color: var(--accent-orange);">45s</span>
           </div>
-          <button type="button" id="btn-play-question-audio" data-alias="btn-audio-pronounce">
-            <span>🔊</span> Прослухати вимову / аудіо фрагмент
-          </button>
+          <div style="background: rgba(255,255,255,0.06); height: 6px; border-radius: 3px; overflow: hidden;">
+            <div id="question-timer-progress-fill" style="width: 100%; height: 100%; background: linear-gradient(90deg, #ffa116, #2cbb5d); transition: width 0.25s linear;"></div>
+          </div>
         </div>
+
+        <!-- Canvas Question Box (Anti-OCR / Anti-Extension Shield) -->
+        <canvas id="question-protection-canvas" class="canvas-question-box" style="width: 100%; border-radius: 10px; margin-bottom: 16px; display: none; background: #161618; border: 1px solid var(--border-card);"></canvas>
 
         <!-- Question Prompt & Context -->
         <div id="quiz-question-context" style="display:none;"></div>
@@ -1184,14 +1189,40 @@
         <!-- Realtime Feedback Box -->
         <div id="quiz-feedback-box" style="display:none;"></div>
 
-        <!-- Next Question Action -->
-        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+        <!-- Navigation Buttons: Back (Locked) & Next -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" id="btn-quiz-prev" disabled title="🔒 Перехід назад заборонено анти-чит протоколом" style="opacity: 0.45; cursor: not-allowed; background: rgba(255,255,255,0.05); border: 1px solid var(--border-card); color: var(--text-sub); padding: 12px 20px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+            <span>🔒 Назад</span>
+          </button>
           <button type="button" id="btn-next-question" disabled>
             <span>Далі ➔</span>
           </button>
         </div>
 
+        <!-- Proctor Telemetry & Anti-Cheat Controls -->
+        <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-card);">
+          <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-sub); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <span>🛡️ Proctor & Anti-Cheat Protocols</span>
+          </div>
+
+          <!-- Proctor / Biometric Telemetry HUD -->
+          <div id="placement-telemetry-hud" style="margin-top: 14px;"></div>
+
+          <!-- AI Extension Attack Simulation Button -->
+          <button type="button" class="btn btn-outline btn-sm" id="btn-simulate-ai-extension" style="width: 100%; margin-top: 12px; font-size: 0.8rem; border: 1px solid rgba(239, 71, 67, 0.4); background: rgba(239, 71, 67, 0.08); color: #ef4743; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease;">
+            🛡️ Перевірити захист від ШІ-розширень (Симуляція Monica/Sider)
+          </button>
+
+          <!-- Micro-Verification Trigger Button -->
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-trigger-micro-verify" style="width: 100%; margin-top: 8px; font-size: 0.8rem; border: 1px solid var(--border-card); background: rgba(255, 255, 255, 0.06); color: var(--text-main); padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease;">
+            ⚡ Пройти 20-сек Мікро-Верифікацію відповіді
+          </button>
+        </div>
+
       </div>
+
+      <!-- Micro Verification Modal Slot -->
+      <div id="micro-verification-modal-slot"></div>
 
     </section>
 
@@ -1213,7 +1244,7 @@
           B2 Upper-Intermediate
         </div>
         <p id="result-level-desc">
-          Впевнене володіння граматикою, багатий словниковий запас, здатність розуміти складні технічні та розмовні тексти.
+          Впевнене володіння граматикою, багатий словниковий запас, здатність розуміти складні технічні та аналітичні тексти.
         </p>
 
         <!-- 4-Skill Progress Bars -->
@@ -1222,7 +1253,7 @@
             
             <div class="skill-item">
               <div class="skill-header">
-                <span>📝 Граматика</span>
+                <span>📝 Граматика та правила</span>
                 <span id="skill-grammar-val" style="color: var(--accent-orange); font-weight: 700;">85%</span>
               </div>
               <div class="skill-track">
@@ -1242,7 +1273,7 @@
 
             <div class="skill-item">
               <div class="skill-header">
-                <span>🎧 Аудіювання</span>
+                <span>🎯 Практичне розуміння</span>
                 <span id="skill-listening-val" style="color: #38BDF8; font-weight: 700;">78%</span>
               </div>
               <div class="skill-track">
@@ -1273,7 +1304,7 @@
               Персональний вердикт від ШІ-Панди:
             </strong>
             <div id="result-panda-verdict">
-              Чудовий результат! Твій рівень впевнено підтверджено. Я вже оптимізувала навчальний план у ШІ-Репетиторі для досягнення рівня C1.
+              Чудовий результат! Твій рівень впевнено підтверджено. Я вже оптимізувала навчальний план у ШІ-Репетиторі для досягнення вищого рівня.
             </div>
           </div>
         </div>
@@ -1294,14 +1325,145 @@
 
   </main>
 
+  <!-- Standard StrictAI Footer -->
+  <footer class="strict-footer" style="margin-top: 64px;">
+    <div class="strict-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="nav-brand" style="margin-bottom: 14px;">
+            <div class="nav-brand-badge">🐼</div>
+            <div>Strict<span class="nav-brand-highlight">AI</span></div>
+          </div>
+          <p style="font-size: 0.95rem; max-width: 440px; margin-bottom: 16px;">
+            Панда-репетитор: адаптивна підготовка до НМТ 2025 за програмою УЦОЯО, гейміфікація та залізна концентрація уваги.
+          </p>
+          <div class="ua-badge">
+            <span>🇺🇦</span>
+            <span>Розроблено для українських випускників</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Навігація</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Головна</a></li>
+            <li><a href="tutor.html">AI-Репетитор</a></li>
+            <li><a href="nmt.html">Симулятор НМТ</a></li>
+            <li><a href="tracker.html">Контроль фокусу</a></li>
+            <li><a href="knowledge.html">Карта знань</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Матеріали</h4>
+          <ul class="footer-links">
+            <li><a href="nmt.html">📝 Тренажер НМТ 2025</a></li>
+            <li><a href="parents.html">🛡 Батьківський кабінет</a></li>
+            <li><a href="javascript:void(0)" onclick="window.StrictComponents.openApiKeyModal()">⚙️ Налаштувати AI-ключ</a></li>
+            <li><a href="index.html#calc">📊 Калькулятор коефіцієнтів</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Контроль & Прозорість</div>
+          <ul class="footer-links">
+            <li><a href="parents.html">Батьківський кабінет</a></li>
+            <li><a href="parents.html#educational-contract">Освітній контракт</a></li>
+            <li><a href="parents.html#anticheat-monitoring">Анти-чит моніторинг</a></li>
+            <li><a href="parents.html#pin-change">Зміна PIN-коду</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.</div>
+        <div>Аутентичні стандарти УЦОЯО та МОН України</div>
+      </div>
+    </div>
+  </footer>
+
   <!-- StrictAI Engine Scripts in Exact Sequence -->
   <script src="js/store.js"></script>
   <script src="js/i18n.js"></script>
-  <script src="js/polyglot-dict-data.js"></script>
-  <script src="js/polyglot-tts.js"></script>
-  <script src="js/notifications.js"></script>
+  <script src="js/anti-cheat-engine.js"></script>
+  <script src="js/react-runtime.js"></script>
   <script src="js/panda-avatar.js"></script>
+  <script src="js/notifications.js"></script>
   <script src="js/components.js"></script>
   <script src="js/placement.js"></script>
+
+  <!-- StrictAI Anti-Cheat Integration & Telemetry Handlers -->
+  <script>
+    (function () {
+      'use strict';
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // AI Extension simulation trigger
+        const simBtn = document.getElementById('btn-simulate-ai-extension');
+        if (simBtn) {
+          simBtn.addEventListener('click', function () {
+            if (window.StrictAntiCheat && typeof window.StrictAntiCheat.simulateExtensionAttack === 'function') {
+              window.StrictAntiCheat.simulateExtensionAttack('Monica AI (Simulation Test)');
+            } else if (window.StrictNotifications) {
+              window.StrictNotifications.show({
+                type: 'warning',
+                title: 'Захист активний',
+                message: 'Симуляція: спроба ін\'єкції Monica AI заблокована.'
+              });
+            }
+          });
+        }
+
+        // Micro-verification blitz trigger
+        const verifyBtn = document.getElementById('btn-trigger-micro-verify');
+        if (verifyBtn) {
+          verifyBtn.addEventListener('click', function () {
+            if (window.StrictAntiCheat && typeof window.StrictAntiCheat.openMicroVerificationModal === 'function') {
+              window.StrictAntiCheat.openMicroVerificationModal({
+                prompt: 'ШІ-Античит: Коротко в 1 реченні поясніть хід вашої думки або аргументуйте вибір відповіді:'
+              });
+            }
+          });
+        }
+
+        // Biometric Telemetry HUD Updater
+        const hudEl = document.getElementById('placement-telemetry-hud');
+        if (hudEl) {
+          function renderTelemetryHUD() {
+            if (!hudEl) return;
+            const summary = (window.StrictAntiCheat && typeof window.StrictAntiCheat.getBiometricsSummary === 'function')
+              ? window.StrictAntiCheat.getBiometricsSummary()
+              : { trustScore: 100, trustRating: 'Висока (High)' };
+
+            const isHigh = summary.trustScore >= 80;
+            const isMedium = summary.trustScore >= 50 && summary.trustScore < 80;
+            const badgeColor = isHigh ? '#2cbb5d' : (isMedium ? '#ffa116' : '#ef4743');
+            const bgTint = isHigh ? 'rgba(44, 187, 93, 0.1)' : (isMedium ? 'rgba(255, 161, 22, 0.1)' : 'rgba(239, 71, 67, 0.1)');
+
+            hudEl.innerHTML = `
+              <div style="background: ${bgTint}; border: 1px solid var(--border-card); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${badgeColor}; box-shadow: 0 0 10px ${badgeColor};"></span>
+                  <div>
+                    <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">StrictProctor Telemetry & Biometrics HUD</div>
+                    <div style="font-size: 0.74rem; color: var(--text-sub);">Біометрія клавіш та рухів миші активна</div>
+                  </div>
+                </div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; color: ${badgeColor}; background: rgba(0,0,0,0.25); padding: 4px 10px; border-radius: 6px; border: 1px solid ${badgeColor};">
+                  Trust Score: ${summary.trustScore}%
+                </div>
+              </div>
+            `;
+          }
+
+          if (window.StrictAntiCheat && typeof window.StrictAntiCheat.startBiometricsTracker === 'function') {
+            window.StrictAntiCheat.startBiometricsTracker();
+          }
+          renderTelemetryHUD();
+          setInterval(renderTelemetryHUD, 2000);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
