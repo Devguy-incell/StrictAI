@@ -1150,25 +1150,31 @@
      TAB 2: TutorView ({ state, store })
      ------------------------------------------------------------------------ */
 
+  function buildTutorApiParams(opts) {
+    var isLangMode = opts.mode === 'language';
+    return {
+      mode: isLangMode ? 'language' : 'school',
+      subjectId: opts.subject,
+      gradeBand: isLangMode ? 'nmt-200' : (opts.level || 'nmt-200'),
+      cefrLevel: isLangMode ? (opts.level || 'B1') : 'B1',
+      personaId: opts.persona ? opts.persona.id : 'socratic',
+      scenarioId: opts.scenario ? opts.scenario.id : null,
+      userMessage: opts.userText || '',
+      topicId: opts.topicId || '',
+      topicTitle: opts.topic || '',
+      activeExercise: opts.activeExercise || null,
+      actionType: opts.scenario
+        ? 'scenario'
+        : (opts.action === 'start' || !opts.action ? 'explain' : (opts.action === 'user_message' ? 'explain' : opts.action)),
+      history: opts.history || []
+    };
+  }
+
   function buildTutorTurn(opts) {
     var SC = getCurriculum();
     if (typeof SC.generateTutorReply === 'function') {
       try {
-        var isLangMode = opts.mode === 'language';
-        var apiParams = {
-          mode: isLangMode ? 'language' : 'school',
-          subjectId: opts.subject,
-          gradeBand: isLangMode ? 'nmt-200' : (opts.level || 'nmt-200'),
-          cefrLevel: isLangMode ? (opts.level || 'B1') : 'B1',
-          personaId: opts.persona ? opts.persona.id : 'socratic',
-          scenarioId: opts.scenario ? opts.scenario.id : null,
-          userMessage: opts.userText || '',
-          topicTitle: opts.topic || '',
-          actionType: opts.scenario
-            ? 'scenario'
-            : (opts.action === 'start' || !opts.action ? 'explain' : (opts.action === 'user_message' ? 'explain' : opts.action)),
-          history: opts.history || []
-        };
+        var apiParams = buildTutorApiParams(opts);
         var custom = SC.generateTutorReply(apiParams);
         if (custom && (custom.text || custom.message)) {
           return {
@@ -1344,12 +1350,29 @@
       return getTopics(mode, subject, activeLevel);
     }, [mode, subject, activeLevel]);
 
+    var activeTopicObj = useMemo(function () {
+      var target = selectedTopic || draftTopic;
+      if (target) {
+        for (var ti = 0; ti < topics.length; ti++) {
+          if (topics[ti].title === target || topics[ti].id === target) return topics[ti];
+        }
+      }
+      return topics[0] || null;
+    }, [topics, selectedTopic, draftTopic]);
+
+    useEffect(function () {
+      if (!selectedTopic && topics.length > 0) {
+        setSelectedTopic(topics[0].title);
+      }
+    }, [topics, selectedTopic]);
+
     var roleplayScenarios = useMemo(function () {
       return getRoleplayScenarios(subject);
     }, [subject]);
 
     function buildInitialMessages() {
       var initialTopic = draftTopic || (topics[0] ? topics[0].title : 'Стартова тема');
+      var initialTopicId = draft.topicId || (activeTopicObj && activeTopicObj.title === initialTopic ? activeTopicObj.id : '');
       var list = [];
       if (draft.errorContext || draftPrompt) {
         list.push({
@@ -1364,6 +1387,7 @@
           subject: draftSubject,
           level: draftMode === 'language' ? draftCefr : normalizedDraftGrade,
           topic: initialTopic,
+          topicId: initialTopicId,
           persona: activePersona,
           action: draft.errorContext ? 'step' : 'start',
           history: list
@@ -1412,6 +1436,7 @@
           subject: nextSubject,
           level: nextLevel,
           topic: nextTopic,
+          topicId: draft.topicId || '',
           persona: activePersona,
           action: draft.errorContext ? 'step' : 'start',
           history: seedList
@@ -1450,6 +1475,13 @@
 
     function startLessonWith(topicTitle, scenarioObj, isReset) {
       var chosenTopic = topicTitle || selectedTopic || (topics[0] ? topics[0].title : 'Оглядова тема');
+      var matchedObj = null;
+      for (var ti = 0; ti < topics.length; ti++) {
+        if (topics[ti].title === chosenTopic || topics[ti].id === chosenTopic) {
+          matchedObj = topics[ti];
+          break;
+        }
+      }
       setSelectedTopic(chosenTopic);
       setTopicCompleted(false);
       if (isReset) setExerciseAnswers({});
@@ -1458,6 +1490,7 @@
         subject: subject,
         level: activeLevel,
         topic: chosenTopic,
+        topicId: matchedObj ? matchedObj.id : '',
         persona: activePersona,
         scenario: scenarioObj || selectedScenario,
         action: 'start'
@@ -1468,24 +1501,59 @@
     function sendUserText(rawText, actionOverride) {
       var trimmed = String(rawText || '').trim();
       if (!trimmed && !actionOverride) return;
+      var resolvedTopic = selectedTopic || (activeTopicObj ? activeTopicObj.title : '') || (topics[0] ? topics[0].title : '');
+      var resolvedTopicId = activeTopicObj ? activeTopicObj.id : (draft.topicId || '');
+      var latestExercise = null;
+      for (var ei = messages.length - 1; ei >= 0; ei--) {
+        if (messages[ei] && messages[ei].exercise) {
+          latestExercise = messages[ei].exercise;
+          break;
+        }
+      }
+
       var userMsg = trimmed
         ? { id: 'u_' + Date.now(), role: 'user', text: trimmed }
         : null;
-      var reply = buildTutorTurn({
+      var turnOpts = {
         mode: mode,
         subject: subject,
         level: activeLevel,
-        topic: selectedTopic || (topics[0] ? topics[0].title : ''),
+        topic: resolvedTopic,
+        topicId: resolvedTopicId,
+        activeExercise: latestExercise,
         persona: activePersona,
         scenario: selectedScenario,
         userText: trimmed,
         action: actionOverride || 'user_message',
         history: messages
-      });
+      };
+      var reply = buildTutorTurn(turnOpts);
       setMessages(function (prev) {
         return userMsg ? prev.concat([userMsg, reply]) : prev.concat([reply]);
       });
       if (trimmed) setInputText('');
+
+      var hasLlmKey = false;
+      try {
+        hasLlmKey = Boolean(window.localStorage && window.localStorage.getItem('strictai_llm_api_key'));
+      } catch (_err) {
+        hasLlmKey = false;
+      }
+      var SC = getCurriculum();
+      if (hasLlmKey && typeof SC.generateTutorReplyAsync === 'function') {
+        SC.generateTutorReplyAsync(buildTutorApiParams(turnOpts)).then(function (liveReply) {
+          if (!liveReply || liveReply.source !== 'live-llm' || !liveReply.text) return;
+          setMessages(function (prev) {
+            return prev.map(function (m) {
+              if (m.id !== reply.id) return m;
+              return Object.assign({}, m, {
+                text: liveReply.text,
+                steps: Array.isArray(liveReply.steps) ? liveReply.steps : m.steps
+              });
+            });
+          });
+        }).catch(function () { /* keep deterministic local reply */ });
+      }
     }
 
     function handleSaveNote(msg) {

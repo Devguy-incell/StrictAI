@@ -761,15 +761,18 @@
       if (!record) {
         return null;
       }
+      var resolvedParentUid = record.parentUid || record.ownerUid || null;
+      var resolvedPinHash = record.parentPinHash || record.pinHash || null;
       return {
         familyId: record.familyId,
         inviteCode: record.inviteCode,
-        ownerUid: record.ownerUid,
+        ownerUid: resolvedParentUid,
+        parentUid: resolvedParentUid,
         planSeatType: record.planSeatType || 'family',
         seatLimit: SEAT_LIMITS[record.planSeatType || 'family'] || 5,
         dailyScheduleTime: record.dailyScheduleTime || '17:00',
         contractTerms: record.contractTerms ? cloneData(record.contractTerms) : null,
-        hasPin: Boolean(record.pinHash),
+        hasPin: Boolean(resolvedPinHash),
         memberUids: Array.isArray(record.memberUids) ? record.memberUids.slice() : [],
         activePass: record.activePass ? cloneData(record.activePass) : null,
         createdAt: record.createdAt || null,
@@ -851,13 +854,77 @@
       );
     }
 
+    function normalizeTierForCloud(tierVal) {
+      var t = String(tierVal || 'strictpass').toLowerCase();
+      if (t.indexOf('max') !== -1) return 'max';
+      if (t.indexOf('pro') !== -1) return 'pro';
+      return 'strictpass';
+    }
+
+    function normalizeSeatTypeForCloud(seatVal) {
+      var s = String(seatVal || 'single').toLowerCase();
+      if (s === 'single' || s === 'duo' || s === 'family') return s;
+      return 'single';
+    }
+
+    function normalizeCycleForCloud(cycleVal) {
+      var c = String(cycleVal || 'season').toLowerCase();
+      if (c === 'monthly' || c === 'season' || c === 'annual') return c;
+      return 'season';
+    }
+
+    function prepareCloudPayload(collectionName, data, fs, currentUid) {
+      var src = cloneData(data || {});
+      var serverTs = typeof fs.serverTimestamp === 'function' ? fs.serverTimestamp() : new Date();
+
+      if (collectionName === 'families') {
+        var parentUid = src.parentUid || src.ownerUid || currentUid;
+        var parentPinHash = src.parentPinHash || src.pinHash || '';
+        var safePinHash = (parentPinHash && String(parentPinHash).length >= 16)
+          ? String(parentPinHash)
+          : 'pending_parent_pin_setup';
+
+        var famCloud = {
+          parentUid: parentUid,
+          parentPinHash: safePinHash,
+          updatedAt: serverTs
+        };
+
+        if (src.inviteCode !== undefined) famCloud.inviteCode = String(src.inviteCode);
+        if (src.planSeatType !== undefined) famCloud.planSeatType = normalizeSeatTypeForCloud(src.planSeatType);
+        if (Array.isArray(src.memberUids)) famCloud.memberUids = src.memberUids.slice();
+        if (src.contractTerms !== undefined) famCloud.contractTerms = src.contractTerms;
+        if (src.dailyScheduleTime !== undefined) famCloud.dailyScheduleTime = src.dailyScheduleTime;
+        if (src._isNewFamily) famCloud.createdAt = serverTs;
+        return famCloud;
+      }
+
+      if (collectionName === 'strictPassOrders') {
+        var rawAmt = src.amountUah !== undefined ? src.amountUah : (src.priceUah !== undefined ? src.priceUah : 800);
+        return {
+          buyerUid: src.buyerUid || src.uid || currentUid,
+          tier: normalizeTierForCloud(src.tier),
+          seatType: normalizeSeatTypeForCloud(src.seatType),
+          billingCycle: normalizeCycleForCloud(src.billingCycle || src.cycle),
+          amountUah: Number(rawAmt) > 0 ? Number(rawAmt) : 800,
+          status: 'pending_verification',
+          createdAt: serverTs
+        };
+      }
+
+      delete src._isNewFamily;
+      return src;
+    }
+
     async function syncDocToCloud(collectionName, docId, data, merge) {
       if (!isCloudAuthenticated()) {
         return;
       }
       var fs = firebaseRuntime.firestoreMod;
+      var currentUid = firebaseRuntime.auth.currentUser.uid;
       var ref = fs.doc(firebaseRuntime.db, collectionName, docId);
-      await fs.setDoc(ref, cloneData(data), { merge: merge !== false });
+      var cloudPayload = prepareCloudPayload(collectionName, data, fs, currentUid);
+      await fs.setDoc(ref, cloudPayload, { merge: merge !== false });
     }
 
     async function readDocFromCloud(collectionName, docId) {
@@ -1823,16 +1890,19 @@
       }
 
       var ts = nowIso();
+      var resolvedParentUid = existingFam ? (existingFam.parentUid || existingFam.ownerUid) : uid;
       var familyRecord = {
         familyId: familyId,
         inviteCode: inviteCode,
-        ownerUid: existingFam ? existingFam.ownerUid : uid,
+        ownerUid: resolvedParentUid,
+        parentUid: resolvedParentUid,
         planSeatType: seatType,
         dailyScheduleTime: opts.dailyScheduleTime || (existingFam && existingFam.dailyScheduleTime) || '17:00',
         contractTerms: opts.contractTerms !== undefined
           ? cloneData(opts.contractTerms)
           : (existingFam && existingFam.contractTerms ? cloneData(existingFam.contractTerms) : null),
         pinHash: pinHash,
+        parentPinHash: pinHash,
         memberUids: members,
         activePass: (existingFam && existingFam.activePass) || state.activePass || null,
         createdAt: existingFam ? existingFam.createdAt : ts,
@@ -1846,7 +1916,9 @@
         updatedAt: ts
       }, { merge: true });
 
-      await syncDocToCloud('families', familyId, familyRecord, true);
+      await syncDocToCloud('families', familyId, Object.assign({}, familyRecord, {
+        _isNewFamily: !existingFam
+      }), true);
       await syncDocToCloud('users', uid, {
         familyId: familyId,
         inviteCode: inviteCode,
@@ -1864,14 +1936,15 @@
         return false;
       }
       var fam = await readFamilyRecord(state.user.familyId);
-      if (!fam || !fam.pinHash) {
+      var storedPinHash = fam && (fam.pinHash || fam.parentPinHash);
+      if (!fam || !storedPinHash) {
         return false;
       }
       var pinStr = String(pin === undefined || pin === null ? '' : pin).trim();
       if (!pinStr) {
         return false;
       }
-      return verifySecret(pinStr, fam.pinHash);
+      return verifySecret(pinStr, storedPinHash);
     }
 
     async function findFamilyByInviteCode(normalizedCode) {
@@ -1977,8 +2050,13 @@
         expiresAt: expiresAt
       };
 
+      var uidKey = state.user ? state.user.uid : null;
+      var amountUah = Number(opts.priceUah !== undefined ? opts.priceUah : 800);
       var orderRecord = Object.assign({}, activePass, {
-        uid: state.user ? state.user.uid : null,
+        uid: uidKey,
+        buyerUid: uidKey,
+        billingCycle: cycle,
+        amountUah: amountUah,
         familyId: state.user ? state.user.familyId : null,
         createdAt: ts
       });
@@ -2006,7 +2084,12 @@
               updatedAt: ts
             };
             await vault.setDoc('families', fam.familyId, famUpdate, { merge: true });
-            await syncDocToCloud('families', fam.familyId, famUpdate, true);
+            await syncDocToCloud('families', fam.familyId, {
+              parentUid: fam.parentUid || fam.ownerUid || uid,
+              parentPinHash: fam.parentPinHash || fam.pinHash,
+              planSeatType: activePass.seatType,
+              updatedAt: ts
+            }, true);
           }
         }
         await refreshDerivedStateForUser(uid);

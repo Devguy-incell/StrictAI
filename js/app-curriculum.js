@@ -986,6 +986,114 @@
     };
   }
 
+  function resolveActiveTopic(mode, subjectId, levelOrGrade, topicId, topicTitle) {
+    var topics = getTopicsFor(mode, subjectId, levelOrGrade);
+    var normId = topicId ? String(topicId).trim() : '';
+    var normTitle = topicTitle ? String(topicTitle).trim() : '';
+
+    if (normId || normTitle) {
+      for (var t = 0; t < topics.length; t++) {
+        if ((normId && topics[t].id === normId) ||
+            (normTitle && (topics[t].title === normTitle || topics[t].id === normTitle))) {
+          return topics[t];
+        }
+      }
+      var mapObj = normalizeMode(mode) === 'language' ? LANGUAGE_TOPICS : SCHOOL_TOPICS;
+      var subjBuckets = mapObj[subjectId] ? [mapObj[subjectId]] : [];
+      Object.keys(mapObj).forEach(function (k) {
+        if (k !== subjectId) subjBuckets.push(mapObj[k]);
+      });
+      for (var b = 0; b < subjBuckets.length; b++) {
+        var bucket = subjBuckets[b];
+        var bandKeys = Object.keys(bucket);
+        for (var bk = 0; bk < bandKeys.length; bk++) {
+          var list = bucket[bandKeys[bk]] || [];
+          for (var li = 0; li < list.length; li++) {
+            if ((normId && list[li].id === normId) ||
+                (normTitle && (list[li].title === normTitle || list[li].id === normTitle))) {
+              return list[li];
+            }
+          }
+        }
+      }
+      var customTitle = normTitle || normId;
+      return {
+        id: normId || 'custom-topic',
+        title: customTitle,
+        summary: 'Цільовий розбір обраної теми «' + customTitle + '» із фіксацією ключових умов та обмежень.',
+        keyFormula: customTitle
+      };
+    }
+
+    return topics[0] || {
+      id: 'general-topic',
+      title: 'Навчальна тема',
+      summary: 'Системний розбір ключових правил теми.',
+      keyFormula: 'ОДЗ та базове співвідношення'
+    };
+  }
+
+  function countHintsSinceExercise(history, activeExercise) {
+    if (!history || !history.length || !activeExercise) return 0;
+    var exIdx = -1;
+    for (var i = history.length - 1; i >= 0; i--) {
+      if (history[i] && history[i].exercise && history[i].exercise.prompt === activeExercise.prompt) {
+        exIdx = i;
+        break;
+      }
+    }
+    if (exIdx === -1) return 0;
+    var count = 0;
+    for (var j = exIdx + 1; j < history.length; j++) {
+      if (history[j] && history[j].role === 'tutor') {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  function buildExerciseStepReply(activeExercise, activeTopic, persona, tonePrefix, userMessage, history) {
+    var stepList = [];
+    if (Array.isArray(activeExercise.steps) && activeExercise.steps.length) {
+      stepList = activeExercise.steps.slice();
+    } else {
+      var expText = String(activeExercise.explanation || '').trim();
+      var expParts = expText
+        ? expText.split(/(?<=[.!?])\s+/).filter(function (s) { return Boolean(s && s.trim()); })
+        : [];
+      var hintLead = expParts[0] || ('Застосуй ключове правило теми: ' + activeTopic.keyFormula);
+      var hintNext = expParts.length > 1
+        ? expParts.slice(1).join(' ')
+        : ('Перевір проміжний результат за умовою вправи «' + activeExercise.prompt + '».');
+
+      stepList = [
+        'Крок 1 (Умова вправи): Уважно прочитай «' + activeExercise.prompt + '» і зафіксуй обмеження («' + activeTopic.keyFormula + '»).',
+        'Крок 2 (Метод розв\'язання): ' + hintLead,
+        'Крок 3 (Звірка перед відповіддю): ' + hintNext + ' Після перевірки обери варіант А-Г або введи число в чат.'
+      ];
+    }
+
+    var hintOffset = countHintsSinceExercise(history, activeExercise);
+    var activeStepIdx = Math.min(hintOffset, stepList.length - 1);
+    var leadText = persona.id === 'socratic'
+      ? 'Навідний крок ' + (activeStepIdx + 1) + ' з ' + stepList.length + ' для поточної вправи («' + activeTopic.title + '»): '
+      : 'Наступний крок ' + (activeStepIdx + 1) + ' з ' + stepList.length + ' до поточної вправи («' + activeTopic.title + '»): ';
+
+    return {
+      text: tonePrefix + leadText + stepList[activeStepIdx],
+      steps: stepList,
+      exercise: null,
+      noteSummary: activeTopic.title + ' — покроковий розбір вправи',
+      topicCompleted: false
+    };
+  }
+
+  function isStepOrHintQuery(userMessage, actionType) {
+    if (actionType === 'step' || actionType === 'hint') return true;
+    if (!userMessage) return false;
+    return /крок|наступн|поясни|підказ|розв'?яз|як\s+це|чому|допомож|алгоритм|step|hint|explain|next/i.test(userMessage);
+  }
+
   function generateTutorReply(params) {
     var cfg = params || {};
     var mode = normalizeMode(cfg.mode);
@@ -999,22 +1107,13 @@
     var history = cfg.history || [];
 
     var levelOrGrade = mode === 'language' ? cefrLevel : gradeBand;
-    var topics = getTopicsFor(mode, subjectId, levelOrGrade);
-    var activeTopic = topics[0];
-    if (cfg.topicTitle) {
-      for (var t = 0; t < topics.length; t++) {
-        if (topics[t].title === cfg.topicTitle || topics[t].id === cfg.topicTitle) {
-          activeTopic = topics[t];
-          break;
-        }
-      }
-    }
+    var activeTopic = resolveActiveTopic(mode, subjectId, levelOrGrade, cfg.topicId, cfg.topicTitle);
 
     var tonePrefix = getPersonaTonePrefix(persona.id);
 
-    // 1. Check if user answered an active exercise from history
-    var lastExercise = findLastActiveExercise(history);
-    if (userMessage && lastExercise && actionType !== 'scenario') {
+    // 1. Check active exercise in context or chat history first
+    var lastExercise = cfg.activeExercise || findLastActiveExercise(history);
+    if (userMessage && lastExercise && actionType !== 'scenario' && actionType !== 'exercise' && actionType !== 'similar') {
       var verdict = evaluateUserGuess(userMessage, lastExercise);
       if (verdict) {
         if (verdict.isCorrect) {
@@ -1048,6 +1147,11 @@
           };
         }
       }
+    }
+
+    // 1b. If an exercise is active and student asks for a step/hint/explanation, walk through THAT exercise
+    if (lastExercise && actionType !== 'scenario' && actionType !== 'exercise' && actionType !== 'similar' && isStepOrHintQuery(userMessage, actionType)) {
+      return buildExerciseStepReply(lastExercise, activeTopic, persona, tonePrefix, userMessage, history);
     }
 
     // 2. Language Mode + Active Roleplay Scenario
@@ -2122,6 +2226,109 @@
     return Math.max(100, Math.min(200, score));
   }
 
+  function getConfiguredLlmApiKey() {
+    try {
+      if (global.localStorage) {
+        return String(global.localStorage.getItem('strictai_llm_api_key') || '').trim();
+      }
+    } catch (_err) {
+      /* ignore storage errors */
+    }
+    return '';
+  }
+
+  function parseLlmSteps(rawText) {
+    var lines = String(rawText || '').split(/\r?\n/);
+    var steps = [];
+    for (var i = 0; i < lines.length; i++) {
+      var trimmed = lines[i].trim();
+      if (/^(\d+[.)]|[-*])\s+/.test(trimmed)) {
+        steps.push(trimmed.replace(/^(\d+[.)]|[-*])\s+/, ''));
+      }
+    }
+    return steps.slice(0, 4);
+  }
+
+  async function generateTutorReplyAsync(params) {
+    var cfg = params || {};
+    var fallback = generateTutorReply(cfg);
+    var apiKey = cfg.apiKey ? String(cfg.apiKey).trim() : getConfiguredLlmApiKey();
+    if (!apiKey || typeof fetch !== 'function') {
+      return fallback;
+    }
+
+    var mode = normalizeMode(cfg.mode);
+    var subjectId = cfg.subjectId || (mode === 'language' ? 'english' : 'math');
+    var levelOrGrade = mode === 'language' ? (cfg.cefrLevel || 'B1') : (cfg.gradeBand || 'nmt-200');
+    var activeTopic = resolveActiveTopic(mode, subjectId, levelOrGrade, cfg.topicId, cfg.topicTitle);
+    var persona = getPersona(cfg.personaId);
+    var activeExercise = cfg.activeExercise || findLastActiveExercise(cfg.history || []);
+    var userMsg = cfg.userMessage ? String(cfg.userMessage).trim() : 'Поясни цю тему та наступний крок.';
+
+    var systemPrompt = [
+      'Ти — ШІ-репетитор StrictAI (' + persona.name + '). Стиль: ' + persona.styleRule,
+      'Активна тема (' + subjectId + ', ' + levelOrGrade + '): ' + activeTopic.title + '.',
+      'Ключова формула/правило: ' + activeTopic.keyFormula + '.',
+      activeExercise ? ('Поточна активна вправа: "' + activeExercise.prompt + '". Варіанти: ' + (activeExercise.options || []).join(' | ') + '. Пояснення: ' + (activeExercise.explanation || '') + '. Не видавай одразу літеру відповіді, натомість дай точний наступний крок саме до цієї вправи.') : '',
+      'Відповідай українською мовою лаконічно (2-4 речення + до 3 нумерованих кроків 1. 2. 3.), без емодзі.'
+    ].filter(Boolean).join('\n');
+
+    try {
+      var rawReply = '';
+      if (apiKey.indexOf('AIza') === 0) {
+        var gemUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(apiKey);
+        var gemRes = await fetch(gemUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            contents: [{ role: 'user', parts: [{ text: userMsg }] }],
+            generationConfig: { temperature: 0.35, maxOutputTokens: 420 }
+          })
+        });
+        if (!gemRes.ok) return fallback;
+        var gemJson = await gemRes.json();
+        rawReply = gemJson && gemJson.candidates && gemJson.candidates[0] &&
+          gemJson.candidates[0].content && gemJson.candidates[0].content.parts &&
+          gemJson.candidates[0].content.parts[0] && gemJson.candidates[0].content.parts[0].text;
+      } else {
+        var oaRes = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + apiKey
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            temperature: 0.35,
+            max_tokens: 420,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userMsg }
+            ]
+          })
+        });
+        if (!oaRes.ok) return fallback;
+        var oaJson = await oaRes.json();
+        rawReply = oaJson && oaJson.choices && oaJson.choices[0] &&
+          oaJson.choices[0].message && oaJson.choices[0].message.content;
+      }
+
+      if (!rawReply || !String(rawReply).trim()) return fallback;
+      var parsedSteps = parseLlmSteps(rawReply);
+      return {
+        text: String(rawReply).trim(),
+        steps: parsedSteps.length ? parsedSteps : fallback.steps,
+        exercise: fallback.exercise,
+        noteSummary: fallback.noteSummary,
+        topicCompleted: fallback.topicCompleted,
+        source: 'live-llm'
+      };
+    } catch (_err) {
+      return fallback;
+    }
+  }
+
   /* ------------------------------------------------------------------------
      10. Public Export
      ------------------------------------------------------------------------ */
@@ -2140,6 +2347,7 @@
     getTopicsFor: getTopicsFor,
     getPersona: getPersona,
     generateTutorReply: generateTutorReply,
+    generateTutorReplyAsync: generateTutorReplyAsync,
     getExamQuestions: getExamQuestions,
     selectNextCatQuestion: selectNextCatQuestion,
     convertRawToNmt: convertRawToNmt

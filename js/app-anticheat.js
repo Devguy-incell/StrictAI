@@ -407,7 +407,7 @@
     ctx.restore();
   }
 
-  function renderParabolaDiagram(ctx, diagram, boxX, boxY, boxW, boxH, theme) {
+  function renderParabolaDiagram(ctx, diagram, boxX, boxY, boxW, boxH, theme, question) {
     var params = (diagram && diagram.params) || {};
     var a = typeof params.a === 'number' && params.a !== 0 ? params.a : 1;
     var hasPQ = typeof params.p === 'number' && typeof params.q === 'number';
@@ -415,6 +415,8 @@
     var b = hasPQ ? (-2 * a * p) : (typeof params.b === 'number' ? params.b : -4);
     var q = hasPQ ? params.q : (typeof params.c === 'number' ? (a * p * p + b * p + params.c) : -1);
     var c = hasPQ ? (a * p * p + q) : (typeof params.c === 'number' ? params.c : 3);
+    var qText = String((question && (question.questionText || question.question)) || diagram.caption || '');
+    var hideC = Boolean(params.hideC || params.unknown === 'c' || /параметр\s*c|знайдіть\s*c|\+\s*c\b/i.test(qText));
 
     var plotPadL = 28;
     var plotPadR = 20;
@@ -546,25 +548,28 @@
       ctx.fillText(vLabel, clamp(vx - 20, ox + 4, ox + pw - 68), vLabelY);
     }
 
-    // Root markers
-    for (var ri = 0; ri < roots.length; ri++) {
-      var rx = mapX(roots[ri]);
-      var ry = mapY(0);
-      if (rx >= ox + 4 && rx <= ox + pw - 4) {
-        ctx.fillStyle = theme.primaryInk;
-        ctx.beginPath();
-        ctx.arc(rx, ry, 3.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.font = '500 9.5px ' + FONT_MONO;
-        ctx.fillStyle = theme.secondaryInk;
-        ctx.fillText('x' + (ri + 1) + '=' + Number(roots[ri].toFixed(1)), clamp(rx - 14, ox + 2, ox + pw - 42), ry - 10);
+    // Root markers (hidden when unknown c must not be spoiled by x-intercepts)
+    if (!hideC) {
+      for (var ri = 0; ri < roots.length; ri++) {
+        var rx = mapX(roots[ri]);
+        var ry = mapY(0);
+        if (rx >= ox + 4 && rx <= ox + pw - 4) {
+          ctx.fillStyle = theme.primaryInk;
+          ctx.beginPath();
+          ctx.arc(rx, ry, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.font = '500 9.5px ' + FONT_MONO;
+          ctx.fillStyle = theme.secondaryInk;
+          ctx.fillText('x' + (ri + 1) + '=' + Number(roots[ri].toFixed(1)), clamp(rx - 14, ox + 2, ox + pw - 42), ry - 10);
+        }
       }
     }
 
     // Parameter legend pill at top-right
+    var cDisplay = hideC ? '?' : c;
     var paramText = hasPQ
       ? ('a=' + a + '  p=' + p + '  q=' + q)
-      : ('a=' + a + '  b=' + b + '  c=' + c);
+      : ('a=' + a + '  b=' + b + '  c=' + cDisplay);
     ctx.font = '600 10px ' + FONT_MONO;
     var pWidth = ctx.measureText(paramText).width + 12;
     drawRoundedRect(ctx, boxX + boxW - pWidth - 10, boxY + 8, pWidth, 18, 4);
@@ -928,7 +933,7 @@
     ctx.restore();
   }
 
-  function renderDiagramBlock(ctx, diagram, x, y, width, height, theme) {
+  function renderDiagramBlock(ctx, diagram, x, y, width, height, theme, question) {
     var dType = String(diagram.type || diagram.kind || 'parabola').toLowerCase();
 
     ctx.save();
@@ -946,7 +951,7 @@
     ctx.fillText('SCHEMA · ' + dType.toUpperCase(), x + 10, y + 8);
 
     if (dType === 'parabola') {
-      renderParabolaDiagram(ctx, diagram, x, y, width, height, theme);
+      renderParabolaDiagram(ctx, diagram, x, y, width, height, theme, question);
     } else if (dType === 'triangle' || dType === 'right_triangle') {
       renderTriangleDiagram(ctx, diagram, x, y, width, height, theme);
     } else if (dType === 'circuit') {
@@ -954,7 +959,7 @@
     } else if (dType === 'timeline') {
       renderTimelineDiagram(ctx, diagram, x, y, width, height, theme);
     } else {
-      renderParabolaDiagram(ctx, diagram, x, y, width, height, theme);
+      renderParabolaDiagram(ctx, diagram, x, y, width, height, theme, question);
     }
 
     ctx.restore();
@@ -1298,7 +1303,7 @@
 
     if (hasDiagram) {
       y += 12;
-      renderDiagramBlock(ctx, q.diagram, padX, y, contentWidth, diagramH, theme);
+      renderDiagramBlock(ctx, q.diagram, padX, y, contentWidth, diagramH, theme, q);
       y += diagramH;
     }
 
