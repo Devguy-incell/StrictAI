@@ -1,33 +1,39 @@
-# StrictAI
+# StrictAI Mobile Application (PWA + Capacitor)
 
-AI-powered educational platform and interactive tutor for exam preparation (NMT / ZNO).
+Повнофункціональний мобільний застосунок екосистеми **StrictAI** для щоденної підготовки до НМТ, інтерактивних занять із ШІ-репетитором, чесного тестування та батьківського контролю. Працює як офлайн-готовий **PWA** (`manifest.webmanifest`, `sw.js`) та нативна оболонка **Capacitor** (`ua.strictai.mobile`).
 
-## Features
+## 5 основних вкладок
 
-- **Interactive Panda Avatar**: Animated SVG avatar with emotional states and dynamic responses.
-- **5 Tutor Personalities**: Choose from supportive, strict, academic, witty, or motivational coaching styles.
-- **Distraction Tracker**: Monitors window focus and idle time to encourage disciplined study habits.
-- **Exam Simulator**: Real-time test practice conforming to Ukrainian educational evaluation standards.
-- **Knowledge Map**: Visual mastery tracking for subjects and topics.
-- **Parent Dashboard**: Analytics, predicted exam scores, and attendance reports.
+1. **Сьогодні** — персональний план дня, стріки, адаптивні завдання та швидкий старт сесії.
+2. **Репетитор** — покроковий ШІ-розбір тем, підказки без готових відповідей та закріплення матеріалу.
+3. **Іспити** — симулятор НМТ із захистом **Anti-Cheat / Anti-OCR** на базі `<canvas>` (`js/app-anticheat.js`), таймером і фіксацією втрати фокусу.
+4. **Фокус & Мапа** — фокус-таймер навчальних сесій та інтерактивна мапа прогресу по темах (`js/app-curriculum.js`).
+5. **StrictPass & Контроль** — 3D-гаманець карток **StrictPass** (27 SKU), керування сімейними місцями та батьківський кабінет із **salted SHA-256 PIN-захистом**.
 
-## Getting Started
+## Ключові можливості
 
-Open `index.html` in any modern web browser or start a local HTTP server:
+- **Безшовний онбординг (`?ht=`)**: автоматичний прийом підписаного handoff-токена з діагностичного сайту (`site-diagnostic`) із перенесенням профілю та результатів діагностики.
+- **2 індустріальні теми**: `Studio Platinum` (світла) та `Anodized Matte` (темна) (`css/tokens.css`, `css/mobile-app.css`).
+- **100% кастомні SVG-іконки**: `js/icons.js`, без сторонніх шрифтів і емодзі.
+- **Firebase Auth + Firestore + Offline Vault**: спільне ядро `js/firebase-auth-core.js` та правила `firestore.rules`. Підключення проєкту виконується через `StrictAuth.configureFirebase(...)`.
+- **Дорожня карта архітектури**: детальний план розвитку нативних можливостей і бекенду описано в [`docs/MOBILE_APP_ARCHITECTURE.md`](docs/MOBILE_APP_ARCHITECTURE.md).
+
+## Локальний запуск
 
 ```bash
 python3 -m http.server 8080
 ```
 
-Visit `http://localhost:8080` in your browser.
+Або через npm-скрипти (`package.json`):
 
-## Project Structure
+```bash
+npm run check:syntax
+npm run check:emoji
+```
 
-- `index.html` - Landing page
-- `tutor.html` - Interactive AI lesson with panda avatar
-- `nmt.html` - Exam testing simulator
-- `knowledge.html` - Adaptive subject knowledge map
-- `tracker.html` - Student study statistics
-- `parents.html` - Parental supervision and progress dashboard
-- `css/` - Application stylesheets
-- `js/` - Application logic and state management
+Для збірки iOS / Android через Capacitor (`capacitor.config.json`, `appId: "ua.strictai.mobile"`):
+
+```bash
+npm install
+npx cap sync
+```

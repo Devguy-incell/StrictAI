@@ -1,0 +1,21 @@
+{
+  "id": "/mobile-app/",
+  "name": "StrictAI Mobile",
+  "short_name": "StrictAI",
+  "description": "Персональний репетитор, античит-тренажер НМТ, фокус-таймер, карта знань, StrictPass та батьківський кабінет.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F6F6F7",
+  "theme_color": "#09090B",
+  "lang": "uk",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='28' fill='%2309090B'/%3E%3Cg transform='translate(20,20) scale(3.6667)' fill='none' stroke='%23FAFAFA' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 8.5L4 5.5A1.8 1.8 0 0 1 6.8 3.6L9.2 5.4A7.6 7.6 0 0 1 14.8 5.4L17.2 3.6A1.8 1.8 0 0 1 20 5.5L18.5 8.5L20 12.2L17.4 17.8L14.2 20H9.8L6.6 17.8L4 12.2Z'/%3E%3Cpath d='M8.5 11.2H9.6M14.4 11.2H15.5'/%3E%3Cpath d='M9.6 14.6L12 13.3L14.4 14.6L13.5 17H10.5Z'/%3E%3Cpath d='M12 15.6V17'/%3E%3C/g%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
