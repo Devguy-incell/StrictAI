@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictPass — Конфігуратор тарифів та калькулятор економії | StrictAI</title>
+  <meta name="description" content="Оберіть металізовану картку доступу StrictPass для підготовки до НМТ: 27 конфігурацій за кількістю місць та періодом, калькулятор економії проти репетиторів і порівняння можливостей.">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('strictai_theme');
+        document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light';
+      } catch (_err) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-canvas);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      line-height: var(--leading-normal);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .sp-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-4) var(--space-12);
+    }
+
+    @media (min-width: 768px) {
+      .sp-container {
+        padding: var(--space-10) var(--space-6) 72px;
+      }
+    }
+
+    .sp-stack-lg {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    /* Personalized Diagnostic / Sponsor Banner */
+    .sp-banner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    @media (min-width: 900px) {
+      .sp-banner {
+        grid-template-columns: 1.5fr 1fr;
+        align-items: center;
+        gap: var(--space-6);
+        padding: var(--space-6);
+      }
+    }
+
+    .sp-banner[hidden] {
+      display: none;
+    }
+
+    .sp-banner-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-secondary);
+      margin-bottom: var(--space-2);
+    }
+
+    .sp-banner-title {
+      margin: 0 0 var(--space-2);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      line-height: var(--leading-snug);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .sp-banner-sub {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+    }
+
+    .sp-banner-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+
+    .sp-banner-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    .sp-metric-box {
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-sm);
+    }
+
+    .sp-metric-label {
+      display: block;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-muted);
+      margin-bottom: 4px;
+    }
+
+    .sp-metric-value {
+      display: block;
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    /* Hero & Configurator Header */
+    .sp-hero {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .sp-hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .sp-hero-title {
+      margin: 0;
+      font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+      font-weight: 700;
+      line-height: var(--leading-tight);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .sp-hero-desc {
+      margin: 0;
+      max-width: 68ch;
+      font-size: var(--text-base);
+      color: var(--ink-secondary);
+    }
+
+    /* 2-Axis Controls Bar */
+    .sp-controls-bar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-xs);
+    }
+
+    @media (min-width: 900px) {
+      .sp-controls-bar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-4) var(--space-5);
+      }
+    }
+
+    .sp-axis {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .sp-axis-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+    }
+
+    .sp-segmented-wrap {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .sp-segmented-wrap .sa-segmented {
+      flex-wrap: wrap;
+    }
+
+    @media (min-width: 640px) {
+      .sp-segmented-wrap .sa-segmented {
+        flex-wrap: nowrap;
+      }
+    }
+
+    /* 3-Column Metallic Tier Grid */
+    .sp-tiers-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-5);
+      align-items: stretch;
+    }
+
+    @media (min-width: 960px) {
+      .sp-tiers-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .sp-tier-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+      transition:
+        border-color var(--dur-ui) var(--ease-out),
+        box-shadow var(--dur-ui) var(--ease-out);
+    }
+
+    .sp-tier-card.is-recommended {
+      border-color: var(--border-focus);
+      box-shadow: var(--shadow-md);
+    }
+
+    .sp-tier-card.is-highlighted {
+      box-shadow: var(--focus-ring), var(--shadow-md);
+    }
+
+    .sp-tier-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+
+    .sp-tier-name {
+      margin: 0;
+      font-size: var(--text-xl);
+      font-weight: 700;
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .sp-tier-sku {
+      margin-top: 2px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .sp-tier-tagline {
+      margin: 0 0 var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+      min-height: 42px;
+    }
+
+    .sp-stage-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4) var(--space-2);
+      margin-bottom: var(--space-4);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      min-height: 210px;
+    }
+
+    .sp-stage-box .sa-pass-3d-stage {
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .sp-stage-box .sa-pass-3d-card {
+      width: 100%;
+      border-radius: 14px;
+    }
+
+    .sp-price-block {
+      padding-bottom: var(--space-4);
+      margin-bottom: var(--space-4);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .sp-price-main {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .sp-price-monthly {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .sp-price-period {
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+
+    .sp-price-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+    }
+
+    .sp-features {
+      list-style: none;
+      margin: 0 0 var(--space-5);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1 1 auto;
+    }
+
+    .sp-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+      line-height: 1.4;
+    }
+
+    .sp-feature-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+      color: var(--status-ok);
+    }
+
+    .sp-card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-top: auto;
+    }
+
+    .sp-card-actions .sa-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Section Headers */
+    .sp-section-head {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+    }
+
+    .sp-section-title {
+      margin: 0;
+      font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+      font-weight: 700;
+      letter-spacing: var(--tracking-tight);
+      line-height: var(--leading-snug);
+    }
+
+    .sp-section-desc {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+      max-width: 68ch;
+    }
+
+    /* Retention Hook: Tutor Cost Calculator */
+    .sp-calc-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-6);
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+    }
+
+    @media (min-width: 900px) {
+      .sp-calc-card {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: var(--space-8);
+        padding: var(--space-6);
+      }
+    }
+
+    .sp-sliders {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      min-width: 0;
+    }
+
+    .sp-slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+
+    .sp-slider-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2) var(--space-3);
+    }
+
+    .sp-slider-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--ink-primary);
+    }
+
+    .sp-slider-val {
+      padding: 3px 10px;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-pill);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sp-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .sp-range:focus-visible {
+      box-shadow: var(--focus-ring);
+    }
+
+    .sp-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-ink);
+      border: 2px solid var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform var(--dur-press) var(--ease-out);
+    }
+
+    .sp-range::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-ink);
+      border: 2px solid var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+
+    .sp-range-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+
+    .sp-calc-formula {
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .sp-calc-output {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-5);
+      min-width: 0;
+      padding: var(--space-5);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+    }
+
+    .sp-bars {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .sp-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sp-bar-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+    }
+
+    .sp-bar-track {
+      height: 10px;
+      width: 100%;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+
+    .sp-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-pill);
+      transition: width var(--dur-ui) var(--ease-out);
+    }
+
+    .sp-bar-fill-tutor {
+      background-color: var(--ink-muted);
+      width: 100%;
+    }
+
+    .sp-bar-fill-pass {
+      background-color: var(--status-ok);
+      min-width: 6px;
+    }
+
+    .sp-savings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    @media (max-width: 520px) {
+      .sp-savings-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sp-savings-cell {
+      padding: var(--space-3);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-sm);
+    }
+
+    .sp-savings-label {
+      display: block;
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin-bottom: 4px;
+    }
+
+    .sp-savings-value {
+      display: block;
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+
+    .sp-savings-value.is-ok {
+      color: var(--status-ok);
+    }
+
+    /* 3-Column Comparison Table */
+    .sp-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .sp-compare-table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: var(--text-sm);
+    }
+
+    .sp-compare-table th,
+    .sp-compare-table td {
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-hairline);
+      border-right: 1px solid var(--border-hairline);
+      vertical-align: top;
+    }
+
+    .sp-compare-table th:last-child,
+    .sp-compare-table td:last-child {
+      border-right: none;
+    }
+
+    .sp-compare-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .sp-compare-table thead th {
+      background-color: var(--bg-subtle);
+      font-weight: 600;
+      color: var(--ink-primary);
+      font-size: var(--text-sm);
+    }
+
+    .sp-compare-table thead th.is-strictpass {
+      background-color: var(--accent-ink);
+      color: var(--accent-ink-fg);
+    }
+
+    .sp-compare-table tbody td.is-strictpass {
+      background-color: var(--status-ok-bg);
+    }
+
+    .sp-cell-criterion {
+      font-weight: 600;
+      color: var(--ink-primary);
+      width: 26%;
+    }
+
+    .sp-cell-status {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+    }
+
+    .sp-status-icon-ok {
+      color: var(--status-ok);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .sp-status-icon-no {
+      color: var(--ink-muted);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Checkout / Activation Modal */
+    .sp-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      background-color: var(--bg-overlay);
+      backdrop-filter: blur(6px);
+    }
+
+    .sp-modal-backdrop[hidden] {
+      display: none;
+    }
+
+    .sp-modal-dialog {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--bg-surface);
+      color: var(--ink-primary);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .sp-modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .sp-modal-title {
+      margin: 0;
+      font-size: var(--text-xl);
+      font-weight: 700;
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .sp-modal-summary {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+    }
+
+    .sp-modal-thumb {
+      width: 92px;
+      height: auto;
+      flex-shrink: 0;
+      border-radius: var(--radius-sm);
+    }
+
+    .sp-modal-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: var(--space-3) 0;
+      border-top: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+      font-size: var(--text-sm);
+    }
+
+    .sp-modal-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .sp-modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .sp-modal-actions .sa-btn {
+      width: 100%;
+    }
+
+    .sp-modal-result {
+      padding: var(--space-4);
+      background-color: var(--status-ok-bg);
+      border: 1px solid var(--status-ok-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+    }
+
+    /* Toast Region */
+    .sp-toast-region {
+      position: fixed;
+      right: var(--space-4);
+      bottom: var(--space-4);
+      z-index: 9500;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      max-width: 360px;
+      pointer-events: none;
+    }
+
+    .sp-toast {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 12px 14px;
+      background-color: var(--accent-ink);
+      color: var(--accent-ink-fg);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body data-page="strictpass">
+  <header id="sa-header" class="sa-header"></header>
+
+  <main class="sa-main">
+    <div class="sp-container sp-stack-lg">
+      <!-- Personalized Diagnostic / Sponsor Banner -->
+      <section id="sp-personal-banner" class="sp-banner" aria-live="polite" hidden></section>
+
+      <!-- Hero & 27-Model 3D Configurator -->
+      <section aria-labelledby="sp-configurator-title">
+        <div class="sp-hero">
+          <div class="sp-hero-top">
+            <span class="sa-badge">
+              <i data-icon="creditCard" data-size="14"></i>
+              <span>27 КОНФІГУРАЦІЙ · МЕТАЛІЗОВАНІ КАРТКИ ДОСТУПУ</span>
+            </span>
+            <div id="sp-active-pass-pill" hidden></div>
+          </div>
+
+          <h1 id="sp-configurator-title" class="sp-hero-title">
+            StrictPass — персональний доступ до підготовки НМТ
+          </h1>
+          <p class="sp-hero-desc">
+            Оберіть кількість учнівських місць і тривалість циклу підготовки. Кожна картка об'єднує 3D-верифікацію профілю, крок-за-кроком розбір помилок без готових відповідей та щоденний контроль батьків о 17:00.
+          </p>
+        </div>
+
+        <!-- 2-Axis Segmented Controls -->
+        <div class="sp-controls-bar" style="margin-top: var(--space-6);">
+          <div class="sp-axis">
+            <span class="sp-axis-label">
+              <i data-icon="users" data-size="14"></i>
+              <span>Кількість місць</span>
+            </span>
+            <div class="sp-segmented-wrap">
+              <div id="sp-seats-control" class="sa-segmented" role="group" aria-label="Кількість місць">
+                <button type="button" data-seats="single" aria-pressed="true" class="is-active">
+                  Single · 1 учень
+                </button>
+                <button type="button" data-seats="duo" aria-pressed="false">
+                  Duo · 2 учні
+                </button>
+                <button type="button" data-seats="family" aria-pressed="false">
+                  Family · 3–5 учнів
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sp-axis">
+            <span class="sp-axis-label">
+              <i data-icon="clock" data-size="14"></i>
+              <span>Період</span>
+            </span>
+            <div class="sp-segmented-wrap">
+              <div id="sp-cycle-control" class="sa-segmented" role="group" aria-label="Період">
+                <button type="button" data-cycle="season" aria-pressed="true" class="is-active">
+                  Сезон НМТ · 3 міс
+                </button>
+                <button type="button" data-cycle="annual" aria-pressed="false">
+                  Рік · 12 міс
+                </button>
+                <button type="button" data-cycle="monthly" aria-pressed="false">
+                  Місяць
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Metallic Tier Cards -->
+        <div id="sp-tiers-grid" class="sp-tiers-grid" style="margin-top: var(--space-6);"></div>
+      </section>
+
+      <!-- Retention Hook: Tutor Cost Calculator -->
+      <section aria-labelledby="sp-calc-title">
+        <div class="sp-section-head">
+          <span class="sa-badge" style="width: fit-content;">
+            <i data-icon="sliders" data-size="14"></i>
+            <span>ФІНАНСОВА МАТЕМАТИКА ПІДГОТОВКИ</span>
+          </span>
+          <h2 id="sp-calc-title" class="sp-section-title">
+            Калькулятор витрат на репетиторів vs StrictPass
+          </h2>
+          <p class="sp-section-desc">
+            Порівняйте щомісячний бюджет на приватних викладачів із поточним тарифом StrictPass Pro та скопіюйте готовий розрахунок для батьків в один клік.
+          </p>
+        </div>
+
+        <div class="sp-calc-card">
+          <div class="sp-sliders">
+            <div class="sp-slider-group">
+              <div class="sp-slider-head">
+                <label class="sp-slider-label" for="sp-calc-subjects">Кількість предметів</label>
+                <span id="sp-calc-subjects-val" class="sp-slider-val sa-num">3 предмети</span>
+              </div>
+              <input id="sp-calc-subjects" class="sp-range" type="range" min="1" max="4" step="1" value="3">
+              <div class="sp-range-ticks">
+                <span>1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+              </div>
+            </div>
+
+            <div class="sp-slider-group">
+              <div class="sp-slider-head">
+                <label class="sp-slider-label" for="sp-calc-lessons">Занять на тиждень (на предмет)</label>
+                <span id="sp-calc-lessons-val" class="sp-slider-val sa-num">2 заняття/тиж.</span>
+              </div>
+              <input id="sp-calc-lessons" class="sp-range" type="range" min="2" max="3" step="1" value="2">
+              <div class="sp-range-ticks">
+                <span>2 на тиждень</span>
+                <span>3 на тиждень</span>
+              </div>
+            </div>
+
+            <div class="sp-slider-group">
+              <div class="sp-slider-head">
+                <label class="sp-slider-label" for="sp-calc-rate">Вартість 1 заняття з репетитором</label>
+                <span id="sp-calc-rate-val" class="sp-slider-val sa-num">500 ₴</span>
+              </div>
+              <input id="sp-calc-rate" class="sp-range" type="range" min="400" max="700" step="50" value="500">
+              <div class="sp-range-ticks">
+                <span>400 ₴</span>
+                <span>500 ₴</span>
+                <span>600 ₴</span>
+                <span>700 ₴</span>
+              </div>
+            </div>
+
+            <div class="sp-calc-formula">
+              <span>Формула місячного навантаження:</span>
+              <span id="sp-calc-formula-text" class="sa-num">3 предм. × 2 зан. × 4 тижні = 24 заняття/міс</span>
+            </div>
+          </div>
+
+          <div class="sp-calc-output">
+            <div class="sp-bars">
+              <div class="sp-bar-row">
+                <div class="sp-bar-head">
+                  <span>Приватні репетитори</span>
+                  <strong id="sp-calc-tutor-monthly" class="sa-num">12 000 ₴/міс</strong>
+                </div>
+                <div class="sp-bar-track">
+                  <div class="sp-bar-fill sp-bar-fill-tutor"></div>
+                </div>
+              </div>
+
+              <div class="sp-bar-row">
+                <div class="sp-bar-head">
+                  <span id="sp-calc-pass-label">StrictPass Pro (Сезон НМТ)</span>
+                  <strong id="sp-calc-pass-monthly" class="sa-num" style="color: var(--status-ok);">800 ₴/міс</strong>
+                </div>
+                <div class="sp-bar-track">
+                  <div id="sp-calc-pass-bar" class="sp-bar-fill sp-bar-fill-pass" style="width: 7%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sp-savings-grid">
+              <div class="sp-savings-cell">
+                <span class="sp-savings-label">Економія за місяць</span>
+                <span id="sp-calc-save-monthly" class="sp-savings-value sa-num is-ok">11 200 ₴</span>
+              </div>
+              <div class="sp-savings-cell">
+                <span class="sp-savings-label">Економія за сезон (3 міс)</span>
+                <span id="sp-calc-save-season" class="sp-savings-value sa-num is-ok">33 600 ₴</span>
+              </div>
+              <div class="sp-savings-cell">
+                <span class="sp-savings-label">Відсоток економії</span>
+                <span id="sp-calc-save-pct" class="sp-savings-value sa-num">93%</span>
+              </div>
+            </div>
+
+            <button id="sp-copy-calc-btn" type="button" class="sa-btn sa-btn-primary sa-btn-lg">
+              <i data-icon="copy" data-size="16"></i>
+              <span>Скопіювати розрахунок для батьків</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3-Column Comparison Table -->
+      <section aria-labelledby="sp-compare-title">
+        <div class="sp-section-head">
+          <span class="sa-badge" style="width: fit-content;">
+            <i data-icon="layers" data-size="14"></i>
+            <span>ПОРІВНЯННЯ ПІДХОДІВ</span>
+          </span>
+          <h2 id="sp-compare-title" class="sp-section-title">
+            Приватний репетитор vs Безкоштовний ChatGPT vs StrictPass Pro
+          </h2>
+          <p class="sp-section-desc">
+            Чому звичайний чат-бот не формує екзаменаційну дисципліну, а StrictPass замінює рутинний супровід репетитора з точністю до кожного кроку.
+          </p>
+        </div>
+
+        <div class="sp-table-wrap">
+          <table class="sp-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Критерій контролю</th>
+                <th scope="col">Приватний репетитор</th>
+                <th scope="col">Безкоштовний ChatGPT</th>
+                <th scope="col" class="is-strictpass">StrictPass Pro</th>
+              </tr>
+            </thead>
+            <tbody id="sp-compare-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="sa-footer" class="sa-footer"></footer>
+
+  <!-- Activation / Checkout Confirmation Modal -->
+  <div id="sp-checkout-modal" class="sp-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="sp-modal-title" hidden>
+    <div class="sp-modal-dialog">
+      <div class="sp-modal-head">
+        <div>
+          <span class="sa-badge" style="margin-bottom: var(--space-2);">ОФОРМЛЕННЯ ДОСТУПУ</span>
+          <h2 id="sp-modal-title" class="sp-modal-title">Активація StrictPass</h2>
+        </div>
+        <button id="sp-modal-close" type="button" class="sa-btn sa-btn-ghost sa-btn-sm" aria-label="Закрити вікно">
+          <i data-icon="x" data-size="18"></i>
+        </button>
+      </div>
+
+      <div id="sp-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Region -->
+  <div id="sp-toast-region" class="sp-toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/icons.js"></script>
+  <script src="js/strictpass-3d.js"></script>
+  <script src="js/firebase-auth-core.js"></script>
+  <script src="js/site-shell.js"></script>
+  <script src="js/site-strictpass.js"></script>
+</body>
+</html>

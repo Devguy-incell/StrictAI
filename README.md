@@ -1,33 +1,45 @@
-# StrictAI
+# StrictAI — Діагностичний веб-сайт (Diagnostic-Only Funnel)
 
-AI-powered educational platform and interactive tutor for exam preparation (NMT / ZNO).
+Маркетингово-діагностичний сайт екосистеми **StrictAI** для підготовки до НМТ та поглибленого вивчення предметів. Веб-сайт виконує роль вхідної лійки: первинна діагностика знань, підбір тарифу StrictPass, кабінет довіри для батьків та безшовний перехід (`?ht=` handoff) у мобільний застосунок.
 
-## Features
+## Сторінки (5 HTML-модулів)
 
-- **Interactive Panda Avatar**: Animated SVG avatar with emotional states and dynamic responses.
-- **5 Tutor Personalities**: Choose from supportive, strict, academic, witty, or motivational coaching styles.
-- **Distraction Tracker**: Monitors window focus and idle time to encourage disciplined study habits.
-- **Exam Simulator**: Real-time test practice conforming to Ukrainian educational evaluation standards.
-- **Knowledge Map**: Visual mastery tracking for subjects and topics.
-- **Parent Dashboard**: Analytics, predicted exam scores, and attendance reports.
+- `index.html` — головна сторінка з презентацією методології, інтерактивним прев'ю діагностики та переходом до тесту.
+- `diagnostic.html` — 6-етапна адаптивна діагностика знань із формуванням профілю прогалин і передачею результатів у мобільний застосунок.
+- `strictpass.html` — 3D-конфігуратор карток **StrictPass** на **27 SKU** (`Tier × Format × Term`) з інтерактивним нахилом (3D-tilt) та `.webp` рендерами в `assets/strictpass/`.
+- `parents.html` — сторінка для батьків: прозорість прогресу, контроль часу, фінансові гарантії та сімейний доступ.
+- `auth.html` — авторизація, керування сімейними інвайтами, перехід до мобільного застосунку та налаштування Firebase.
 
-## Getting Started
+## Ключові особливості
 
-Open `index.html` in any modern web browser or start a local HTTP server:
+- **2 індустріальні теми**: `Studio Platinum` (світла) та `Anodized Matte` (темна) на основі CSS-токенів (`css/tokens.css`, `css/site.css`).
+- **100% кастомні SVG-іконки**: власна векторна бібліотека в `js/icons.js` без сторонніх іконкових шрифтів та емодзі.
+- **27-SKU 3D-Tilt StrictPass Configurator**: `js/strictpass-3d.js` + `js/site-strictpass.js` із підтримкою всіх 27 комбінацій тарифів.
+- **Firebase Auth + Firestore**: синхронізація профілів, діагностик, сімейних груп та замовлень у `js/firebase-auth-core.js` з офлайн-сховищем (IndexedDB / LocalStorage fallback) і правилами безпеки `firestore.rules`.
+
+## Локальний запуск
+
+Збірка не потрібна — достатньо будь-якого статичного HTTP-сервера:
 
 ```bash
-python3 -m http.server 8080
+python3 -m http.server 8081
 ```
 
-Visit `http://localhost:8080` in your browser.
+Відкрийте у браузері: `http://localhost:8081/`
 
-## Project Structure
+## Підключення Firebase-проєкту
 
-- `index.html` - Landing page
-- `tutor.html` - Interactive AI lesson with panda avatar
-- `nmt.html` - Exam testing simulator
-- `knowledge.html` - Adaptive subject knowledge map
-- `tracker.html` - Student study statistics
-- `parents.html` - Parental supervision and progress dashboard
-- `css/` - Application stylesheets
-- `js/` - Application logic and state management
+У консолі браузера або через скрипт ініціалізації викличте `StrictAuth.configureFirebase(...)` з конфігурацією вашого Firebase-проєкту:
+
+```js
+StrictAuth.configureFirebase({
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+});
+```
+
+Правила доступу Firestore описані у файлі `firestore.rules`, конфігурація хостингу — у `firebase.json`.

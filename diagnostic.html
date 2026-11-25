@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictAI — Адаптивна 3-хвилинна діагностика (CAT)</title>
+  <meta name="description" content="Пройдіть 6-крокову адаптивну діагностику з Anti-OCR полотном та біометрією довіри без реєстрації. Отримайте прогноз балу НМТ 100–200 або CEFR A1–C2.">
+  <script>
+    (function () {
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem('strictai_theme') === 'dark' ? 'dark' : 'light';
+      } catch (e) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    /* ========================================================================
+       Diagnostic Page Layout & Components (.diag-*)
+       Swiss Industrial Design System (Studio Platinum / Anodized Matte)
+       ======================================================================== */
+    .diag-shell {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-5) var(--space-12);
+    }
+
+    @media (max-width: 640px) {
+      .diag-shell {
+        padding: var(--space-5) var(--space-4) var(--space-10);
+      }
+    }
+
+    .diag-stage[hidden] {
+      display: none !important;
+    }
+
+    /* Telemetry eyebrow strip */
+    .diag-eyebrow-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+
+    .diag-hero-title {
+      margin: 0 0 var(--space-3);
+      font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+      font-weight: 700;
+      line-height: var(--leading-tight);
+      letter-spacing: var(--tracking-tight);
+      color: var(--ink-primary);
+    }
+
+    .diag-hero-sub {
+      margin: 0 0 var(--space-8);
+      max-width: 720px;
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      color: var(--ink-secondary);
+    }
+
+    /* Stage 1 Setup Grid */
+    .diag-setup-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    @media (min-width: 960px) {
+      .diag-setup-layout {
+        grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
+        align-items: start;
+      }
+    }
+
+    .diag-section-block {
+      margin-bottom: var(--space-6);
+    }
+
+    .diag-section-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .diag-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+
+    .diag-section-title {
+      margin: 0;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-secondary);
+      font-family: var(--font-mono);
+    }
+
+    /* Subject cards grid */
+    .diag-subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .diag-subject-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2);
+      width: 100%;
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-surface);
+      color: var(--ink-primary);
+      text-align: left;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      box-shadow: var(--shadow-xs);
+      transition:
+        border-color var(--dur-ui) var(--ease-out),
+        background-color var(--dur-ui) var(--ease-out),
+        box-shadow var(--dur-ui) var(--ease-out),
+        transform var(--dur-press) var(--ease-out);
+    }
+
+    .diag-subject-card:active {
+      transform: scale(0.985);
+    }
+
+    .diag-subject-card:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .diag-subject-card:hover:not(.is-selected) {
+        border-color: var(--border-strong);
+        box-shadow: var(--shadow-sm);
+      }
+    }
+
+    .diag-subject-card.is-selected {
+      border-color: var(--accent-ink);
+      background-color: var(--bg-subtle);
+      box-shadow: inset 0 0 0 1px var(--accent-ink), var(--shadow-sm);
+    }
+
+    .diag-subject-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .diag-subject-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-subtle);
+      color: var(--ink-primary);
+    }
+
+    .diag-subject-card.is-selected .diag-subject-icon {
+      background-color: var(--accent-ink);
+      border-color: var(--accent-ink);
+      color: var(--accent-ink-fg);
+    }
+
+    .diag-subject-check {
+      width: 20px;
+      height: 20px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-strong);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      transition: all var(--dur-ui) var(--ease-out);
+    }
+
+    .diag-subject-card.is-selected .diag-subject-check {
+      background-color: var(--accent-ink);
+      border-color: var(--accent-ink);
+      color: var(--accent-ink-fg);
+    }
+
+    .diag-subject-name {
+      font-size: var(--text-base);
+      font-weight: 600;
+      letter-spacing: var(--tracking-snug);
+      color: var(--ink-primary);
+    }
+
+    .diag-subject-meta {
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+      line-height: 1.35;
+    }
+
+    /* University selector */
+    .diag-uni-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .diag-uni-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-height: 40px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-surface);
+      color: var(--ink-secondary);
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition:
+        border-color var(--dur-ui) var(--ease-out),
+        background-color var(--dur-ui) var(--ease-out),
+        color var(--dur-ui) var(--ease-out),
+        transform var(--dur-press) var(--ease-out);
+    }
+
+    .diag-uni-chip:active {
+      transform: scale(0.98);
+    }
+
+    .diag-uni-chip:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .diag-uni-chip.is-selected {
+      background-color: var(--accent-ink);
+      border-color: var(--accent-ink);
+      color: var(--accent-ink-fg);
+    }
+
+    .diag-uni-score {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      opacity: 0.78;
+    }
+
+    /* Briefing & Start panel */
+    .diag-brief-panel {
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      position: sticky;
+      top: 84px;
+    }
+
+    .diag-brief-title {
+      margin: 0;
+      font-size: var(--text-lg);
+      font-weight: 600;
+      letter-spacing: var(--tracking-snug);
+    }
+
+    .diag-brief-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .diag-brief-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-subtle);
+    }
+
+    .diag-brief-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-xs);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      color: var(--ink-primary);
+      flex-shrink: 0;
+    }
+
+    .diag-brief-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+      margin-bottom: 2px;
+    }
+
+    .diag-brief-desc {
+      display: block;
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+      line-height: 1.4;
+    }
+
+    .diag-start-summary {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border-strong);
+      background-color: var(--bg-canvas);
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .diag-start-summary strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    .diag-btn-full {
+      width: 100%;
+    }
+
+    /* ========================================================================
+       Stage 2: Adaptive CAT Engine + Anti-OCR Canvas
+       ======================================================================== */
+    .diag-run-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .diag-telemetry-bar {
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .diag-telemetry-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .diag-telemetry-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .diag-telemetry-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .diag-step-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: var(--space-1);
+    }
+
+    .diag-step-dot {
+      width: 18px;
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background-color: var(--border-hairline);
+      transition: background-color var(--dur-ui) var(--ease-out), width var(--dur-ui) var(--ease-out);
+    }
+
+    .diag-step-dot.is-current {
+      width: 26px;
+      background-color: var(--ink-primary);
+    }
+
+    .diag-step-dot.is-ok {
+      background-color: var(--status-ok);
+    }
+
+    .diag-step-dot.is-wrong {
+      background-color: var(--status-danger);
+    }
+
+    .diag-pace-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .diag-pace-track {
+      flex: 1;
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      overflow: hidden;
+    }
+
+    .diag-pace-fill {
+      height: 100%;
+      width: 100%;
+      background-color: var(--ink-primary);
+      transform-origin: left center;
+      transition: width 120ms linear, background-color var(--dur-ui) var(--ease-out);
+    }
+
+    .diag-pace-fill.is-warn {
+      background-color: var(--status-warn);
+    }
+
+    .diag-pace-fill.is-drift {
+      background-color: var(--status-danger);
+    }
+
+    .diag-pace-timer {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      min-width: 64px;
+      text-align: right;
+      color: var(--ink-primary);
+    }
+
+    .diag-pace-timer.is-warn {
+      color: var(--status-warn);
+    }
+
+    .diag-pace-timer.is-drift {
+      color: var(--status-danger);
+    }
+
+    /* Anti-OCR Canvas Container */
+    .diag-canvas-card {
+      padding: var(--space-3);
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .diag-canvas-wrap {
+      position: relative;
+      width: 100%;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-surface);
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    #diag-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .diag-canvas-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-1) 0;
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+    }
+
+    .diag-canvas-footer-group {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    /* Tactile Options Grid */
+    .diag-options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+
+    @media (min-width: 680px) {
+      .diag-options-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .diag-option-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      width: 100%;
+      min-height: 60px;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-surface);
+      color: var(--ink-primary);
+      text-align: left;
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      line-height: 1.4;
+      cursor: pointer;
+      box-shadow: var(--shadow-xs);
+      transition:
+        border-color var(--dur-ui) var(--ease-out),
+        background-color var(--dur-ui) var(--ease-out),
+        transform var(--dur-press) var(--ease-out),
+        box-shadow var(--dur-ui) var(--ease-out);
+    }
+
+    .diag-option-btn:active:not(:disabled) {
+      transform: scale(0.985);
+    }
+
+    .diag-option-btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .diag-option-btn:hover:not(:disabled) {
+        border-color: var(--border-strong);
+        background-color: var(--bg-subtle);
+        box-shadow: var(--shadow-sm);
+      }
+    }
+
+    .diag-option-btn.is-picked {
+      border-color: var(--accent-ink);
+      background-color: var(--bg-subtle);
+      box-shadow: inset 0 0 0 1px var(--accent-ink);
+    }
+
+    .diag-option-btn.is-correct-flash {
+      border-color: var(--status-ok);
+      background-color: var(--status-ok-bg);
+    }
+
+    .diag-option-btn.is-wrong-flash {
+      border-color: var(--status-danger);
+      background-color: var(--status-danger-bg);
+    }
+
+    .diag-option-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-xs);
+      border: 1px solid var(--border-strong);
+      background-color: var(--bg-subtle);
+      color: var(--ink-primary);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .diag-option-btn.is-picked .diag-option-key {
+      background-color: var(--accent-ink);
+      border-color: var(--accent-ink);
+      color: var(--accent-ink-fg);
+    }
+
+    .diag-option-label {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    .diag-run-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding-top: var(--space-1);
+    }
+
+    /* ========================================================================
+       Stage 3: Post-Diagnostic Conversion & Retention
+       ======================================================================== */
+    .diag-result-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .diag-result-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .diag-result-title {
+      margin: var(--space-2) 0 0;
+      font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+      font-weight: 700;
+      letter-spacing: var(--tracking-tight);
+      color: var(--ink-primary);
+    }
+
+    .diag-score-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    @media (min-width: 820px) {
+      .diag-score-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      }
+    }
+
+    .diag-metric-card {
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .diag-metric-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+    }
+
+    .diag-score-hero {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .diag-score-value {
+      font-family: var(--font-mono);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink-primary);
+    }
+
+    .diag-score-denom {
+      font-family: var(--font-mono);
+      font-size: var(--text-lg);
+      color: var(--ink-muted);
+    }
+
+    .diag-metric-foot {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border-hairline);
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+    }
+
+    .diag-gap-bar-wrap {
+      position: relative;
+      height: 10px;
+      border-radius: var(--radius-pill);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      overflow: visible;
+      margin: var(--space-2) 0;
+    }
+
+    .diag-gap-fill {
+      height: 100%;
+      border-radius: var(--radius-pill);
+      background-color: var(--ink-primary);
+      transition: width 500ms var(--ease-out);
+    }
+
+    .diag-gap-fill.is-ok {
+      background-color: var(--status-ok);
+    }
+
+    .diag-gap-fill.is-warn {
+      background-color: var(--status-warn);
+    }
+
+    .diag-gap-threshold {
+      position: absolute;
+      top: -5px;
+      bottom: -5px;
+      width: 2px;
+      background-color: var(--status-danger);
+      border-radius: 1px;
+    }
+
+    .diag-uni-inline-select {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: var(--space-1);
+    }
+
+    /* Weak Topics Grid */
+    .diag-topics-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    @media (min-width: 900px) {
+      .diag-topics-grid {
+        grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+        align-items: start;
+      }
+    }
+
+    .diag-socratic-card {
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .diag-topic-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .diag-topic-title {
+      margin: 0;
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: var(--tracking-snug);
+    }
+
+    .diag-trap-box {
+      padding: var(--space-4);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--status-warn-border);
+      background-color: var(--status-warn-bg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      line-height: 1.5;
+    }
+
+    .diag-trap-box strong {
+      color: var(--ink-primary);
+    }
+
+    .diag-socratic-steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .diag-socratic-step {
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-subtle);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .diag-socratic-step-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .diag-socratic-step-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .diag-socratic-prompt {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+      line-height: 1.45;
+    }
+
+    .diag-socratic-answer {
+      margin-top: var(--space-1);
+      padding: var(--space-3);
+      border-radius: var(--radius-xs);
+      border: 1px solid var(--status-ok-border);
+      background-color: var(--bg-surface);
+      font-size: var(--text-xs);
+      line-height: 1.45;
+      color: var(--ink-primary);
+    }
+
+    .diag-locked-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .diag-locked-card {
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      background-color: var(--bg-subtle);
+    }
+
+    .diag-locked-blur {
+      padding: var(--space-3);
+      border-radius: var(--radius-xs);
+      border: 1px dashed var(--border-strong);
+      background-color: var(--bg-surface);
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    /* Conversion CTAs */
+    .diag-cta-panel {
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .diag-cta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+
+    @media (min-width: 820px) {
+      .diag-cta-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .diag-cta-grid .sa-btn {
+      white-space: normal;
+      text-align: center;
+      height: auto;
+      padding: 14px 16px;
+      line-height: 1.3;
+    }
+
+    /* Sponsor confirmation card */
+    .diag-sponsor-card {
+      padding: var(--space-5);
+      border-color: var(--status-ok-border);
+      background-color: var(--status-ok-bg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .diag-sponsor-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .diag-sponsor-link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    .diag-sponsor-link-row .sa-input {
+      flex: 1;
+      min-width: 220px;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+    }
+
+    .diag-sponsor-preview {
+      margin: 0;
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-surface);
+      font-family: var(--font-sans);
+      font-size: var(--text-xs);
+      line-height: 1.5;
+      color: var(--ink-secondary);
+      white-space: pre-wrap;
+    }
+
+    .sa-sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .diag-subject-card,
+      .diag-uni-chip,
+      .diag-option-btn,
+      .diag-pace-fill,
+      .diag-gap-fill {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body data-page="diagnostic" data-sticky-cta="false">
+  <header id="sa-header" class="sa-header"></header>
+
+  <main class="sa-main">
+    <div class="diag-shell">
+
+      <!-- ================================================================
+           STAGE 1: Discipline & Target Selector
+           ================================================================ -->
+      <section id="diag-stage-setup" class="diag-stage" aria-labelledby="diag-setup-title">
+        <div class="diag-eyebrow-row">
+          <span class="sa-badge sa-badge-ink">
+            <i data-icon="radar" data-size="13"></i>
+            <span>CAT ENGINE v2.4</span>
+          </span>
+          <span class="sa-badge">
+            <i data-icon="shieldCheck" data-size="13"></i>
+            <span>ANTI-OCR ПОЛОТНО</span>
+          </span>
+          <span class="sa-badge sa-badge-ok">
+            <i data-icon="unlock" data-size="13"></i>
+            <span>СТАРТ БЕЗ ВХОДУ</span>
+          </span>
+        </div>
+
+        <h1 id="diag-setup-title" class="diag-hero-title">
+          Адаптивна 3-хвилинна діагностика знань
+        </h1>
+        <p class="diag-hero-sub">
+          Оберіть дисципліну НМТ або іноземну мову. Алгоритм CAT підлаштовує складність після кожної відповіді, захищає умови від OCR-ботів та визначає три головні зони втрати балів.
+        </p>
+
+        <div class="diag-setup-layout">
+          <div>
+            <!-- Category 1: NMT Subjects -->
+            <div class="diag-section-block">
+              <div class="diag-section-head">
+                <h2 class="diag-section-title">1. НМТ Предмети (шкала 100–200)</h2>
+                <span class="sa-badge">5 дисциплін</span>
+              </div>
+              <div id="diag-nmt-grid" class="diag-subject-grid" role="radiogroup" aria-label="НМТ Предмети"></div>
+            </div>
+
+            <!-- Category 2: Foreign Languages -->
+            <div class="diag-section-block">
+              <div class="diag-section-head">
+                <h2 class="diag-section-title">2. Іноземні мови (CEFR A1–C2)</h2>
+                <span class="sa-badge">3 мови</span>
+              </div>
+              <div id="diag-lang-grid" class="diag-subject-grid" role="radiogroup" aria-label="Іноземні мови"></div>
+            </div>
+
+            <!-- Optional Target University -->
+            <div class="diag-section-block">
+              <div class="diag-section-head">
+                <h2 class="diag-section-title">3. Цільовий ВНЗ (опційно для розрахунку розриву)</h2>
+              </div>
+              <div id="diag-uni-grid" class="diag-uni-grid" role="radiogroup" aria-label="Цільовий університет"></div>
+            </div>
+          </div>
+
+          <!-- Briefing & Start Card -->
+          <aside class="sa-card diag-brief-panel" aria-label="Параметри сесії">
+            <h2 class="diag-brief-title">Протокол тестування</h2>
+
+            <ul class="diag-brief-list">
+              <li class="diag-brief-item">
+                <span class="diag-brief-icon"><i data-icon="layers" data-size="16"></i></span>
+                <div>
+                  <span class="diag-brief-label">6 адаптивних завдань</span>
+                  <span class="diag-brief-desc">Старт із рівня 3/5. Точна відповідь підвищує складність (+1), помилка знижує (-1).</span>
+                </div>
+              </li>
+              <li class="diag-brief-item">
+                <span class="diag-brief-icon"><i data-icon="timer" data-size="16"></i></span>
+                <div>
+                  <span class="diag-brief-label">45 с на крок</span>
+                  <span class="diag-brief-desc">Контроль темпу з фіксацією затримки без жорсткого викидання із завдання.</span>
+                </div>
+              </li>
+              <li class="diag-brief-item">
+                <span class="diag-brief-icon"><i data-icon="eyeOff" data-size="16"></i></span>
+                <div>
+                  <span class="diag-brief-label">Anti-OCR полотно</span>
+                  <span class="diag-brief-desc">Умови, таблиці та схеми рендеряться у DPI-масштабований canvas із мікрошумом.</span>
+                </div>
+              </li>
+              <li class="diag-brief-item">
+                <span class="diag-brief-icon"><i data-icon="activity" data-size="16"></i></span>
+                <div>
+                  <span class="diag-brief-label">Біометрія довіри</span>
+                  <span class="diag-brief-desc">Відстеження руху вказівника, часу реакції та перемикань вкладки (Trust Score).</span>
+                </div>
+              </li>
+            </ul>
+
+            <div id="diag-start-summary" class="diag-start-summary" aria-live="polite"></div>
+
+            <button id="diag-start-btn" type="button" class="sa-btn sa-btn-primary sa-btn-lg diag-btn-full">
+              <i data-icon="play" data-size="16"></i>
+              <span>Почати 3-хвилинну діагностику</span>
+            </button>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           STAGE 2: 6-Question Adaptive CAT Engine + Anti-OCR Canvas
+           ================================================================ -->
+      <section id="diag-stage-run" class="diag-stage" hidden aria-labelledby="diag-run-subject">
+        <div class="diag-run-wrap">
+          <!-- Telemetry & Pace Bar -->
+          <div class="sa-card diag-telemetry-bar">
+            <div class="diag-telemetry-top">
+              <div class="diag-telemetry-left">
+                <span id="diag-run-subject" class="sa-badge sa-badge-ink">Математика</span>
+                <span id="diag-run-counter" class="sa-badge sa-mono">01 / 06</span>
+                <span id="diag-run-level" class="sa-badge">CAT Рівень 3/5</span>
+                <div id="diag-step-dots" class="diag-step-dots" aria-hidden="true"></div>
+              </div>
+              <div class="diag-telemetry-right">
+                <span id="diag-trust-badge" class="sa-badge sa-badge-ok" title="Біометрія довіри: ентропія руху, час реакції, фокус вкладки, відсутність копіювання">
+                  <i data-icon="shieldCheck" data-size="13"></i>
+                  <span id="diag-trust-text">Trust Score: 100%</span>
+                </span>
+                <span id="diag-pace-flag" class="sa-badge sa-badge-warn" hidden>
+                  <i data-icon="clock" data-size="13"></i>
+                  <span>Перевищено темп</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="diag-pace-row">
+              <div class="diag-pace-track" aria-hidden="true">
+                <div id="diag-pace-fill" class="diag-pace-fill"></div>
+              </div>
+              <span id="diag-pace-timer" class="diag-pace-timer">45.0 с</span>
+            </div>
+          </div>
+
+          <!-- DPI-Scaled Anti-OCR Canvas Surface -->
+          <div class="sa-card diag-canvas-card">
+            <div id="diag-canvas-wrap" class="diag-canvas-wrap">
+              <canvas id="diag-canvas" role="img" aria-label="Умова тестового завдання на захищеному полотні"></canvas>
+              <p id="diag-canvas-sr" class="sa-sr-only" aria-live="polite"></p>
+            </div>
+            <div class="diag-canvas-footer">
+              <div class="diag-canvas-footer-group">
+                <span id="diag-format-badge" class="sa-badge">Кейс-таблиця</span>
+                <span>Anti-OCR: захист копіювання активний</span>
+              </div>
+              <div class="diag-canvas-footer-group">
+                <span class="sa-mono">Клавіші: A–D або 1–4</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 Tactile Option Buttons -->
+          <div id="diag-options" class="diag-options-grid" role="group" aria-label="Варіанти відповіді"></div>
+
+          <div class="diag-run-bottom">
+            <button id="diag-abort-btn" type="button" class="sa-btn sa-btn-ghost sa-btn-sm">
+              <i data-icon="arrowLeft" data-size="14"></i>
+              <span>Змінити предмет</span>
+            </button>
+            <span id="diag-telemetry-note" class="sa-mono" style="font-size:12px;color:var(--ink-muted);">
+              Адаптивний підбір наступного кроку активний
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           STAGE 3: Post-Diagnostic Conversion & Retention
+           ================================================================ -->
+      <section id="diag-stage-result" class="diag-stage" hidden aria-labelledby="diag-result-heading">
+        <div class="diag-result-wrap">
+          <div class="diag-result-header">
+            <div>
+              <div class="diag-eyebrow-row" style="margin-bottom:8px;">
+                <span class="sa-badge sa-badge-ok">
+                  <i data-icon="checkCircle" data-size="13"></i>
+                  <span>ДІАГНОСТИКУ ЗАВЕРШЕНО</span>
+                </span>
+                <span id="diag-res-subject-badge" class="sa-badge sa-badge-ink">Математика</span>
+                <span id="diag-res-trust-badge" class="sa-badge">Trust Score: 100%</span>
+                <span id="diag-res-sid-badge" class="sa-badge sa-mono">SID: ...</span>
+              </div>
+              <h1 id="diag-result-heading" class="diag-result-title">
+                Прогноз результату та карта втрати балів
+              </h1>
+            </div>
+            <button id="diag-reset-btn" type="button" class="sa-btn sa-btn-secondary">
+              <i data-icon="refresh" data-size="15"></i>
+              <span>Пройти інший предмет</span>
+            </button>
+          </div>
+
+          <!-- Score + University Gap Bento -->
+          <div class="diag-score-grid">
+            <article class="sa-card diag-metric-card">
+              <div>
+                <span class="diag-metric-label">Прогнозований результат</span>
+                <div id="diag-res-score-hero" class="diag-score-hero" style="margin-top:10px;"></div>
+                <p id="diag-res-score-note" style="margin:10px 0 0;font-size:14px;color:var(--ink-secondary);line-height:1.45;"></p>
+              </div>
+              <div id="diag-res-cat-foot" class="diag-metric-foot"></div>
+            </article>
+
+            <article class="sa-card diag-metric-card">
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+                  <span class="diag-metric-label">Порівняння з прохідним балом ВНЗ</span>
+                  <span id="diag-res-gap-badge" class="sa-badge"></span>
+                </div>
+                <h2 id="diag-res-uni-name" style="margin:10px 0 6px;font-size:20px;font-weight:600;letter-spacing:-0.015em;"></h2>
+                <div class="diag-gap-bar-wrap" aria-hidden="true">
+                  <div id="diag-gap-fill" class="diag-gap-fill"></div>
+                  <div id="diag-gap-threshold" class="diag-gap-threshold"></div>
+                </div>
+                <p id="diag-res-gap-desc" style="margin:8px 0 0;font-size:13px;color:var(--ink-secondary);line-height:1.45;"></p>
+              </div>
+              <div>
+                <span style="display:block;font-size:11px;color:var(--ink-muted);margin-bottom:6px;font-family:var(--font-mono);">Швидко порівняти з іншим ВНЗ:</span>
+                <div id="diag-res-uni-switcher" class="diag-uni-inline-select"></div>
+              </div>
+            </article>
+          </div>
+
+          <!-- 3 Weak Topics: #1 Unlocked Socratic Breakdown + #2/#3 Locked -->
+          <div class="diag-topics-grid">
+            <article class="sa-card diag-socratic-card" aria-labelledby="diag-topic1-title">
+              <div class="diag-topic-head">
+                <span class="sa-badge sa-badge-ok">
+                  <i data-icon="unlock" data-size="13"></i>
+                  <span>СЛАБКА ТЕМА #1 · РОЗБЛОКОВАНО</span>
+                </span>
+                <span id="diag-topic1-impact" class="sa-badge sa-badge-ink">+9 б. потенціалу</span>
+              </div>
+
+              <h2 id="diag-topic1-title" class="diag-topic-title"></h2>
+
+              <div class="diag-trap-box">
+                <div>
+                  <strong>Патерн помилки:</strong>
+                  <span id="diag-topic1-pattern"></span>
+                </div>
+                <div>
+                  <strong>Чому спрацьовує пастка:</strong>
+                  <span id="diag-topic1-trap"></span>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
+                  <span class="diag-metric-label">Сократівський розбір у 3 кроки</span>
+                  <span class="sa-badge">Інтерактивний тренажер</span>
+                </div>
+                <div id="diag-socratic-steps" class="diag-socratic-steps"></div>
+              </div>
+            </article>
+
+            <div class="diag-locked-stack">
+              <article id="diag-topic2-card" class="sa-card diag-locked-card"></article>
+              <article id="diag-topic3-card" class="sa-card diag-locked-card"></article>
+            </div>
+          </div>
+
+          <!-- 3 Mandatory Conversion CTAs -->
+          <section class="sa-card diag-cta-panel" aria-label="Наступні кроки та збереження результату">
+            <div>
+              <span class="diag-metric-label">Збереження та закриття прогалин</span>
+              <h2 style="margin:6px 0 4px;font-size:20px;font-weight:600;letter-spacing:-0.015em;">
+                Перенесіть діагностику в StrictAI або надішліть звіт батькам
+              </h2>
+              <p style="margin:0;font-size:14px;color:var(--ink-secondary);">
+                Ваш результат уже збережено в локальному сховищі. Оберіть зручний сценарій продовження:
+              </p>
+            </div>
+
+            <div class="diag-cta-grid">
+              <a id="diag-cta-handoff" class="sa-btn sa-btn-primary sa-btn-lg" href="auth.html?intent=handoff">
+                <i data-icon="smartphone" data-size="16"></i>
+                <span>Зберегти прогноз у акаунт і відкрити в Додатку</span>
+              </a>
+
+              <button id="diag-cta-sponsor" type="button" class="sa-btn sa-btn-secondary sa-btn-lg">
+                <i data-icon="share" data-size="16"></i>
+                <span>Надіслати звіт і рахунок батькам</span>
+              </button>
+
+              <a id="diag-cta-pass" class="sa-btn sa-btn-secondary sa-btn-lg" href="strictpass.html">
+                <i data-icon="creditCard" data-size="16"></i>
+                <span>Переглянути рекомендований план StrictPass Pro</span>
+              </a>
+            </div>
+
+            <!-- Inline Sponsor Link Confirmation Card -->
+            <div id="diag-sponsor-card" class="sa-card diag-sponsor-card" hidden aria-live="polite">
+              <div class="diag-sponsor-head">
+                <span class="sa-badge sa-badge-ok">
+                  <i data-icon="checkCircle" data-size="13"></i>
+                  <span id="diag-sponsor-status">Звіт і підписане посилання скопійовано</span>
+                </span>
+                <span class="sa-mono" style="font-size:12px;color:var(--ink-secondary);">SKU: StrictPass_Pro_Single_Season</span>
+              </div>
+
+              <div class="diag-sponsor-link-row">
+                <input id="diag-sponsor-url" class="sa-input" type="text" readonly aria-label="Підписане посилання для батьків">
+                <button id="diag-sponsor-copy-btn" type="button" class="sa-btn sa-btn-primary sa-btn-sm">
+                  <i data-icon="copy" data-size="14"></i>
+                  <span>Копіювати повторно</span>
+                </button>
+                <a id="diag-sponsor-open-link" class="sa-btn sa-btn-secondary sa-btn-sm" href="parents.html">
+                  <i data-icon="arrowUpRight" data-size="14"></i>
+                  <span>Переглянути як батьки</span>
+                </a>
+              </div>
+
+              <pre id="diag-sponsor-preview" class="diag-sponsor-preview"></pre>
+            </div>
+          </section>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer id="sa-footer" class="sa-footer"></footer>
+
+  <script src="js/icons.js"></script>
+  <script src="js/strictpass-3d.js"></script>
+  <script src="js/firebase-auth-core.js"></script>
+  <script src="js/site-shell.js"></script>
+  <script src="js/site-diagnostic.js"></script>
+</body>
+</html>

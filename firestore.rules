@@ -1,0 +1,713 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // Assumed Data Model
+    // =========================================================================
+    //
+    // Shared Cloud Firestore schema for StrictAI (`site-diagnostic` & `mobile-app`).
+    //
+    // 1. Collection: users
+    //    Document ID: {userId} (Firebase Auth UID)
+    //    Fields:
+    //      - displayName: string | null (optional, 1..100 chars if non-null)
+    //      - email: string | null (optional, valid email format, <= 254 chars)
+    //      - photoURL: string | null (optional, http(s) URL, <= 512 chars)
+    //      - role: string (required, enum: ['student', 'parent'])
+    //      - locale: string (optional, enum: ['uk', 'en', 'pl', 'de'])
+    //      - theme: string (optional, enum: ['light', 'dark'])
+    //      - gradeLevel: int (1..12) | string (1..40 chars) | null (optional)
+    //      - familyId: string | null (optional, <= 128 chars; if non-empty, verified in families/{familyId})
+    //      - createdAt: timestamp (required, recent on create, immutable on update)
+    //      - updatedAt: timestamp (required, recent on create/update)
+    //      - entitlementTier: string (SERVER/ADMIN ONLY — client CANNOT create or modify)
+    //      - strictPassVerified: bool (SERVER/ADMIN ONLY — client CANNOT create or modify)
+    //
+    // 2. Collection: diagnostics
+    //    Document ID: {diagnosticId} (auto-ID)
+    //    Immutable once created (no client update/delete).
+    //    Fields:
+    //      - userId: string (required, == request.auth.uid on create)
+    //      - familyId: string | null (optional, <= 128 chars; if non-empty, must belong to caller's family)
+    //      - subject: string (required, 1..64 chars)
+    //      - mode: string (required, 1..64 chars)
+    //      - score: number (required, 0 <= score <= 200)
+    //      - cefrLevel: string | null (optional, enum: ['Pre-A1', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'])
+    //      - weakTopics: list<string> (required, max 20 items, each 1..120 chars)
+    //      - trustScore: number (required, 0 <= trustScore <= 100)
+    //      - antiCheatSummary: map (required, strict allowed telemetry keys & bounded sizes)
+    //      - createdAt: timestamp (required, recent on create)
+    //
+    // 3. Collection: families
+    //    Document ID: {familyId} (unguessable auto-ID)
+    //    Fields:
+    //      - parentUid: string (required, == request.auth.uid on create, immutable on update)
+    //      - inviteCode: string (required, 6..32 chars matching ^[A-Za-z0-9_-]{6,32}$)
+    //      - planSeatType: string (required, enum: ['single', 'duo', 'family'])
+    //      - memberUids: list<string> (required, unique UIDs, max 6 and <= seat limit for planSeatType)
+    //      - parentPinHash: string (required, hashed PIN, 16..128 chars)
+    //      - contractTerms: string (<= 2000 chars) | map (strict keys) | null (required or nullable)
+    //      - dailyScheduleTime: string | null (optional/nullable, HH:MM or HH:MM:SS)
+    //      - createdAt: timestamp (optional, recent on create, immutable on update)
+    //      - updatedAt: timestamp (optional, recent on create/update)
+    //
+    // 4. Subcollection: families/{familyId}/assignedLectures
+    //    Document ID: {lectureId}
+    //    Parent (`families/{familyId}.parentUid`) can create, update, and delete.
+    //    Student (`uid in families/{familyId}.memberUids`) can ONLY transition
+    //    `status` from 'pending' -> 'completed' with `completedAt` and a verified
+    //    `studySessions/{verifiedSessionId}` owned by the student.
+    //    Fields:
+    //      - title: string (required, 1..200 chars)
+    //      - subject: string (required, 1..64 chars)
+    //      - topic: string | null (optional, <= 160 chars)
+    //      - notes: string | null (optional, <= 1000 chars)
+    //      - link: string | null (optional, safe relative path or https URL, <= 256 chars)
+    //      - assignedToUid: string | null (optional, UID in family.memberUids)
+    //      - dueDate: timestamp | null (optional)
+    //      - status: string (required, enum: ['pending', 'completed'])
+    //      - createdAt: timestamp (required, recent on create, immutable on update)
+    //      - completedAt: timestamp | null (must be null/absent on create; recent timestamp when completed)
+    //      - verifiedSessionId: string | null (must reference caller's valid studySessions doc on completion)
+    //
+    // 5. Collection: studySessions
+    //    Document ID: {sessionId}
+    //    Immutable deletion; owner student can create and update live telemetry
+    //    (monotonic non-decreasing counts/duration, non-increasing trustScore).
+    //    Fields:
+    //      - userId: string (required, == request.auth.uid on create, immutable on update)
+    //      - familyId: string | null (optional, <= 128 chars; if non-empty, must belong to caller's family)
+    //      - type: string (required, 1..32 chars)
+    //      - subject: string (required, 1..64 chars)
+    //      - durationSec: number (required, 0 <= durationSec <= 86400)
+    //      - tabBlurCount: int (required, 0 <= tabBlurCount <= 10000)
+    //      - trustScore: number (required, 0 <= trustScore <= 100)
+    //      - messagesCount: int (required, 0 <= messagesCount <= 5000)
+    //      - createdAt: timestamp (required, recent on create, immutable on update)
+    //      - updatedAt: timestamp (optional, recent on create/update)
+    //
+    // 6. Collection: strictPassOrders
+    //    Document ID: {orderId}
+    //    Client can create order intent ONLY with status == 'pending_verification'.
+    //    Client CANNOT update or delete orders (handled by server/webhook Admin SDK).
+    //    Fields:
+    //      - buyerUid: string (required, == request.auth.uid on create)
+    //      - tier: string (required, enum: ['strictpass', 'pro', 'max'])
+    //      - seatType: string (required, enum: ['single', 'duo', 'family'])
+    //      - billingCycle: string (required, enum: ['monthly', 'season', 'annual'])
+    //      - amountUah: number (required, 0 < amountUah <= 100000)
+    //      - status: string (required, MUST be 'pending_verification' on client create)
+    //      - createdAt: timestamp (required, recent on create)
+    //
+    // =========================================================================
+
+    // =========================================================================
+    // Helper Functions
+    // =========================================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function uidUnchanged(field) {
+      return field in request.resource.data &&
+             request.resource.data[field] is string &&
+             request.resource.data[field] == request.auth.uid;
+    }
+
+    function uidNotModified(field) {
+      return field in request.resource.data &&
+             request.resource.data[field] == resource.data[field];
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function isValidOptionalNullableString(data, field, minLen, maxLen) {
+      return !(field in data) ||
+             data[field] == null ||
+             isValidString(data[field], minLen, maxLen);
+    }
+
+    function isValidEmail(email) {
+      return email is string &&
+             email.size() <= 254 &&
+             email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUrl(url) {
+      return url is string &&
+             url.size() <= 512 &&
+             (url.matches("^https://.*") || url.matches("^http://.*"));
+    }
+
+    function isValidAppLink(link) {
+      return link is string &&
+             link.size() >= 1 &&
+             link.size() <= 256 &&
+             (
+               link.matches("^https://.*") ||
+               link.matches("^[a-zA-Z0-9_./?=&-]{1,256}$")
+             );
+    }
+
+    function isRecentTimestamp(ts) {
+      return ts is timestamp &&
+             ts > request.time - duration.value(5, 'm') &&
+             ts < request.time + duration.value(5, 'm');
+    }
+
+    function validStringItemAt(items, idx, minLen, maxLen) {
+      return items.size() <= idx || isValidString(items[idx], minLen, maxLen);
+    }
+
+    // Validates a list of up to 20 bounded strings (prevents 1MB payload inside arrays)
+    function isValidStringListMax20(items, minLen, maxLen) {
+      return items is list &&
+             items.size() <= 20 &&
+             validStringItemAt(items, 0, minLen, maxLen) &&
+             validStringItemAt(items, 1, minLen, maxLen) &&
+             validStringItemAt(items, 2, minLen, maxLen) &&
+             validStringItemAt(items, 3, minLen, maxLen) &&
+             validStringItemAt(items, 4, minLen, maxLen) &&
+             validStringItemAt(items, 5, minLen, maxLen) &&
+             validStringItemAt(items, 6, minLen, maxLen) &&
+             validStringItemAt(items, 7, minLen, maxLen) &&
+             validStringItemAt(items, 8, minLen, maxLen) &&
+             validStringItemAt(items, 9, minLen, maxLen) &&
+             validStringItemAt(items, 10, minLen, maxLen) &&
+             validStringItemAt(items, 11, minLen, maxLen) &&
+             validStringItemAt(items, 12, minLen, maxLen) &&
+             validStringItemAt(items, 13, minLen, maxLen) &&
+             validStringItemAt(items, 14, minLen, maxLen) &&
+             validStringItemAt(items, 15, minLen, maxLen) &&
+             validStringItemAt(items, 16, minLen, maxLen) &&
+             validStringItemAt(items, 17, minLen, maxLen) &&
+             validStringItemAt(items, 18, minLen, maxLen) &&
+             validStringItemAt(items, 19, minLen, maxLen);
+    }
+
+    // Validates unique UID list of up to 6 entries
+    function hasUniqueItemsMax6(items) {
+      let n = items.size();
+      return n <= 1 || (
+        (n < 2 || items[0] != items[1]) &&
+        (n < 3 || (items[0] != items[2] && items[1] != items[2])) &&
+        (n < 4 || (items[0] != items[3] && items[1] != items[3] && items[2] != items[3])) &&
+        (n < 5 || (items[0] != items[4] && items[1] != items[4] && items[2] != items[4] && items[3] != items[4])) &&
+        (n < 6 || (items[0] != items[5] && items[1] != items[5] && items[2] != items[5] && items[3] != items[5] && items[4] != items[5]))
+      );
+    }
+
+    function isValidMemberUids(items) {
+      return items is list &&
+             items.size() <= 6 &&
+             validStringItemAt(items, 0, 1, 128) &&
+             validStringItemAt(items, 1, 1, 128) &&
+             validStringItemAt(items, 2, 1, 128) &&
+             validStringItemAt(items, 3, 1, 128) &&
+             validStringItemAt(items, 4, 1, 128) &&
+             validStringItemAt(items, 5, 1, 128) &&
+             hasUniqueItemsMax6(items);
+    }
+
+    function maxMembersForSeatType(seatType, parentUid, memberUids) {
+      let parentIncluded = parentUid in memberUids ? 1 : 0;
+      return seatType == 'single' ? (1 + parentIncluded) :
+             (seatType == 'duo' ? (2 + parentIncluded) : 6);
+    }
+
+    // =========================================================================
+    // Family & Cross-Document Authorization Helpers
+    // =========================================================================
+
+    function familyExists(familyId) {
+      return familyId is string &&
+             familyId.size() > 0 &&
+             familyId.size() <= 128 &&
+             exists(/databases/$(database)/documents/families/$(familyId));
+    }
+
+    function getFamilyData(familyId) {
+      return get(/databases/$(database)/documents/families/$(familyId)).data;
+    }
+
+    function isFamilyParent(familyId) {
+      return isAuthenticated() &&
+             familyExists(familyId) &&
+             getFamilyData(familyId).parentUid == request.auth.uid;
+    }
+
+    function isFamilyMember(familyId) {
+      return isAuthenticated() &&
+             familyExists(familyId) &&
+             request.auth.uid in getFamilyData(familyId).memberUids;
+    }
+
+    function isFamilyMemberOrParent(familyId) {
+      return isAuthenticated() &&
+             familyExists(familyId) &&
+             (
+               getFamilyData(familyId).parentUid == request.auth.uid ||
+               request.auth.uid in getFamilyData(familyId).memberUids
+             );
+    }
+
+    // Verifies caller is the actual parentUid of `familyId` AND `targetUid` is in `memberUids`
+    function isVerifiedFamilyParentOf(familyId, targetUid) {
+      return isAuthenticated() &&
+             familyExists(familyId) &&
+             getFamilyData(familyId).parentUid == request.auth.uid &&
+             targetUid in getFamilyData(familyId).memberUids;
+    }
+
+    // Verifies caller is the verified family parent of `targetUid`, using either
+    // a resource's explicit `familyId` or `users/{targetUid}.familyId`.
+    function isVerifiedParentOfUser(targetUid, docData) {
+      return isAuthenticated() &&
+             (
+               ('familyId' in docData &&
+                docData.familyId is string &&
+                docData.familyId.size() > 0 &&
+                isVerifiedFamilyParentOf(docData.familyId, targetUid)) ||
+               (exists(/databases/$(database)/documents/users/$(targetUid)) &&
+                'familyId' in get(/databases/$(database)/documents/users/$(targetUid)).data &&
+                get(/databases/$(database)/documents/users/$(targetUid)).data.familyId is string &&
+                get(/databases/$(database)/documents/users/$(targetUid)).data.familyId.size() > 0 &&
+                isVerifiedFamilyParentOf(get(/databases/$(database)/documents/users/$(targetUid)).data.familyId, targetUid))
+             );
+    }
+
+    // Verifies `userId` belongs to `familyId` in post-commit state (supports batched join + profile update)
+    function isMemberOrParentAfter(familyId, userId) {
+      return existsAfter(/databases/$(database)/documents/families/$(familyId)) &&
+             (
+               getAfter(/databases/$(database)/documents/families/$(familyId)).data.parentUid == userId ||
+               userId in getAfter(/databases/$(database)/documents/families/$(familyId)).data.memberUids
+             );
+    }
+
+    // =========================================================================
+    // Domain Validators
+    // =========================================================================
+
+    // 1. Users Validator
+    function isValidUserFields(data, userId, checkFamilyMembership) {
+      return hasRequiredFields(['role', 'createdAt', 'updatedAt']) &&
+             isValidOptionalNullableString(data, 'displayName', 1, 100) &&
+             (!('email' in data) || data.email == null || isValidEmail(data.email)) &&
+             (!('photoURL' in data) || data.photoURL == null || isValidUrl(data.photoURL)) &&
+             data.role in ['student', 'parent'] &&
+             (!('locale' in data) || data.locale in ['uk', 'en', 'pl', 'de']) &&
+             (!('theme' in data) || data.theme in ['light', 'dark']) &&
+             (!('gradeLevel' in data) ||
+              data.gradeLevel == null ||
+              (data.gradeLevel is int && data.gradeLevel >= 1 && data.gradeLevel <= 12) ||
+              isValidString(data.gradeLevel, 1, 40)) &&
+             (!('familyId' in data) ||
+              data.familyId == null ||
+              data.familyId == '' ||
+              (isValidString(data.familyId, 1, 128) &&
+               (!checkFamilyMembership || isMemberOrParentAfter(data.familyId, userId)))) &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
+    function isValidUserCreate(data, userId) {
+      return hasOnlyAllowedFields([
+               'displayName', 'email', 'photoURL', 'role', 'locale',
+               'theme', 'gradeLevel', 'familyId', 'createdAt', 'updatedAt'
+             ]) &&
+             isValidUserFields(data, userId, true) &&
+             isRecentTimestamp(data.createdAt) &&
+             isRecentTimestamp(data.updatedAt);
+    }
+
+    function isValidUserUpdate(data, userId) {
+      let familyIdChanged = ('familyId' in data) &&
+                            (!('familyId' in resource.data) || data.familyId != resource.data.familyId);
+      return hasOnlyAllowedFields([
+               'displayName', 'email', 'photoURL', 'role', 'locale',
+               'theme', 'gradeLevel', 'familyId', 'createdAt', 'updatedAt',
+               'entitlementTier', 'strictPassVerified'
+             ]) &&
+             areImmutableFieldsUnchanged(['createdAt', 'entitlementTier', 'strictPassVerified']) &&
+             isValidUserFields(data, userId, familyIdChanged) &&
+             isRecentTimestamp(data.updatedAt);
+    }
+
+    // 2. Diagnostics Validator
+    function isValidAntiCheatSummary(summary) {
+      return summary is map &&
+             summary.keys().hasOnly([
+               'elapsedSeconds', 'timeToFirstClick', 'mouseEntropy', 'mouseDistance',
+               'mouseInflections', 'wpm', 'pasteDetected', 'automationFlag',
+               'automationReasons', 'trustScore', 'trustRating', 'auditLog',
+               'tabBlurCount', 'focusLossCount', 'appSwitchCount', 'strikeCount',
+               'extensionDetected', 'copyAttempts'
+             ]) &&
+             (!('elapsedSeconds' in summary) || (summary.elapsedSeconds is number && summary.elapsedSeconds >= 0 && summary.elapsedSeconds <= 86400)) &&
+             (!('timeToFirstClick' in summary) || summary.timeToFirstClick == null || (summary.timeToFirstClick is number && summary.timeToFirstClick >= 0 && summary.timeToFirstClick <= 86400)) &&
+             (!('mouseEntropy' in summary) || (summary.mouseEntropy is number && summary.mouseEntropy >= 0 && summary.mouseEntropy <= 100)) &&
+             (!('mouseDistance' in summary) || (summary.mouseDistance is number && summary.mouseDistance >= 0 && summary.mouseDistance <= 10000000)) &&
+             (!('mouseInflections' in summary) || (summary.mouseInflections is int && summary.mouseInflections >= 0 && summary.mouseInflections <= 1000000)) &&
+             (!('wpm' in summary) || (summary.wpm is number && summary.wpm >= 0 && summary.wpm <= 500)) &&
+             (!('pasteDetected' in summary) || summary.pasteDetected is bool) &&
+             (!('automationFlag' in summary) || summary.automationFlag is bool) &&
+             (!('automationReasons' in summary) || isValidStringListMax20(summary.automationReasons, 1, 200)) &&
+             (!('trustScore' in summary) || (summary.trustScore is number && summary.trustScore >= 0 && summary.trustScore <= 100)) &&
+             (!('trustRating' in summary) || isValidString(summary.trustRating, 1, 64)) &&
+             (!('auditLog' in summary) || isValidStringListMax20(summary.auditLog, 1, 200)) &&
+             (!('tabBlurCount' in summary) || (summary.tabBlurCount is int && summary.tabBlurCount >= 0 && summary.tabBlurCount <= 10000)) &&
+             (!('focusLossCount' in summary) || (summary.focusLossCount is int && summary.focusLossCount >= 0 && summary.focusLossCount <= 10000)) &&
+             (!('appSwitchCount' in summary) || (summary.appSwitchCount is int && summary.appSwitchCount >= 0 && summary.appSwitchCount <= 10000)) &&
+             (!('strikeCount' in summary) || (summary.strikeCount is int && summary.strikeCount >= 0 && summary.strikeCount <= 1000)) &&
+             (!('extensionDetected' in summary) || summary.extensionDetected is bool) &&
+             (!('copyAttempts' in summary) || (summary.copyAttempts is int && summary.copyAttempts >= 0 && summary.copyAttempts <= 10000));
+    }
+
+    function isValidDiagnostic(data) {
+      return hasOnlyAllowedFields([
+               'userId', 'familyId', 'subject', 'mode', 'score', 'cefrLevel',
+               'weakTopics', 'trustScore', 'antiCheatSummary', 'createdAt'
+             ]) &&
+             hasRequiredFields([
+               'userId', 'subject', 'mode', 'score', 'weakTopics',
+               'trustScore', 'antiCheatSummary', 'createdAt'
+             ]) &&
+             uidUnchanged('userId') &&
+             (!('familyId' in data) ||
+              data.familyId == null ||
+              (isValidString(data.familyId, 1, 128) && isFamilyMemberOrParent(data.familyId))) &&
+             isValidString(data.subject, 1, 64) &&
+             isValidString(data.mode, 1, 64) &&
+             data.score is number && data.score >= 0 && data.score <= 200 &&
+             (!('cefrLevel' in data) ||
+              data.cefrLevel == null ||
+              data.cefrLevel in ['Pre-A1', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2']) &&
+             isValidStringListMax20(data.weakTopics, 1, 120) &&
+             data.trustScore is number && data.trustScore >= 0 && data.trustScore <= 100 &&
+             isValidAntiCheatSummary(data.antiCheatSummary) &&
+             isRecentTimestamp(data.createdAt);
+    }
+
+    // 3. Families Validator
+    function isValidContractTerms(terms) {
+      return terms == null ||
+             isValidString(terms, 0, 2000) ||
+             (
+               terms is map &&
+               terms.keys().hasOnly([
+                 'title', 'targetMinutesWeek', 'dailyMinutesTarget',
+                 'targetMinScore', 'reward', 'notes', 'active'
+               ]) &&
+               (!('title' in terms) || isValidString(terms.title, 1, 160)) &&
+               (!('targetMinutesWeek' in terms) || (terms.targetMinutesWeek is int && terms.targetMinutesWeek >= 0 && terms.targetMinutesWeek <= 10080)) &&
+               (!('dailyMinutesTarget' in terms) || (terms.dailyMinutesTarget is int && terms.dailyMinutesTarget >= 0 && terms.dailyMinutesTarget <= 1440)) &&
+               (!('targetMinScore' in terms) || (terms.targetMinScore is number && terms.targetMinScore >= 0 && terms.targetMinScore <= 200)) &&
+               (!('reward' in terms) || isValidString(terms.reward, 0, 300)) &&
+               (!('notes' in terms) || isValidString(terms.notes, 0, 1000)) &&
+               (!('active' in terms) || terms.active is bool)
+             );
+    }
+
+    function isValidFamily(data) {
+      return hasOnlyAllowedFields([
+               'parentUid', 'inviteCode', 'planSeatType', 'memberUids',
+               'parentPinHash', 'contractTerms', 'dailyScheduleTime',
+               'createdAt', 'updatedAt'
+             ]) &&
+             hasRequiredFields([
+               'parentUid', 'inviteCode', 'planSeatType', 'memberUids',
+               'parentPinHash', 'contractTerms', 'dailyScheduleTime'
+             ]) &&
+             isValidString(data.parentUid, 1, 128) &&
+             data.inviteCode is string && data.inviteCode.matches("^[A-Za-z0-9_-]{6,32}$") &&
+             data.planSeatType in ['single', 'duo', 'family'] &&
+             isValidMemberUids(data.memberUids) &&
+             data.memberUids.size() <= maxMembersForSeatType(data.planSeatType, data.parentUid, data.memberUids) &&
+             isValidString(data.parentPinHash, 16, 128) &&
+             isValidContractTerms(data.contractTerms) &&
+             (data.dailyScheduleTime == null ||
+              (data.dailyScheduleTime is string &&
+               data.dailyScheduleTime.matches("^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"))) &&
+             (!('createdAt' in data) || data.createdAt is timestamp) &&
+             (!('updatedAt' in data) || isRecentTimestamp(data.updatedAt));
+    }
+
+    function isValidMemberAddition(oldList, newList, joiningUid) {
+      let expectedList = oldList.concat([joiningUid]);
+      return !(joiningUid in oldList) &&
+             newList is list &&
+             newList.size() == oldList.size() + 1 &&
+             newList.hasAll(expectedList) &&
+             newList.hasOnly(expectedList);
+    }
+
+    function isValidStudentInviteJoin() {
+      let changedKeys = request.resource.data.diff(resource.data).affectedKeys();
+      return isAuthenticated() &&
+             request.auth.uid != resource.data.parentUid &&
+             resource.data.inviteCode is string &&
+             resource.data.inviteCode.size() >= 6 &&
+             (
+               changedKeys.hasOnly(['memberUids']) ||
+               (changedKeys.hasOnly(['memberUids', 'updatedAt']) &&
+                isRecentTimestamp(request.resource.data.updatedAt))
+             ) &&
+             isValidMemberAddition(resource.data.memberUids, request.resource.data.memberUids, request.auth.uid) &&
+             isValidFamily(request.resource.data);
+    }
+
+    // 4. Assigned Lectures Validator
+    function isValidAssignedLecture(data) {
+      return hasOnlyAllowedFields([
+               'title', 'subject', 'topic', 'notes', 'link',
+               'assignedToUid', 'dueDate', 'status',
+               'createdAt', 'completedAt', 'verifiedSessionId'
+             ]) &&
+             hasRequiredFields(['title', 'subject', 'status', 'createdAt']) &&
+             isValidString(data.title, 1, 200) &&
+             isValidString(data.subject, 1, 64) &&
+             isValidOptionalNullableString(data, 'topic', 0, 160) &&
+             isValidOptionalNullableString(data, 'notes', 0, 1000) &&
+             (!('link' in data) || data.link == null || isValidAppLink(data.link)) &&
+             isValidOptionalNullableString(data, 'assignedToUid', 1, 128) &&
+             (!('dueDate' in data) || data.dueDate == null || data.dueDate is timestamp) &&
+             data.status in ['pending', 'completed'] &&
+             data.createdAt is timestamp &&
+             (!('completedAt' in data) || data.completedAt == null || data.completedAt is timestamp) &&
+             isValidOptionalNullableString(data, 'verifiedSessionId', 1, 128);
+    }
+
+    function isVerifiedStudentSession(sessionId, studentUid) {
+      return isValidString(sessionId, 1, 128) &&
+             existsAfter(/databases/$(database)/documents/studySessions/$(sessionId)) &&
+             getAfter(/databases/$(database)/documents/studySessions/$(sessionId)).data.userId == studentUid &&
+             getAfter(/databases/$(database)/documents/studySessions/$(sessionId)).data.durationSec > 0;
+    }
+
+    function isValidStudentLectureCompletion(familyId) {
+      let changedKeys = request.resource.data.diff(resource.data).affectedKeys();
+      return isFamilyMember(familyId) &&
+             request.auth.uid != getFamilyData(familyId).parentUid &&
+             (!('assignedToUid' in resource.data) ||
+              resource.data.assignedToUid == null ||
+              resource.data.assignedToUid == request.auth.uid) &&
+             changedKeys.hasOnly(['status', 'completedAt', 'verifiedSessionId']) &&
+             resource.data.status == 'pending' &&
+             request.resource.data.status == 'completed' &&
+             isRecentTimestamp(request.resource.data.completedAt) &&
+             isVerifiedStudentSession(request.resource.data.verifiedSessionId, request.auth.uid) &&
+             isValidAssignedLecture(request.resource.data);
+    }
+
+    // 5. Study Sessions Validator
+    function isValidStudySession(data) {
+      return hasOnlyAllowedFields([
+               'userId', 'familyId', 'type', 'subject', 'durationSec',
+               'tabBlurCount', 'trustScore', 'messagesCount',
+               'createdAt', 'updatedAt'
+             ]) &&
+             hasRequiredFields([
+               'userId', 'type', 'subject', 'durationSec',
+               'tabBlurCount', 'trustScore', 'messagesCount', 'createdAt'
+             ]) &&
+             isValidString(data.userId, 1, 128) &&
+             (!('familyId' in data) ||
+              data.familyId == null ||
+              (isValidString(data.familyId, 1, 128) && isFamilyMemberOrParent(data.familyId))) &&
+             isValidString(data.type, 1, 32) &&
+             isValidString(data.subject, 1, 64) &&
+             data.durationSec is number && data.durationSec >= 0 && data.durationSec <= 86400 &&
+             data.tabBlurCount is int && data.tabBlurCount >= 0 && data.tabBlurCount <= 10000 &&
+             data.trustScore is number && data.trustScore >= 0 && data.trustScore <= 100 &&
+             data.messagesCount is int && data.messagesCount >= 0 && data.messagesCount <= 5000 &&
+             data.createdAt is timestamp &&
+             (!('updatedAt' in data) || isRecentTimestamp(data.updatedAt));
+    }
+
+    function isMonotonicSessionTelemetry() {
+      return request.resource.data.durationSec >= resource.data.durationSec &&
+             request.resource.data.tabBlurCount >= resource.data.tabBlurCount &&
+             request.resource.data.messagesCount >= resource.data.messagesCount &&
+             request.resource.data.trustScore <= resource.data.trustScore;
+    }
+
+    // 6. StrictPass Orders Validator
+    function isValidStrictPassOrderCreate(data) {
+      return hasOnlyAllowedFields([
+               'buyerUid', 'tier', 'seatType', 'billingCycle',
+               'amountUah', 'status', 'createdAt'
+             ]) &&
+             hasRequiredFields([
+               'buyerUid', 'tier', 'seatType', 'billingCycle',
+               'amountUah', 'status', 'createdAt'
+             ]) &&
+             uidUnchanged('buyerUid') &&
+             data.tier in ['strictpass', 'pro', 'max'] &&
+             data.seatType in ['single', 'duo', 'family'] &&
+             data.billingCycle in ['monthly', 'season', 'annual'] &&
+             data.amountUah is number && data.amountUah > 0 && data.amountUah <= 100000 &&
+             data.status == 'pending_verification' &&
+             isRecentTimestamp(data.createdAt);
+    }
+
+    // =========================================================================
+    // Collection Rules
+    // =========================================================================
+
+    // 1. User Profiles (`users/{userId}`)
+    match /users/{userId} {
+      allow read: if isOwner(userId) ||
+                     isAdmin() ||
+                     (
+                       isAuthenticated() &&
+                       resource != null &&
+                       resource.data.role == 'student' &&
+                       'familyId' in resource.data &&
+                       isVerifiedFamilyParentOf(resource.data.familyId, userId)
+                     );
+
+      allow create: if (isOwner(userId) && isValidUserCreate(request.resource.data, userId)) ||
+                       isAdmin();
+
+      allow update: if (isOwner(userId) && isValidUserUpdate(request.resource.data, userId)) ||
+                       isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // 2. Diagnostic Results (`diagnostics/{diagnosticId}`)
+    match /diagnostics/{diagnosticId} {
+      allow read: if isAuthenticated() &&
+                     (
+                       resource.data.userId == request.auth.uid ||
+                       isVerifiedParentOfUser(resource.data.userId, resource.data) ||
+                       isAdmin()
+                     );
+
+      allow create: if isAuthenticated() &&
+                       isValidDiagnostic(request.resource.data);
+
+      // Immutable once created
+      allow update, delete: if false;
+    }
+
+    // 3. Families (`families/{familyId}`)
+    match /families/{familyId} {
+      allow read: if isAuthenticated() &&
+                     (
+                       resource.data.parentUid == request.auth.uid ||
+                       request.auth.uid in resource.data.memberUids ||
+                       isAdmin()
+                     );
+
+      allow create: if isAuthenticated() &&
+                       uidUnchanged('parentUid') &&
+                       (!('createdAt' in request.resource.data) || isRecentTimestamp(request.resource.data.createdAt)) &&
+                       isValidFamily(request.resource.data);
+
+      allow update: if (
+                         isAuthenticated() &&
+                         resource.data.parentUid == request.auth.uid &&
+                         uidNotModified('parentUid') &&
+                         areImmutableFieldsUnchanged(['createdAt']) &&
+                         isValidFamily(request.resource.data)
+                       ) ||
+                       isValidStudentInviteJoin() ||
+                       isAdmin();
+
+      allow delete: if (isAuthenticated() && resource.data.parentUid == request.auth.uid) ||
+                       isAdmin();
+
+      // 4. Assigned Lectures (`families/{familyId}/assignedLectures/{lectureId}`)
+      match /assignedLectures/{lectureId} {
+        allow read: if isFamilyMemberOrParent(familyId) || isAdmin();
+
+        allow create: if isFamilyParent(familyId) &&
+                         request.resource.data.status == 'pending' &&
+                         (!('completedAt' in request.resource.data) || request.resource.data.completedAt == null) &&
+                         (!('verifiedSessionId' in request.resource.data) || request.resource.data.verifiedSessionId == null) &&
+                         isRecentTimestamp(request.resource.data.createdAt) &&
+                         isValidAssignedLecture(request.resource.data);
+
+        allow update: if (
+                           isFamilyParent(familyId) &&
+                           areImmutableFieldsUnchanged(['createdAt']) &&
+                           isValidAssignedLecture(request.resource.data)
+                         ) ||
+                         isValidStudentLectureCompletion(familyId) ||
+                         isAdmin();
+
+        allow delete: if isFamilyParent(familyId) || isAdmin();
+      }
+    }
+
+    // 5. Study Sessions (`studySessions/{sessionId}`)
+    match /studySessions/{sessionId} {
+      allow read: if isAuthenticated() &&
+                     (
+                       resource.data.userId == request.auth.uid ||
+                       isVerifiedParentOfUser(resource.data.userId, resource.data) ||
+                       isAdmin()
+                     );
+
+      allow create: if isAuthenticated() &&
+                       uidUnchanged('userId') &&
+                       isRecentTimestamp(request.resource.data.createdAt) &&
+                       isValidStudySession(request.resource.data);
+
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       uidNotModified('userId') &&
+                       areImmutableFieldsUnchanged(['createdAt']) &&
+                       isMonotonicSessionTelemetry() &&
+                       isValidStudySession(request.resource.data);
+
+      allow delete: if isAdmin();
+    }
+
+    // 6. StrictPass Orders (`strictPassOrders/{orderId}`)
+    match /strictPassOrders/{orderId} {
+      allow read: if isAuthenticated() &&
+                     (resource.data.buyerUid == request.auth.uid || isAdmin());
+
+      allow create: if isAuthenticated() &&
+                       isValidStrictPassOrderCreate(request.resource.data);
+
+      // Server/webhook updates via Admin SDK (bypasses rules) or admin custom claim
+      allow update, delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // Default Deny Fallback
+    // =========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

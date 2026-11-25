@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrictAI — Кабінет, реєстрація та перехід у Mobile App</title>
+  <meta name="description" content="Єдиний вхід у StrictAI для учнів і батьків: закріплення діагностики, криптографічний Handoff QR-код у Mobile App, сімейний код SA-XXXXXX та підключення Firebase.">
+  <script>
+    (function () {
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem('strictai_theme') === 'dark' ? 'dark' : 'light';
+      } catch (_err) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    .sa-container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--space-5);
+      box-sizing: border-box;
+    }
+
+    .sa-auth-shell {
+      padding: var(--space-8) 0 var(--space-12);
+    }
+
+    .sa-auth-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+
+    .sa-auth-title {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+      font-weight: 700;
+      letter-spacing: var(--tracking-tight);
+      color: var(--ink-primary);
+    }
+
+    .sa-auth-sub {
+      margin: 4px 0 0;
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+    }
+
+    .sa-status-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    /* Signed-out focal layout */
+    .sa-auth-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 500px) minmax(0, 1fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+
+    .sa-auth-card {
+      padding: var(--space-6);
+    }
+
+    .sa-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .sa-stack-sm {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .sa-field-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--ink-secondary);
+    }
+
+    .sa-segmented-full {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+    }
+
+    .sa-segmented-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      width: 100%;
+    }
+
+    .sa-segmented-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      width: 100%;
+    }
+
+    .sa-oauth-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .sa-oauth-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .sa-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+    }
+
+    .sa-divider::before,
+    .sa-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: var(--border-hairline);
+    }
+
+    .sa-inline-alert {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      font-size: var(--text-xs);
+      line-height: var(--leading-normal);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+    }
+
+    .sa-inline-alert.is-danger {
+      background-color: var(--status-danger-bg);
+      border-color: var(--status-danger-border);
+      color: var(--status-danger);
+    }
+
+    .sa-inline-alert.is-ok {
+      background-color: var(--status-ok-bg);
+      border-color: var(--status-ok-border);
+      color: var(--status-ok);
+    }
+
+    .sa-inline-alert.is-warn {
+      background-color: var(--status-warn-bg);
+      border-color: var(--status-warn-border);
+      color: var(--status-warn);
+    }
+
+    .sa-aside-card {
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .sa-step-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .sa-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .sa-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-xs);
+      background-color: var(--accent-ink);
+      color: var(--accent-ink-fg);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sa-step-title {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-step-desc {
+      display: block;
+      margin-top: 2px;
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+      line-height: var(--leading-normal);
+    }
+
+    /* Signed-In Hub */
+    .sa-profile-bar {
+      padding: var(--space-5);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .sa-profile-id {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .sa-avatar-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background-color: var(--bg-subtle);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-primary);
+      flex-shrink: 0;
+    }
+
+    .sa-profile-name {
+      margin: 0;
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-profile-mail {
+      margin: 2px 0 8px;
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .sa-hub-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-6);
+      align-items: start;
+    }
+
+    .sa-hub-card {
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .sa-hub-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .sa-hub-title {
+      margin: 0;
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .sa-hub-desc {
+      margin: 4px 0 0;
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+    }
+
+    /* Handoff QR Layout */
+    .sa-handoff-body {
+      display: grid;
+      grid-template-columns: 168px minmax(0, 1fr);
+      gap: var(--space-4);
+      align-items: center;
+    }
+
+    .sa-qr-frame {
+      width: 168px;
+      height: 168px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background-color: #FFFFFF;
+      color: #09090B;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .sa-qr-frame svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .sa-handoff-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .sa-mono-input {
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    /* Family Invite Code Display */
+    .sa-invite-box {
+      padding: var(--space-4);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background-color: var(--bg-subtle);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .sa-invite-code {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--ink-primary);
+    }
+
+    .sa-kv-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .sa-kv-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border-hairline);
+    }
+
+    .sa-kv-key {
+      color: var(--ink-secondary);
+    }
+
+    .sa-kv-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--ink-primary);
+      text-align: right;
+    }
+
+    .sa-topic-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    /* Collapsible Firebase Config Details */
+    .sa-firebase-details {
+      margin-top: var(--space-6);
+      padding: var(--space-4) var(--space-5);
+    }
+
+    .sa-firebase-summary {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      cursor: pointer;
+      list-style: none;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-firebase-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .sa-firebase-summary-left {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .sa-firebase-body {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border-hairline);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .sa-textarea {
+      min-height: 112px;
+      resize: vertical;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .sa-row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    @media (max-width: 920px) {
+      .sa-auth-grid,
+      .sa-hub-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .sa-handoff-body {
+        grid-template-columns: 1fr;
+      }
+
+      .sa-qr-frame {
+        margin: 0 auto;
+      }
+
+      .sa-segmented-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body data-page="auth" data-sticky-cta="false">
+  <header id="sa-header" class="sa-header"></header>
+
+  <main class="sa-main">
+    <section class="sa-auth-shell">
+      <div class="sa-container">
+        <div class="sa-auth-topbar">
+          <div>
+            <h1 class="sa-auth-title" id="sa-page-heading">Кабінет StrictAI та підключення Mobile App</h1>
+            <p class="sa-auth-sub" id="sa-page-subheading">
+              Єдиний вхід для збереження діагностики, видачі сімейного коду SA-XXXXXX та швидкого переходу в додаток.
+            </p>
+          </div>
+          <div class="sa-status-badges">
+            <span class="sa-badge" id="sa-conn-badge">
+              <i data-icon="cpu" data-size="12"></i>
+              <span>Verified Local Vault</span>
+            </span>
+            <span class="sa-badge" id="sa-intent-badge" hidden></span>
+          </div>
+        </div>
+
+        <!-- SIGNED-OUT VIEW -->
+        <div id="sa-auth-signed-out">
+          <div class="sa-auth-grid">
+            <div class="sa-card sa-auth-card sa-stack">
+              <div>
+                <span class="sa-field-label">Оберіть вашу роль</span>
+                <div class="sa-segmented sa-segmented-full" role="group" aria-label="Роль користувача" id="sa-role-toggle">
+                  <button type="button" data-role="student" aria-pressed="true" class="is-active">
+                    <i data-icon="graduationCap" data-size="15"></i>
+                    <span>Я учень</span>
+                  </button>
+                  <button type="button" data-role="parent" aria-pressed="false">
+                    <i data-icon="users" data-size="15"></i>
+                    <span>Я батько або мати</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="sa-oauth-list" aria-label="Швидкий вхід через OAuth">
+                <button type="button" class="sa-btn sa-btn-secondary sa-oauth-btn" data-oauth-provider="google">
+                  <i data-icon="google" data-size="17"></i>
+                  <span>Продовжити через Google</span>
+                </button>
+                <button type="button" class="sa-btn sa-btn-secondary sa-oauth-btn" data-oauth-provider="apple">
+                  <i data-icon="apple" data-size="17"></i>
+                  <span>Продовжити через Apple</span>
+                </button>
+                <button type="button" class="sa-btn sa-btn-secondary sa-oauth-btn" data-oauth-provider="github">
+                  <i data-icon="github" data-size="17"></i>
+                  <span>Продовжити через GitHub</span>
+                </button>
+              </div>
+
+              <div class="sa-divider">або через пошту та пароль</div>
+
+              <div class="sa-segmented sa-segmented-full" role="tablist" aria-label="Режим авторизації" id="sa-auth-mode-tabs">
+                <button type="button" role="tab" data-mode="register" aria-selected="true" class="is-active">Реєстрація</button>
+                <button type="button" role="tab" data-mode="login" aria-selected="false">Вхід</button>
+              </div>
+
+              <form id="sa-email-auth-form" class="sa-stack" novalidate>
+                <div id="sa-name-field-wrap">
+                  <label class="sa-field-label" for="sa-auth-name">Ім'я</label>
+                  <input
+                    id="sa-auth-name"
+                    name="displayName"
+                    type="text"
+                    class="sa-input"
+                    autocomplete="name"
+                    placeholder="Наприклад, Олена Коваленко"
+                  >
+                </div>
+
+                <div>
+                  <label class="sa-field-label" for="sa-auth-email">Email</label>
+                  <input
+                    id="sa-auth-email"
+                    name="email"
+                    type="email"
+                    class="sa-input"
+                    autocomplete="email"
+                    placeholder="name@example.com"
+                    required
+                  >
+                </div>
+
+                <div>
+                  <label class="sa-field-label" for="sa-auth-password">Пароль (мін. 6 символів)</label>
+                  <input
+                    id="sa-auth-password"
+                    name="password"
+                    type="password"
+                    class="sa-input"
+                    autocomplete="current-password"
+                    placeholder="Введіть пароль"
+                    minlength="6"
+                    required
+                  >
+                </div>
+
+                <div id="sa-auth-error" class="sa-inline-alert is-danger" role="alert" hidden></div>
+
+                <button type="submit" id="sa-auth-submit" class="sa-btn sa-btn-primary sa-btn-lg" style="width:100%;">
+                  <i data-icon="userCheck" data-size="18"></i>
+                  <span>Створити акаунт</span>
+                </button>
+              </form>
+            </div>
+
+            <aside class="sa-card sa-aside-card" aria-label="Що відбувається після входу">
+              <div class="sa-hub-head">
+                <div>
+                  <h2 class="sa-hub-title">
+                    <i data-icon="layers" data-size="17"></i>
+                    <span>Архітектура входу StrictAI</span>
+                  </h2>
+                  <p class="sa-hub-desc">Миттєва синхронізація між діагностикою, кабінетом батьків і Mobile App.</p>
+                </div>
+              </div>
+
+              <ul class="sa-step-list">
+                <li class="sa-step-item">
+                  <span class="sa-step-num">1</span>
+                  <div>
+                    <span class="sa-step-title">Закріплення діагностики</span>
+                    <span class="sa-step-desc">Якщо ви пройшли тест або перейшли за <code class="sa-mono">?sid=...</code>, звіт автоматично прив'яжеться до вашого профілю.</span>
+                  </div>
+                </li>
+                <li class="sa-step-item">
+                  <span class="sa-step-num">2</span>
+                  <div>
+                    <span class="sa-step-title">Handoff QR та підписане посилання</span>
+                    <span class="sa-step-desc">Отримаєте криптографічний токен <code class="sa-mono">?ht=...</code> (HMAC-SHA256) для безпарольного входу у мобільний тренажер.</span>
+                  </div>
+                </li>
+                <li class="sa-step-item">
+                  <span class="sa-step-num">3</span>
+                  <div>
+                    <span class="sa-step-title">Сімейний код SA-XXXXXX</span>
+                    <span class="sa-step-desc">Батьки встановлюють PIN і контракт, а учень підключається до групи за 6-значним кодом.</span>
+                  </div>
+                </li>
+              </ul>
+
+              <div id="sa-signedout-context-note" class="sa-inline-alert is-ok" hidden></div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- SIGNED-IN VIEW -->
+        <div id="sa-auth-signed-in" hidden>
+          <div class="sa-card sa-profile-bar">
+            <div class="sa-profile-id">
+              <div class="sa-avatar-badge">
+                <i data-icon="user" data-size="22"></i>
+              </div>
+              <div>
+                <h2 class="sa-profile-name" id="sa-profile-name">—</h2>
+                <p class="sa-profile-mail" id="sa-profile-email">—</p>
+                <div class="sa-status-badges">
+                  <span class="sa-badge sa-badge-ink" id="sa-profile-role-badge">Учень</span>
+                  <span class="sa-badge" id="sa-profile-provider-badge">Email</span>
+                  <span class="sa-badge" id="sa-profile-family-badge" hidden></span>
+                </div>
+              </div>
+            </div>
+            <div class="sa-row-actions">
+              <button type="button" id="sa-signout-btn" class="sa-btn sa-btn-secondary">
+                <i data-icon="logOut" data-size="16"></i>
+                <span>Вийти з акаунта</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="sa-global-hub-alert" class="sa-inline-alert" style="margin-bottom:var(--space-5);" hidden></div>
+
+          <div class="sa-hub-grid">
+            <!-- 1. Claimed Diagnostic Card -->
+            <section class="sa-card sa-hub-card" id="sa-diag-card" aria-label="Закріплена діагностика">
+              <div class="sa-hub-head">
+                <div>
+                  <h3 class="sa-hub-title">
+                    <i data-icon="radar" data-size="17"></i>
+                    <span>Закріплена діагностика</span>
+                  </h3>
+                  <p class="sa-hub-desc">Актуальний прогноз НМТ і проблемні вузли учня.</p>
+                </div>
+                <span class="sa-badge" id="sa-diag-status-badge">ПЕРЕВІРКА</span>
+              </div>
+              <div id="sa-diag-body" class="sa-stack-sm"></div>
+            </section>
+
+            <!-- 2. Mobile App Handoff Card (SVG QR + Signed Link) -->
+            <section class="sa-card sa-hub-card" id="sa-handoff-card" aria-label="Перехід у Mobile App">
+              <div class="sa-hub-head">
+                <div>
+                  <h3 class="sa-hub-title">
+                    <i data-icon="qrCode" data-size="17"></i>
+                    <span>Перехід у Mobile App (Handoff)</span>
+                  </h3>
+                  <p class="sa-hub-desc">Підписаний HMAC-токен переносить сесію, діагностику та StrictPass на телефон.</p>
+                </div>
+                <span class="sa-badge sa-badge-ok" id="sa-handoff-ttl-badge">24 ГОД</span>
+              </div>
+
+              <div class="sa-handoff-body">
+                <div class="sa-qr-frame" id="sa-handoff-qr" aria-label="QR-код переходу в мобільний додаток"></div>
+                <div class="sa-stack-sm">
+                  <span class="sa-field-label" style="margin-bottom:0;">Підписане посилання (?ht=...)</span>
+                  <input
+                    id="sa-handoff-url"
+                    type="text"
+                    class="sa-input sa-mono-input"
+                    readonly
+                    value="Генерація токена..."
+                    aria-label="Посилання для переходу в Mobile App"
+                  >
+                  <div class="sa-handoff-actions">
+                    <button type="button" id="sa-copy-handoff-btn" class="sa-btn sa-btn-secondary sa-btn-sm">
+                      <i data-icon="copy" data-size="14"></i>
+                      <span>Копіювати посилання для додатку</span>
+                    </button>
+                    <a href="../mobile-app/index.html" id="sa-open-app-link" class="sa-btn sa-btn-primary sa-btn-sm">
+                      <i data-icon="smartphone" data-size="14"></i>
+                      <span>Відкрити в Mobile App</span>
+                    </a>
+                    <button type="button" id="sa-refresh-handoff-btn" class="sa-btn sa-btn-ghost sa-btn-sm">
+                      <i data-icon="refresh" data-size="14"></i>
+                      <span>Оновити токен</span>
+                    </button>
+                  </div>
+                  <span class="sa-hub-desc" id="sa-handoff-feedback"></span>
+                </div>
+              </div>
+            </section>
+
+            <!-- 3. Parent Family Invite Code / Student Join Card -->
+            <section class="sa-card sa-hub-card" id="sa-family-card" aria-label="Сімейний код доступу">
+              <div class="sa-hub-head">
+                <div>
+                  <h3 class="sa-hub-title">
+                    <i data-icon="users" data-size="17"></i>
+                    <span id="sa-family-card-title">Сімейний код доступу</span>
+                  </h3>
+                  <p class="sa-hub-desc" id="sa-family-card-desc">Зв'яжіть акаунти батьків та учня через код SA-XXXXXX.</p>
+                </div>
+                <span class="sa-badge" id="sa-family-status-badge">НЕ ПРИВ'ЯЗАНО</span>
+              </div>
+
+              <div id="sa-family-body" class="sa-stack"></div>
+            </section>
+
+            <!-- 4. StrictPass Entitlement Card (shown when activePass exists or ?sku= is present) -->
+            <section class="sa-card sa-hub-card" id="sa-pass-card" aria-label="Статус StrictPass" hidden>
+              <div class="sa-hub-head">
+                <div>
+                  <h3 class="sa-hub-title">
+                    <i data-icon="creditCard" data-size="17"></i>
+                    <span>Доступ StrictPass</span>
+                  </h3>
+                  <p class="sa-hub-desc">Статус підписки та оформлення обраного тарифного пакета.</p>
+                </div>
+                <span class="sa-badge" id="sa-pass-badge">ОФОРМЛЕННЯ</span>
+              </div>
+              <div id="sa-pass-body" class="sa-stack"></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Collapsible Firebase Cloud JSON Config Panel -->
+        <details class="sa-card sa-firebase-details" id="sa-firebase-details">
+          <summary class="sa-firebase-summary">
+            <span class="sa-firebase-summary-left">
+              <i data-icon="sliders" data-size="16"></i>
+              <span>Налаштування хмарного Firebase JSON</span>
+            </span>
+            <span class="sa-badge" id="sa-fb-details-badge">Verified Local Vault</span>
+          </summary>
+          <div class="sa-firebase-body">
+            <p class="sa-hub-desc" style="margin:0;">
+              За замовчуванням усі дані зберігаються у локальному крипто-сховищі (IndexedDB + LocalStorage + HMAC). Щоб підключити власний проєкт Firebase v10, вставте JSON конфігурації нижче.
+            </p>
+            <div>
+              <label class="sa-field-label" for="sa-firebase-json">Firebase Config JSON</label>
+              <textarea
+                id="sa-firebase-json"
+                class="sa-input sa-textarea"
+                placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "...", "appId": "..."}'
+              ></textarea>
+            </div>
+            <div class="sa-row-actions">
+              <button type="button" id="sa-fb-save-btn" class="sa-btn sa-btn-primary sa-btn-sm">
+                <i data-icon="check" data-size="14"></i>
+                <span>Зберегти і підключити Firebase</span>
+              </button>
+              <button type="button" id="sa-fb-reset-btn" class="sa-btn sa-btn-secondary sa-btn-sm">
+                <i data-icon="refresh" data-size="14"></i>
+                <span>Скинути до Local Vault</span>
+              </button>
+            </div>
+            <div id="sa-fb-feedback" class="sa-inline-alert" hidden></div>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer id="sa-footer" class="sa-footer"></footer>
+
+  <script src="js/icons.js"></script>
+  <script src="js/strictpass-3d.js"></script>
+  <script src="js/firebase-auth-core.js"></script>
+  <script src="js/site-shell.js"></script>
+  <script src="js/site-auth.js"></script>
+</body>
+</html>

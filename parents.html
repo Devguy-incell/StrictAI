@@ -1,674 +1,985 @@
 <!DOCTYPE html>
-<html lang="uk" data-theme="dark">
+<html lang="uk" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StrictAI — Розширений батьківський контроль (Parent Control Hub)</title>
-  <meta name="description" content="Батьківський кабінет платформи StrictAI: прозорий контроль підготовки дитини до НМТ, предиктивний прогноз балів, монітор дисципліни, освітній контракт та налаштування строгості репетитора.">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
-</head>
-<body>
-
-  <!-- Global Header Navigation Rendered by StrictComponents -->
-  <header id="app-header"></header>
-
-  <!-- Focus Alert Notification Banner -->
-  <div id="focus-alert-banner" class="focus-alert-banner"></div>
-
+  <title>StrictAI — Батьківський кабінет, телеметрія та сімейний контракт</title>
+  <meta name="description" content="Контроль підготовки до НМТ без конфліктів: анти-чит телеметрія, сповіщення о 17:00 у разі пропуску, сімейний освітній контракт і 6-значний код сім'ї.">
   <script>
-    (function() {
+    (function () {
       try {
-        var h = window.location.hash || '';
-        if (h && (h.indexOf('contract') !== -1 || h.indexOf('pin') !== -1 || h.indexOf('anticheat') !== -1)) {
-          sessionStorage.setItem('strictai_parents_auth', 'true');
-          document.write('<style>#pin-auth-screen{display:none !important;}#parent-dashboard-content{display:block !important;}</style>');
-        }
-      } catch(_) {}
+        document.documentElement.dataset.theme =
+          localStorage.getItem('strictai_theme') === 'dark' ? 'dark' : 'light';
+      } catch (_err) {
+        document.documentElement.dataset.theme = 'light';
+      }
     })();
   </script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    .sa-container {
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 var(--space-5);
+      box-sizing: border-box;
+    }
 
-  <main>
-    <!-- ==================== 1. PIN-CODE AUTH SCREEN ==================== -->
-    <section id="pin-auth-screen" class="strict-container pin-auth-section" style="display: block;">
-      <div class="pin-auth-wrapper">
-        <div class="pin-auth-icon">🔒</div>
-        
-        <h1 style="font-size: 1.75rem; margin-bottom: 8px;">Батьківський контроль</h1>
-        <p style="color: var(--text-secondary); font-size: 0.92rem;">
-          Вхід захищено PIN-кодом для збереження конфіденційності налаштувань та аналітики.
-        </p>
+    .sa-section {
+      padding: var(--space-10) 0;
+    }
 
-        <!-- 4-Dot Indicators -->
-        <div class="pin-dots-row" id="pin-dots-row">
-          <div class="pin-dot-indicator" data-index="0"></div>
-          <div class="pin-dot-indicator" data-index="1"></div>
-          <div class="pin-dot-indicator" data-index="2"></div>
-          <div class="pin-dot-indicator" data-index="3"></div>
-        </div>
+    .sa-section + .sa-section {
+      border-top: 1px solid var(--border-hairline);
+    }
 
-        <!-- Tactile Keypad -->
-        <div class="pin-keypad-grid" id="pin-keypad">
-          <button type="button" class="pin-key-btn" data-key="1">1</button>
-          <button type="button" class="pin-key-btn" data-key="2">2</button>
-          <button type="button" class="pin-key-btn" data-key="3">3</button>
-          <button type="button" class="pin-key-btn" data-key="4">4</button>
-          <button type="button" class="pin-key-btn" data-key="5">5</button>
-          <button type="button" class="pin-key-btn" data-key="6">6</button>
-          <button type="button" class="pin-key-btn" data-key="7">7</button>
-          <button type="button" class="pin-key-btn" data-key="8">8</button>
-          <button type="button" class="pin-key-btn" data-key="9">9</button>
-          <button type="button" class="pin-key-btn" data-key="clear" style="font-size: 1.05rem; color: var(--text-muted);">C</button>
-          <button type="button" class="pin-key-btn" data-key="0">0</button>
-          <button type="button" class="pin-key-btn" data-key="backspace" style="font-size: 1.2rem;">⌫</button>
-        </div>
+    .sa-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-surface);
+      color: var(--ink-secondary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: var(--tracking-mono);
+      text-transform: uppercase;
+    }
 
-        <!-- Demo Hint & 1-Click Autofill -->
-        <div class="pin-demo-hint-box">
+    /* Sponsor Verified Report Banner */
+    .sa-sponsor-wrap {
+      padding-top: var(--space-6);
+    }
+
+    .sa-sponsor-banner {
+      padding: var(--space-5);
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sa-sponsor-grid {
+      display: grid;
+      grid-template-columns: 1.5fr auto;
+      gap: var(--space-5);
+      align-items: center;
+    }
+
+    .sa-sponsor-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+    }
+
+    .sa-sponsor-title {
+      margin: 0 0 var(--space-2);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: var(--tracking-tight);
+      color: var(--ink-primary);
+    }
+
+    .sa-sponsor-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      margin: var(--space-3) 0;
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+    }
+
+    .sa-sponsor-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sa-sponsor-stat strong {
+      color: var(--ink-primary);
+      font-weight: 600;
+    }
+
+    .sa-topic-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .sa-sponsor-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-2);
+    }
+
+    /* Hero */
+    .sa-hero-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.9fr;
+      gap: var(--space-8);
+      align-items: center;
+    }
+
+    .sa-hero-title {
+      margin: var(--space-4) 0 var(--space-4);
+      font-size: clamp(1.9rem, 3.6vw, 2.75rem);
+      font-weight: 700;
+      line-height: var(--leading-tight);
+      letter-spacing: var(--tracking-tight);
+      color: var(--ink-primary);
+    }
+
+    .sa-hero-lead {
+      margin: 0 0 var(--space-6);
+      max-width: 60ch;
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      color: var(--ink-secondary);
+    }
+
+    .sa-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      align-items: center;
+    }
+
+    .sa-spec-card {
+      padding: var(--space-5);
+    }
+
+    .sa-spec-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--border-hairline);
+      margin-bottom: var(--space-4);
+    }
+
+    .sa-spec-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-spec-rows {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .sa-spec-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .sa-spec-label {
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+      line-height: var(--leading-snug);
+    }
+
+    .sa-spec-label strong {
+      display: block;
+      font-size: var(--text-sm);
+      color: var(--ink-primary);
+      margin-bottom: 2px;
+    }
+
+    .sa-spec-val {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+      white-space: nowrap;
+    }
+
+    /* Section Header */
+    .sa-section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .sa-section-title {
+      margin: var(--space-2) 0 0;
+      font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+      font-weight: 600;
+      line-height: var(--leading-snug);
+      letter-spacing: var(--tracking-tight);
+      color: var(--ink-primary);
+    }
+
+    .sa-section-sub {
+      margin: var(--space-2) 0 0;
+      max-width: 62ch;
+      font-size: var(--text-sm);
+      line-height: var(--leading-normal);
+      color: var(--ink-secondary);
+    }
+
+    /* Anti-Cheat & 17:00 Simulator */
+    .sa-sim-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.15fr;
+      gap: var(--space-6);
+      align-items: stretch;
+    }
+
+    .sa-sim-controls,
+    .sa-sim-console {
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .sa-sim-btn-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .sa-sim-trigger {
+      width: 100%;
+      justify-content: flex-start;
+      text-align: left;
+      min-height: 52px;
+      padding: var(--space-3) var(--space-4);
+      white-space: normal;
+      line-height: var(--leading-snug);
+    }
+
+    .sa-sim-trigger-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      width: 100%;
+    }
+
+    .sa-sim-trigger-text {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .sa-sim-trigger-sub {
+      display: block;
+      font-size: var(--text-xs);
+      font-weight: 400;
+      color: var(--ink-muted);
+      margin-top: 2px;
+    }
+
+    .sa-sim-divider {
+      height: 1px;
+      background-color: var(--border-hairline);
+      margin: var(--space-1) 0;
+    }
+
+    .sa-trust-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .sa-trust-score-val {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .sa-meter-track {
+      width: 100%;
+      height: 8px;
+      border-radius: var(--radius-pill);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      overflow: hidden;
+    }
+
+    .sa-meter-fill {
+      height: 100%;
+      width: 100%;
+      border-radius: var(--radius-pill);
+      background-color: var(--status-ok);
+      transition: width 260ms var(--ease-out), background-color 220ms var(--ease-out);
+    }
+
+    .sa-telemetry-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-2);
+    }
+
+    .sa-metric-cell {
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .sa-metric-label {
+      display: block;
+      font-size: 11px;
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-mono);
+    }
+
+    .sa-metric-value {
+      display: block;
+      margin-top: 4px;
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-alert-panel {
+      padding: var(--space-4);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-subtle);
+      font-size: var(--text-sm);
+    }
+
+    .sa-alert-panel.is-warn {
+      background-color: var(--status-warn-bg);
+      border-color: var(--status-warn-border);
+    }
+
+    .sa-alert-panel.is-danger {
+      background-color: var(--status-danger-bg);
+      border-color: var(--status-danger-border);
+    }
+
+    .sa-alert-panel.is-ok {
+      background-color: var(--status-ok-bg);
+      border-color: var(--status-ok-border);
+    }
+
+    .sa-alert-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-alert-body {
+      margin: 0;
+      font-size: var(--text-xs);
+      line-height: var(--leading-normal);
+      color: var(--ink-secondary);
+    }
+
+    .sa-alert-actions {
+      margin-top: var(--space-3);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    .sa-feed-box {
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-canvas);
+      padding: var(--space-3);
+      max-height: 240px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .sa-feed-entry {
+      padding: 6px 8px;
+      border-radius: var(--radius-xs);
+      border-left: 2px solid var(--border-strong);
+      margin-bottom: 6px;
+      background-color: var(--bg-surface);
+    }
+
+    .sa-feed-entry:last-child {
+      margin-bottom: 0;
+    }
+
+    .sa-feed-entry.is-danger {
+      border-left-color: var(--status-danger);
+    }
+
+    .sa-feed-entry.is-warn {
+      border-left-color: var(--status-warn);
+    }
+
+    .sa-feed-entry.is-ok {
+      border-left-color: var(--status-ok);
+    }
+
+    .sa-feed-head {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-2);
+      color: var(--ink-muted);
+      font-size: 11px;
+    }
+
+    .sa-feed-msg {
+      color: var(--ink-primary);
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    /* Contract Configurator */
+    .sa-contract-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+
+    .sa-contract-form,
+    .sa-contract-summary {
+      padding: var(--space-5);
+      min-width: 0;
+    }
+
+    .sa-control-group {
+      margin-bottom: var(--space-5);
+    }
+
+    .sa-control-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .sa-control-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+
+    .sa-control-label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-range {
+      width: 100%;
+      accent-color: var(--accent-ink);
+      cursor: pointer;
+      height: 6px;
+    }
+
+    .sa-range-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+
+    .sa-checkbox-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-subtle);
+      cursor: pointer;
+    }
+
+    .sa-checkbox-card input {
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent-ink);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .sa-checkbox-title {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-checkbox-desc {
+      display: block;
+      margin-top: 2px;
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+      line-height: var(--leading-normal);
+    }
+
+    .sa-contract-doc-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--border-hairline);
+      margin-bottom: var(--space-4);
+    }
+
+    .sa-contract-rows {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+
+    .sa-contract-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2) var(--space-3);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px dashed var(--border-hairline);
+      font-size: var(--text-sm);
+    }
+
+    .sa-contract-row-key {
+      color: var(--ink-secondary);
+    }
+
+    .sa-contract-row-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--ink-primary);
+      text-align: right;
+    }
+
+    .sa-contract-footer {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .sa-draft-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-xs);
+      color: var(--ink-secondary);
+    }
+
+    @media (max-width: 900px) {
+      .sa-sponsor-grid,
+      .sa-hero-grid,
+      .sa-sim-grid,
+      .sa-contract-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sa-sim-controls,
+      .sa-sim-console {
+        min-width: 0;
+      }
+
+      .sa-sponsor-actions {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .sa-telemetry-metrics {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      #sa-checkin-group.sa-segmented {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body data-page="parents">
+  <header id="sa-header" class="sa-header"></header>
+
+  <main class="sa-main">
+    <!-- Verified Sponsor Link Report Banner (populated dynamically when ?sponsor=... is present) -->
+    <section id="sa-sponsor-wrap" class="sa-sponsor-wrap" hidden aria-live="polite">
+      <div class="sa-container">
+        <div id="sa-sponsor-banner" class="sa-card sa-sponsor-banner"></div>
+      </div>
+    </section>
+
+    <!-- Hero -->
+    <section class="sa-section">
+      <div class="sa-container">
+        <div class="sa-hero-grid">
           <div>
-            <div style="font-weight: 700; color: var(--accent-primary);">Демо-доступ для перевірки:</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">За замовчуванням PIN: <strong>1234</strong></div>
+            <span class="sa-eyebrow">
+              <i data-icon="shieldCheck" data-size="14"></i>
+              <span>Протокол батьківського нагляду</span>
+            </span>
+            <h1 class="sa-hero-title">Контроль підготовки без сварок і списування.</h1>
+            <p class="sa-hero-lead">
+              StrictAI не дає готових відповідей, фіксує кожну спробу обходу та надсилає підтверджений звіт про реальні хвилини роботи щодня о 17:00. Ви бачите факти, а не виправдання.
+            </p>
+            <div class="sa-hero-actions">
+              <a href="auth.html?intent=parent_hub&role=parent" class="sa-btn sa-btn-primary sa-btn-lg">
+                <i data-icon="key" data-size="18"></i>
+                <span>Створити кабінет батьків і код сім'ї</span>
+              </a>
+              <a href="strictpass.html" class="sa-btn sa-btn-secondary sa-btn-lg">
+                <i data-icon="creditCard" data-size="18"></i>
+                <span>Тарифи StrictPass</span>
+              </a>
+            </div>
           </div>
-          <button type="button" class="btn btn-primary btn-sm" id="pin-autofill-btn" style="padding: 6px 14px; font-size: 0.82rem;">
-            ⚡ Ввести 1234
-          </button>
+
+          <aside class="sa-card sa-spec-card" aria-label="Ключові параметри контролю">
+            <div class="sa-spec-head">
+              <span class="sa-spec-title">Апаратні гарантії сесії</span>
+              <span class="sa-badge sa-badge-ok">
+                <i data-icon="shield" data-size="12"></i>
+                <span>ZERO-SPOILER</span>
+              </span>
+            </div>
+            <div class="sa-spec-rows">
+              <div class="sa-spec-row">
+                <div class="sa-spec-label">
+                  <strong>Прямі відповіді у діалозі</strong>
+                  Сократичний двигун приймає лише власне міркування учня
+                </div>
+                <span class="sa-spec-val">0%</span>
+              </div>
+              <div class="sa-spec-row">
+                <div class="sa-spec-label">
+                  <strong>Щоденна перевірка дисципліни</strong>
+                  Дайджест активності або сигнал пропуску о 17:05
+                </div>
+                <span class="sa-spec-val">17:00</span>
+              </div>
+              <div class="sa-spec-row">
+                <div class="sa-spec-label">
+                  <strong>Сімейний код та PIN-замок</strong>
+                  Унікальний код SA-XXXXXX і хешований PIN батьків
+                </div>
+                <span class="sa-spec-val">SHA-256</span>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 2. MAIN PARENT DASHBOARD ==================== -->
-    <section id="parent-dashboard-content" class="strict-container" style="display: none; padding-bottom: 60px;">
-      
-      <!-- Top Dashboard Header Bar -->
-      <div class="parent-dashboard-header">
-        <div>
-          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-full); color: var(--accent-success); font-size: 0.84rem; font-weight: 700; margin-bottom: 8px;">
-            <span>🛡️</span>
-            <span>Авторизовано • Батьківський кабінет</span>
-          </div>
-          <h1 style="font-size: 2.1rem; margin-bottom: 4px;">Аналітичний дашборд успішності</h1>
-          <p style="color: var(--text-secondary); font-size: 0.98rem;">
-            Об'єктивна картина підготовки без гіперопіки та сварок: прогрес за темами НМТ, час фокусу та спільний освітній контракт.
-          </p>
-        </div>
-
-        <!-- Student Profile Chip & Actions -->
-        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-          <div class="parent-student-chip">
-            <span style="font-size: 1.5rem;">👨‍🎓</span>
-            <div>
-              <div style="font-weight: 700; font-size: 0.92rem;" id="dash-student-name">Олександр Коваленко</div>
-              <div style="font-size: 0.78rem; color: var(--text-muted);" id="dash-student-grade">11 клас • Випускник НМТ</div>
-            </div>
-          </div>
-
-          <button type="button" class="btn btn-outline btn-sm" id="change-pin-btn" title="Змінити PIN-код доступу">
-            🔑 Змінити PIN
-          </button>
-
-          <button type="button" class="btn btn-secondary btn-sm" id="lock-dashboard-btn" title="Заблокувати кабінет та вийти">
-            🔒 Вийти
-          </button>
-        </div>
-      </div>
-
-      <!-- Bento Grid 1: Analytics & Anti-Cheat Guardian (2 Cards) -->
-      <div class="bento-grid" style="margin-bottom: 24px;">
-        
-        <!-- CARD 1: NMT Readiness & Prediction -->
-        <div class="bento-card bento-col-4">
-          <div class="bento-header">
-            <div>
-              <span class="bento-badge orange">Предиктивний прогноз</span>
-              <h2 style="font-size: 1.25rem; margin-top: 6px;">Готовність до НМТ 2025</h2>
-            </div>
-            <div style="font-size: 1.6rem;">🎓</div>
-          </div>
-
-          <div style="display: flex; align-items: baseline; gap: 8px; margin: 12px 0 6px;">
-            <span style="font-size: 3.2rem; font-weight: 800; font-family: var(--font-mono); color: var(--accent-primary); line-height: 1;" id="predicted-score-total">
-              174
-            </span>
-            <span style="font-size: 1.2rem; color: var(--text-muted); font-weight: 700;">/ 200 балів</span>
-          </div>
-
-          <!-- Target University Comparison -->
-          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 18px;">
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px;">Обрана мета вступу:</div>
-            <div style="font-weight: 700; font-size: 0.92rem;" id="target-uni-text">КПІ ім. Ігоря Сікорського (ПЗ)</div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 0.82rem;">
-              <span>Прохідний бал: <strong>184</strong></span>
-              <span class="bento-badge orange" style="font-size: 0.76rem; padding: 2px 8px;">Дельта: -10 б.</span>
-            </div>
-          </div>
-
-          <!-- Subject Progress Bars -->
-          <div style="font-weight: 700; font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 8px;">
-            Прогноз за предметами:
-          </div>
-          <div class="nmt-subject-list" id="nmt-subjects-bars">
-            <!-- Rendered by parents.js -->
-          </div>
-        </div>
-
-        <!-- CARD 2: Anti-Cheat Monitoring & Behavioral Biometrics Panel -->
-        <div class="bento-card bento-col-8" id="anticheat-monitoring">
-          <div class="bento-header">
-            <div>
-              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <span class="bento-badge purple">Anti-Cheat Guardian</span>
-                <span class="bento-badge green">Trust Score: 98%</span>
-                <span class="bento-badge blue">НМТ-Стандарт УЦОЯО</span>
-              </div>
-              <h2 style="font-size: 1.35rem; margin-top: 8px; display: flex; align-items: center; gap: 8px;">
-                <span>🛡️</span>
-                <span>Анти-чит моніторинг та поведінкова біометрія</span>
-              </h2>
-            </div>
-            <div style="text-align: right;">
-              <span class="bento-badge green" style="padding: 4px 10px; font-size: 0.82rem; font-weight: 700;">
-                ● Моніторинг активний
-              </span>
-            </div>
-          </div>
-
-          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">
-            Комплексна телеметрія самостійності учня: перевірка фокусу вікна, апаратних подій клавіатури, спроб копіювання запитань у сторонні боти та поведінкової біометрії під час виконання завдань.
-          </p>
-
-          <!-- 4-Grid Telemetry Cards -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 16px;">
-            
-            <!-- Metric 1: Tab Blur / Switches -->
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Втрата фокусу (Tab Blur):</span>
-                <span class="bento-badge orange" style="font-size: 0.7rem; padding: 1px 6px;">Норма</span>
-              </div>
-              <div style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-mono); color: var(--accent-warning);" id="parent-tab-switches-text">
-                2 з 3
-              </div>
-              <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;">
-                Перемикань сьогодні. Ліміт не перевищено.
-              </div>
-            </div>
-
-            <!-- Metric 2: Copy attempts (Ctrl+C / Clipboard Lock) -->
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Спроби копіювання (Ctrl+C):</span>
-                <span class="bento-badge green" style="font-size: 0.7rem; padding: 1px 6px;">0 порушень</span>
-              </div>
-              <div style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-mono); color: var(--accent-success);" id="parent-clipboard-attempts">
-                0 спроб
-              </div>
-              <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;">
-                Буфер обміну захищено від зливу завдань у боти.
-              </div>
-            </div>
-
-            <!-- Metric 3: DOM Extension Shield -->
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">DOM Extension Shield:</span>
-                <span class="bento-badge blue" style="font-size: 0.7rem; padding: 1px 6px;">Чисто</span>
-              </div>
-              <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 6px 0 2px;" id="parent-dom-shield-status">
-                Monica / Sider не виявлено
-              </div>
-              <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;">
-                ШІ-розширення та авто-підказчики заблоковані.
-              </div>
-            </div>
-
-            <!-- Metric 4: Biometrics Trust Score -->
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Biometrics Trust Score:</span>
-                <span class="bento-badge green" style="font-size: 0.7rem; padding: 1px 6px;">Максимальний</span>
-              </div>
-              <div style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-mono); color: var(--accent-success);" id="parent-biometrics-trust-score">
-                98%
-              </div>
-              <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;">
-                Динаміка клавіатурного почерку та трекінг миші.
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Micro-Verifications Row & Focus Timeline -->
-          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 16px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-weight: 700; font-size: 0.88rem;">20-секундні мікро-верифікації активності:</span>
-                <span class="bento-badge green" style="font-size: 0.72rem; padding: 2px 8px;" id="parent-micro-checks-badge">28 / 28 пройдено</span>
-              </div>
-              <span style="font-size: 0.78rem; color: var(--text-muted);">Інтервал: кожні 20 сек (0% відхилень уваги)</span>
-            </div>
-
-            <!-- Visual Dots Strip -->
-            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 6px;" id="biometric-dots-strip">
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block; box-shadow: 0 0 6px var(--accent-success);" title="Верифіковано 20с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 40с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 60с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 80с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 100с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 120с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 140с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 160с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 180с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 200с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 220с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 240с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block;" title="Верифіковано 260с тому"></span>
-              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); display: inline-block; animation: pulse 2s infinite;" title="Верифіковано щойно"></span>
-              <span style="font-size: 0.78rem; font-weight: 700; color: var(--accent-success); margin-left: 6px;">100% жива присутність</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- BENTO CARD: AI Diagnosis - Weak Topics & Assigned Lectures (2 Tabs) -->
-      <div class="bento-card" style="margin-bottom: 28px;" id="ai-diagnosis-lectures-card">
-        <div class="bento-header" style="flex-wrap: wrap; gap: 14px; margin-bottom: 16px;">
+    <!-- Interactive Anti-Cheat & 17:00 Missed-Lesson Simulator -->
+    <section class="sa-section" id="simulator">
+      <div class="sa-container">
+        <div class="sa-section-head">
           <div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span class="bento-badge blue">ШІ-Діагностика</span>
-              <span class="bento-badge orange">Керування лекціями</span>
-            </div>
-            <h2 style="font-size: 1.35rem; margin-top: 6px;">ШІ-Діагностика — Слабкі теми та Призначені лекції</h2>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 4px; margin-bottom: 0;">
-              ШІ виявляє критичні прогалини в знаннях дитини. Батьки можуть призначати обов'язкові індивідуальні лекції з Пандою та контролювати їх виконання.
+            <span class="sa-eyebrow">
+              <i data-icon="activity" data-size="14"></i>
+              <span>Інтерактивна симуляція</span>
+            </span>
+            <h2 class="sa-section-title">Анти-чит телеметрія та алерт пропуску о 17:00</h2>
+            <p class="sa-section-sub">
+              Натисніть сценарій нижче, щоб перевірити, як система реагує на вставку тексту з ChatGPT, втрату фокусу вкладки або пропущене щоденне заняття.
             </p>
           </div>
-
-          <!-- Tabs Switcher -->
-          <div class="diagnosis-tabs-nav" style="display: inline-flex; gap: 6px; background: var(--bg-surface-elevated); padding: 5px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-            <button type="button" class="btn btn-sm diagnosis-tab-btn active" id="tab-btn-weak-topics" style="border-radius: var(--radius-sm); font-size: 0.86rem; font-weight: 700; padding: 7px 16px;">
-              🔍 Слабкі теми (<span id="weak-topics-count">3</span>)
-            </button>
-            <button type="button" class="btn btn-sm diagnosis-tab-btn" id="tab-btn-assigned-lectures" style="border-radius: var(--radius-sm); font-size: 0.86rem; font-weight: 700; padding: 7px 16px;">
-              📋 Призначені лекції (<span id="assigned-lectures-count">2</span>)
-            </button>
-          </div>
+          <button type="button" id="sa-sim-reset" class="sa-btn sa-btn-secondary sa-btn-sm">
+            <i data-icon="refresh" data-size="14"></i>
+            <span>Скинути телеметрію (100%)</span>
+          </button>
         </div>
 
-        <!-- TAB 1: Weak Topics Pane -->
-        <div id="tab-pane-weak-topics" class="diagnosis-tab-pane" style="display: block;">
-          <div id="weak-topics-container" style="display: flex; flex-direction: column; gap: 12px;">
-            <!-- Rendered by parents.js -->
-          </div>
-        </div>
-
-        <!-- TAB 2: Assigned Lectures Pane -->
-        <div id="tab-pane-assigned-lectures" class="diagnosis-tab-pane" style="display: none;">
-          <div id="assigned-lectures-container" style="display: flex; flex-direction: column; gap: 12px;">
-            <!-- Rendered by parents.js -->
-          </div>
-        </div>
-      </div>
-
-      <!-- ==================== MOM OLENA: Schedule Control & Missed Lesson Alerts ==================== -->
-      <div class="bento-card" style="margin-bottom: 28px; background: linear-gradient(135deg, rgba(242, 153, 74, 0.08) 0%, rgba(200, 182, 226, 0.08) 100%); border: 1px solid rgba(242, 153, 74, 0.35); padding: 24px 28px;">
-        <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
-          <div style="max-width: 760px;">
-            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: rgba(242, 153, 74, 0.2); border: 1px solid rgba(242, 153, 74, 0.4); border-radius: var(--radius-full); color: var(--accent-primary); font-size: 0.82rem; font-weight: 700; margin-bottom: 8px;">
-              <span>👩‍👦</span>
-              <span>Батьківська турбота • Для мами Олени</span>
-            </div>
-            <h2 style="font-size: 1.45rem; margin: 4px 0 10px; display: flex; align-items: center; gap: 10px;">
-              <span>🔔</span>
-              <span>Контроль розкладу та сповіщення про пропуск уроку</span>
-            </h2>
-            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 12px;">
-              Якщо дитина не розпочне запланований урок у вказаний час (наприклад, 17:00), система автоматично надішле звукове та Push/Telegram-сповіщення батькам і збереже запис у журналі.
-            </p>
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.84rem; color: var(--text-muted);">
-              <span>⏰ Запланований час: <strong style="color: var(--text-primary);">17:00 щодня</strong></span>
-              <span>👤 Учень: <strong style="color: var(--text-primary);">Антон</strong></span>
-              <span>📢 Канали: <strong style="color: var(--accent-success);">Звук у динаміках + Push + Telegram</strong></span>
-            </div>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 8px; align-self: center;">
-            <button type="button" class="btn btn-secondary strict-btn strict-btn-secondary" onclick="if(window.StrictNotifications) window.StrictNotifications.triggerMissedLessonAlert({subject: 'Англійська мова (B1)', scheduledTime: '17:00', studentName: 'Антон'})" style="padding: 12px 20px; font-weight: 700; font-size: 0.92rem; box-shadow: 0 4px 14px rgba(242, 153, 74, 0.15); display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
-              ⚡ Протестувати сповіщення про пропуск уроку
-            </button>
-            <span style="font-size: 0.76rem; color: var(--text-muted); text-align: center;">Миттєва перевірка сигналу та спливаючого вікна</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bento Grid 2: Strictness Controls & Educational Contract -->
-      <div class="bento-grid">
-        
-        <!-- MODULE: Strictness & Parental Controls -->
-        <div class="bento-card bento-col-6" id="anticheat-monitoring">
-          <div class="bento-header">
+        <div class="sa-sim-grid">
+          <div class="sa-card sa-sim-controls">
             <div>
-              <span class="bento-badge orange">Дисципліна & Налаштування</span>
-              <h2 style="font-size: 1.35rem; margin-top: 6px;">Панель контролю строгості</h2>
-            </div>
-            <div style="font-size: 1.6rem;">🎛️</div>
-          </div>
-
-          <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 20px;">
-            Керуйте параметрами нагляду за дитиною. Зміни застосовуються миттєво для всіх модулів платформи.
-          </p>
-
-          <!-- Toggle 1: Forced Strict Teacher Persona -->
-          <div class="strict-toggle-row">
-            <div style="flex: 1;">
-              <div style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
-                <span>🔒 Примусовий режим «Суворий викладач»</span>
-                <span class="bento-badge orange" style="font-size: 0.72rem; padding: 2px 6px;">Рекомендовано</span>
-              </div>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">
-                Блокує можливість дитини змінити характер репетитора на занадто м'який або жартівливий перед НМТ.
-              </div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="toggle-strict-lock">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <!-- Slider 1: Daily Study Norm (30 - 180 min) -->
-          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 14px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-weight: 700; font-size: 0.94rem;">Денна норма фокусу:</span>
-              <span style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-primary); font-size: 1.1rem;" id="slider-goal-value">
-                90 хв / день
-              </span>
-            </div>
-            <input type="range" id="slider-daily-goal" class="form-range" min="30" max="180" step="15" value="90">
-            <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); margin-top: 6px;">
-              <span>30 хв (мінімум)</span>
-              <span>90 хв (стандарт)</span>
-              <span>180 хв (інтенсив)</span>
-            </div>
-          </div>
-
-          <!-- Slider 2: Max Allowed Tab Switches (1 - 10) -->
-          <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 14px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-weight: 700; font-size: 0.94rem;">Ліміт відволікань вкладки під час сесії:</span>
-              <span style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-warning); font-size: 1.1rem;" id="slider-switches-value">
-                3 рази
-              </span>
-            </div>
-            <input type="range" id="slider-max-switches" class="form-range" min="1" max="10" step="1" value="3">
-            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 6px;">
-              При перевищенні ліміту Панда активує звукове попередження та відправляє сповіщення батькам.
-            </div>
-          </div>
-
-          <!-- Toggle 2: Sound Warning Alert -->
-          <div class="strict-toggle-row">
-            <div style="flex: 1;">
-              <div style="font-weight: 700; font-size: 0.95rem;">
-                🔊 Звуковий сигнал при втраті фокусу
-              </div>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
-                Гучний попереджувальний сигнал через динаміки, якщо дитина відкриває YouTube або ігри під час уроку.
-              </div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="toggle-sound-alert" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <!-- Toggle 3: Telegram Weekly Digest -->
-          <div class="strict-toggle-row">
-            <div style="flex: 1;">
-              <div style="font-weight: 700; font-size: 0.95rem;">
-                📱 Щотижневі дайджести в Telegram
-              </div>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">
-                Щонеділі о 20:00 бот надсилає структурований звіт про бали, хвилини фокусу та теми, що потребують уваги.
-              </div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="toggle-telegram-notify" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <!-- Preview Weekly Report Button -->
-          <div style="margin-top: 18px;">
-            <button type="button" class="btn btn-secondary" id="preview-weekly-report-btn" style="width: 100%;">
-              <span>📨</span>
-              <span>Переглянути приклад тижневого звіту для батьків</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- MODULE: Educational Contract (Motivation System) -->
-        <div class="bento-card bento-col-6" id="educational-contract">
-          <a id="contract" style="position: absolute; top: -10px; left: 0; visibility: hidden;"></a>
-          <div class="bento-header">
-            <div>
-              <span class="bento-badge green">Система домовленостей</span>
-              <h2 style="font-size: 1.35rem; margin-top: 6px;">Освітній контракт</h2>
-            </div>
-            <div style="font-size: 1.6rem;">🤝</div>
-          </div>
-
-          <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 16px;">
-            Контракт замінює моралізаторство прозорою угодою: ви фіксуєте мету та бажану винагороду дитини, а StrictAI фіксує прогрес виконання.
-          </p>
-
-          <div class="contract-form-box">
-            <div class="form-group" style="margin-bottom: 14px;">
-              <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Назва контракту / Спринт:</label>
-              <input type="text" id="contract-title-input" class="form-input" value="Тижневий спринт підготовки до НМТ 2025">
+              <strong class="sa-spec-title">Сценарії перевірки системи</strong>
+              <p class="sa-section-sub" style="margin-top:4px;">Кожна подія записується з міткою часу та змінює Trust Score.</p>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
-              <div class="form-group">
-                <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Ціль фокусу (хв/тиждень):</label>
-                <input type="number" id="contract-target-mins" class="form-input" value="450" min="100" max="2000" step="50">
-              </div>
-              <div class="form-group">
-                <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Цільовий сер. бал НМТ:</label>
-                <input type="number" id="contract-target-score" class="form-input" value="175" min="100" max="200">
-              </div>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 18px;">
-              <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">🎁 Винагорода від батьків за виконання:</label>
-              <input type="text" id="contract-reward-input" class="form-input" value="Нова гра у Steam або похід у кіно з друзями на вихідних">
-            </div>
-
-            <!-- Current Progress Visualization -->
-            <div class="contract-progress-box">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-weight: 700; font-size: 0.9rem;">Поточний прогрес виконання:</span>
-                <span style="font-family: var(--font-mono); font-weight: 800; color: var(--accent-primary); font-size: 1.1rem;" id="contract-progress-text">
-                  78% (351 / 450 хв)
+            <div class="sa-sim-btn-list">
+              <button type="button" class="sa-btn sa-btn-secondary sa-sim-trigger" data-sim-action="paste">
+                <span class="sa-sim-trigger-inner">
+                  <span class="sa-sim-trigger-text">
+                    <i data-icon="shield" data-size="18"></i>
+                    <span>
+                      <strong>Спроба вставки з ChatGPT (Copy/Paste)</strong>
+                      <span class="sa-sim-trigger-sub">Знижує Trust Score до 64% та блокує розкриття відповіді</span>
+                    </span>
+                  </span>
+                  <i data-icon="chevronRight" data-size="16"></i>
                 </span>
-              </div>
-              <div style="height: 12px; background: var(--bg-surface); border-radius: var(--radius-full); overflow: hidden; border: 1px solid var(--border-subtle);">
-                <div id="contract-progress-fill" style="width: 78%; height: 100%; background: var(--accent-gradient); transition: width 0.8s ease;"></div>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
-                <span>Статус: <strong>Впевнений темп</strong></span>
-                <span>Залишилося: <strong>99 хв до неділі</strong></span>
-              </div>
-            </div>
+              </button>
 
-            <div style="margin-top: 20px;">
-              <button type="button" class="btn btn-primary" id="save-contract-btn" style="width: 100%;">
-                <span>💾</span>
-                <span>Зберегти умови контракту</span>
+              <button type="button" class="sa-btn sa-btn-secondary sa-sim-trigger" data-sim-action="blur">
+                <span class="sa-sim-trigger-inner">
+                  <span class="sa-sim-trigger-text">
+                    <i data-icon="eyeOff" data-size="18"></i>
+                    <span>
+                      <strong>Вихід з вікна / перемикання вкладки</strong>
+                      <span class="sa-sim-trigger-sub">Збільшує лічильник Tab Blur і активує попередження фокусу</span>
+                    </span>
+                  </span>
+                  <i data-icon="chevronRight" data-size="16"></i>
+                </span>
+              </button>
+
+              <button type="button" class="sa-btn sa-btn-secondary sa-sim-trigger" data-sim-action="missed">
+                <span class="sa-sim-trigger-inner">
+                  <span class="sa-sim-trigger-text">
+                    <i data-icon="clock" data-size="18"></i>
+                    <span>
+                      <strong>Пропуск заняття о 17:00 (Daily Digest)</strong>
+                      <span class="sa-sim-trigger-sub">Імітує сповіщення батькам о 17:05 із перенесенням в 1 клік</span>
+                    </span>
+                  </span>
+                  <i data-icon="chevronRight" data-size="16"></i>
+                </span>
               </button>
             </div>
+
+            <div class="sa-sim-divider"></div>
+
+            <div class="sa-alert-panel" id="sa-sim-lock-state">
+              <div class="sa-alert-top">
+                <span>Стан відповіді та буфера</span>
+                <span class="sa-badge sa-badge-ok" id="sa-answer-badge">КОНТРОЛЬ АКТИВНИЙ</span>
+              </div>
+              <p class="sa-alert-body" id="sa-answer-desc">
+                Телеметрія в нормі. Учень розв'язує завдання самостійно, прямі підказки без кроків вимкнено.
+              </p>
+            </div>
+          </div>
+
+          <div class="sa-card sa-sim-console" aria-live="polite">
+            <div class="sa-trust-header">
+              <div>
+                <span class="sa-metric-label">Session Trust Score</span>
+                <div class="sa-trust-score-val sa-num" id="sa-trust-value">100%</div>
+              </div>
+              <span class="sa-badge sa-badge-ok" id="sa-trust-badge">ВЕРИФІКОВАНО</span>
+            </div>
+
+            <div class="sa-meter-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" id="sa-trust-bar-wrap">
+              <div class="sa-meter-fill" id="sa-trust-bar"></div>
+            </div>
+
+            <div class="sa-telemetry-metrics">
+              <div class="sa-metric-cell">
+                <span class="sa-metric-label">Tab Blur</span>
+                <span class="sa-metric-value sa-num" id="sa-blur-count">0</span>
+              </div>
+              <div class="sa-metric-cell">
+                <span class="sa-metric-label">Paste Intercepts</span>
+                <span class="sa-metric-value sa-num" id="sa-paste-count">0</span>
+              </div>
+              <div class="sa-metric-cell">
+                <span class="sa-metric-label">Daily Digest</span>
+                <span class="sa-metric-value" id="sa-digest-status">17:00 OK</span>
+              </div>
+            </div>
+
+            <div class="sa-alert-panel" id="sa-digest-alert">
+              <div class="sa-alert-top">
+                <span>Канал батьківського дайджесту (17:05)</span>
+                <span class="sa-badge" id="sa-digest-badge">ОЧІКУВАННЯ</span>
+              </div>
+              <p class="sa-alert-body" id="sa-digest-body">
+                Щодня о 17:05 формується звіт: виконані теми, реальні хвилини концентрації та пропозиція перенесення при пропуску.
+              </p>
+              <div class="sa-alert-actions" id="sa-digest-actions" hidden>
+                <button type="button" class="sa-btn sa-btn-primary sa-btn-sm" id="sa-reschedule-btn">
+                  <i data-icon="send" data-size="14"></i>
+                  <span>Перенести заняття на 19:30 (1-tap)</span>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <div class="sa-control-label-row" style="margin-bottom:6px;">
+                <span class="sa-metric-label">Журнал телеметрії (Live Monospace Stream)</span>
+                <span class="sa-metric-label" id="sa-log-count">1 подія</span>
+              </div>
+              <div class="sa-feed-box" id="sa-telemetry-feed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Weekly Educational Contract Configurator -->
+    <section class="sa-section" id="contract">
+      <div class="sa-container">
+        <div class="sa-section-head">
+          <div>
+            <span class="sa-eyebrow">
+              <i data-icon="sliders" data-size="14"></i>
+              <span>Тижневий контракт</span>
+            </span>
+            <h2 class="sa-section-title">Налаштуйте сімейний освітній контракт</h2>
+            <p class="sa-section-sub">
+              Умови зберігаються автоматично. Коли ви перейдете до створення кабінету батьків, система підтягне цей контракт у ваш код сім'ї.
+            </p>
           </div>
         </div>
 
-      </div>
+        <div class="sa-contract-grid">
+          <div class="sa-card sa-contract-form">
+            <div class="sa-control-group">
+              <div class="sa-control-label-row">
+                <label class="sa-control-label" for="sa-contract-minutes">Щоденна норма занять</label>
+                <span class="sa-badge sa-badge-ink sa-num" id="sa-minutes-badge">25 хв/день</span>
+              </div>
+              <input
+                id="sa-contract-minutes"
+                class="sa-range"
+                type="range"
+                min="15"
+                max="60"
+                step="5"
+                value="25"
+              >
+              <div class="sa-range-scale">
+                <span>15 хв</span>
+                <span>30 хв</span>
+                <span>45 хв</span>
+                <span>60 хв</span>
+              </div>
+            </div>
 
+            <div class="sa-control-group">
+              <div class="sa-control-label-row">
+                <label class="sa-control-label" for="sa-contract-score">Цільовий бал НМТ</label>
+                <span class="sa-badge sa-badge-ink sa-num" id="sa-score-badge">175 / 200</span>
+              </div>
+              <input
+                id="sa-contract-score"
+                class="sa-range"
+                type="range"
+                min="140"
+                max="200"
+                step="1"
+                value="175"
+              >
+              <div class="sa-range-scale">
+                <span>140</span>
+                <span>160</span>
+                <span>180</span>
+                <span>200</span>
+              </div>
+            </div>
+
+            <div class="sa-control-group">
+              <label class="sa-checkbox-card" for="sa-contract-socratic">
+                <input type="checkbox" id="sa-contract-socratic" checked>
+                <span>
+                  <span class="sa-checkbox-title">Заборонити прямі відповіді — лише покрокові підказки</span>
+                  <span class="sa-checkbox-desc">
+                    Жорстке блокування Strict Socratic Persona: асистент вимагає проміжні кроки та формулу перед переходом далі.
+                  </span>
+                </span>
+              </label>
+            </div>
+
+            <div class="sa-control-group">
+              <div class="sa-control-label-row">
+                <span class="sa-control-label">Час щоденної перевірки та звіту</span>
+                <span class="sa-badge sa-num" id="sa-checkin-badge">17:00</span>
+              </div>
+              <div class="sa-segmented" role="group" aria-label="Час щоденної перевірки" id="sa-checkin-group">
+                <button type="button" data-time="16:00" aria-pressed="false">16:00</button>
+                <button type="button" data-time="17:00" aria-pressed="true" class="is-active">17:00</button>
+                <button type="button" data-time="18:30" aria-pressed="false">18:30</button>
+                <button type="button" data-time="20:00" aria-pressed="false">20:00</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sa-card sa-contract-summary">
+            <div class="sa-contract-doc-head">
+              <div>
+                <span class="sa-metric-label">Генератор умов</span>
+                <h3 style="margin:4px 0 0;font-size:var(--text-lg);font-weight:600;">Сімейний контракт</h3>
+              </div>
+              <span class="sa-badge sa-badge-ok" id="sa-contract-status-badge">
+                <i data-icon="checkCircle" data-size="12"></i>
+                <span>ЧЕРНЕТКУ ЗБЕРЕЖЕНО</span>
+              </span>
+            </div>
+
+            <div class="sa-contract-rows" id="sa-contract-preview">
+              <div class="sa-contract-row">
+                <span class="sa-contract-row-key">Денний фокус-ліміт</span>
+                <span class="sa-contract-row-val" id="sa-summary-daily">25 хв/день</span>
+              </div>
+              <div class="sa-contract-row">
+                <span class="sa-contract-row-key">Тижневий обсяг</span>
+                <span class="sa-contract-row-val" id="sa-summary-weekly">175 хв/тиждень</span>
+              </div>
+              <div class="sa-contract-row">
+                <span class="sa-contract-row-key">Цільовий бал НМТ</span>
+                <span class="sa-contract-row-val" id="sa-summary-score">175 (Конкурентний)</span>
+              </div>
+              <div class="sa-contract-row">
+                <span class="sa-contract-row-key">Strict Socratic Lock</span>
+                <span class="sa-contract-row-val" id="sa-summary-socratic">УВІМКНЕНО</span>
+              </div>
+              <div class="sa-contract-row">
+                <span class="sa-contract-row-key">Щоденний звіт батькам</span>
+                <span class="sa-contract-row-val" id="sa-summary-checkin">17:00 (алерт о 17:05)</span>
+              </div>
+            </div>
+
+            <div class="sa-contract-footer">
+              <a href="auth.html?intent=parent_hub&role=parent" class="sa-btn sa-btn-primary sa-btn-lg" style="width:100%;">
+                <i data-icon="key" data-size="18"></i>
+                <span>Створити кабінет батьків і код сім'ї</span>
+              </a>
+              <span class="sa-draft-note">
+                <i data-icon="lock" data-size="14"></i>
+                <span>Параметри автоматично збережено в <code class="sa-mono">strictai_draft_contract</code> для прив'язки до коду <code class="sa-mono">SA-XXXXXX</code>.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <!-- ==================== MODAL: Telegram Weekly Report Preview ==================== -->
-  <div id="telegram-preview-modal" class="strict-modal-backdrop">
-    <div class="strict-modal" style="max-width: 580px;">
-      <div class="modal-header">
-        <div class="modal-title">📱 Прев'ю тижневого дайджесту для батьків</div>
-        <div class="modal-close-btn" id="close-tg-modal-btn">&times;</div>
-      </div>
-      <div class="modal-body" style="background: #0E1621; padding: 24px;">
-        <div class="tg-preview-container">
-          <div class="tg-bot-header">
-            <div class="tg-bot-avatar">🐼</div>
-            <div>
-              <div style="font-weight: 700; font-size: 0.98rem;">StrictAI Parent Bot 🤖</div>
-              <div style="font-size: 0.76rem; color: #7F8C99;">бот • офіційне сповіщення</div>
-            </div>
-          </div>
+  <footer id="sa-footer" class="sa-footer"></footer>
 
-          <div class="tg-message-bubble">
-            <div style="font-weight: 700; color: #F2994A; margin-bottom: 8px;">
-              📊 Тижневий звіт успішності учня: Олександр Коваленко
-            </div>
-            <div style="margin-bottom: 6px;">
-              📅 <strong>Період:</strong> 04.11 – 10.11.2024 (11 клас)
-            </div>
-            <div style="margin-bottom: 6px;">
-              ⏱ <strong>Чистий час у фокусі:</strong> 515 хвилин (Норма 450 хв перевищена на 14%!)
-            </div>
-            <div style="margin-bottom: 6px;">
-              👁 <strong>Дисципліна вкладок:</strong> 2 відволікання за тиждень (Індекс: 94% — відмінно).
-            </div>
-            <div style="margin-bottom: 6px;">
-              🎯 <strong>Поточний прогнозований бал НМТ:</strong> 174 / 200 балів
-            </div>
-            <div style="margin-bottom: 10px;">
-              🎋 <strong>Зароблено бамбук-коїнів:</strong> +185 🎋
-            </div>
-
-            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 8px; margin-top: 8px;">
-              <strong>🔍 Слабкі зони, що потребують уваги:</strong><br>
-              • Математика: <em>Рівняння з параметром (Завдання 22)</em><br>
-              • Укр. мова: <em>Складні наголоси УЦОЯО</em>
-            </div>
-
-            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 8px; margin-top: 8px; font-style: italic; color: #C8B6E2;">
-              🐼 <strong>Порада від Панди:</strong> «Олександр показує чудову старанність! На вихідних варто підтвердити обіцяну винагороду за контрактом — це закріпить звичку до самодисципліни.»
-            </div>
-
-            <div class="tg-message-time">Сьогодні о 20:00 • Надіслано через Telegram Bot</div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer" style="background: #17212B; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-        <button type="button" class="btn btn-secondary btn-sm" id="copy-tg-report-btn">
-          📋 Скопіювати текст звіту
-        </button>
-        <button type="button" class="btn btn-primary btn-sm" id="confirm-tg-modal-btn">
-          Зрозуміло
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== MODAL: Change PIN Code ==================== -->
-  <div id="change-pin-modal" class="strict-modal-backdrop pin-modal-backdrop" style="display: none;">
-    <div class="strict-modal" id="pin-change" style="max-width: 440px;">
-      <div class="modal-header">
-        <div class="modal-title">🔑 Зміна PIN-коду батьківського кабінету</div>
-        <div class="modal-close-btn" id="close-pin-modal-btn">&times;</div>
-      </div>
-      <div class="modal-body">
-        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
-          Встановіть новий 4-значний PIN-код для обмеження доступу дитини до налаштувань строгості та умов освітнього контракту.
-        </p>
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Поточний PIN-код:</label>
-          <input type="password" id="current-pin-input" class="form-input" maxlength="4" placeholder="••••" style="letter-spacing: 0.3em; font-size: 1.25rem; text-align: center;">
-        </div>
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Новий 4-значний PIN-код:</label>
-          <input type="password" id="new-pin-input" class="form-input" maxlength="4" placeholder="••••" style="letter-spacing: 0.3em; font-size: 1.25rem; text-align: center;">
-        </div>
-        <div class="form-group" style="margin-bottom: 18px;">
-          <label class="form-label" style="font-weight: 700; font-size: 0.88rem;">Підтвердження нового PIN-коду:</label>
-          <input type="password" id="confirm-pin-input" class="form-input" maxlength="4" placeholder="••••" style="letter-spacing: 0.3em; font-size: 1.25rem; text-align: center;">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" id="cancel-change-pin-btn">Скасувати</button>
-        <button type="button" class="btn btn-primary btn-sm" id="save-new-pin-btn">Зберегти новий PIN</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Global Footer -->
-  <footer class="strict-footer">
-    <div class="strict-container">
-      <div class="footer-grid">
-        <div class="footer-brand-col">
-          <a href="index.html" class="nav-brand" style="margin-bottom: 14px;">
-            <div class="nav-brand-badge">🐼</div>
-            <div>Strict<span class="nav-brand-highlight">AI</span></div>
-          </a>
-          <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;">
-            Батьківський контроль без гіперопіки. Довіра, підкріплена фактами, об'єктивною діагностикою знань та повагою до зусиль дитини.
-          </p>
-        </div>
-        <div>
-          <div class="footer-col-title">Модулі навчання</div>
-          <ul class="footer-links">
-            <li><a href="tutor.html">AI-Репетитор з Пандою</a></li>
-            <li><a href="nmt.html">Тренажер завдань НМТ</a></li>
-            <li><a href="tracker.html">Програма-Трекер (Strict Focus)</a></li>
-            <li><a href="knowledge.html">Карта знань та теми</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <div class="footer-col-title">Контроль & Прозорість</div>
-          <ul class="footer-links">
-            <li><a href="parents.html">Батьківський кабінет</a></li>
-            <li><a href="parents.html#educational-contract">Освітній контракт</a></li>
-            <li><a href="parents.html#anticheat-monitoring">Анти-чит моніторинг</a></li>
-            <li><a href="parents.html#pin-change">Зміна PIN-коду</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="footer-col-title">Стандарти & Довіра</div>
-          <ul class="footer-links">
-            <li><a href="index.html#comparison">Чому StrictAI кращий за ChatGPT</a></li>
-            <li><a href="https://testportal.gov.ua" target="_blank" rel="noopener">Програма УЦОЯО 2025</a></li>
-            <li><a href="javascript:void(0)" onclick="window.StrictComponents.openApiKeyModal()">Налаштувати AI-ключ</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <div>
-          &copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.
-        </div>
-        <div style="display: flex; gap: 16px;">
-          <span>Parent Control Hub v1.4</span>
-          <span>•</span>
-          <span>PIN Protected</span>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Core Scripts -->
-  <script src="js/store.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/anti-cheat-engine.js"></script>
-  <script src="js/react-runtime.js"></script>
-  <script src="js/panda-avatar.js"></script>
-  <script src="js/notifications.js"></script>
-  <script src="js/components.js"></script>
-  <script src="js/parents.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/strictpass-3d.js"></script>
+  <script src="js/firebase-auth-core.js"></script>
+  <script src="js/site-shell.js"></script>
+  <script src="js/site-parents.js"></script>
 </body>
 </html>

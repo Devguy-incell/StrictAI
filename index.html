@@ -1,539 +1,1338 @@
 <!DOCTYPE html>
-<html lang="uk" data-theme="dark">
+<html lang="uk" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StrictAI — Панда-репетитор | ШІ-підготовка до НМТ та шкільної програми</title>
-  <meta name="description" content="Платформа StrictAI: персоналізований ШІ-репетитор у вигляді цифрового аватара Червоної Панди. 9 характерів ШІ-репетитора (від доброго друга до сократівського детектива, RPG гейм-майстра та носія мови), залізний контроль відволікань, підготовка до НМТ 2025 та батьківський кабінет.">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐼</text></svg>">
+  <title>StrictAI — Адаптивна діагностика НМТ за 3 хвилини та план підготовки</title>
+  <meta name="description" content="Дізнайся реальний бал НМТ за 3 хвилини без списування. 6 адаптивних завдань CAT визначають точні прогалини та синхронізують план у додаток StrictAI.">
+  <script>
+    (function () {
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem('strictai_theme') === 'dark' ? 'dark' : 'light';
+      } catch (_e) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/site.css">
+  <style>
+    /* Standalone-safe structural defaults & Home-scoped Swiss Industrial layout */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body[data-page="home"] {
+      margin: 0;
+      background-color: var(--bg-canvas);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .sa-main {
+      min-height: 70vh;
+    }
+
+    .sa-container {
+      width: 100%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--space-6);
+      padding-right: var(--space-6);
+    }
+
+    .sa-section {
+      padding-top: 72px;
+      padding-bottom: 72px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .sa-section-sm {
+      padding-top: 56px;
+      padding-bottom: 56px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .sa-section:last-child,
+    .sa-section-sm:last-child {
+      border-bottom: none;
+    }
+
+    .sa-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-8);
+    }
+
+    .sa-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-6);
+    }
+
+    .sa-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .sa-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-ink);
+      border: 2px solid var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform var(--dur-press) var(--ease-out);
+    }
+
+    .sa-range::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-ink);
+      border: 2px solid var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+
+    .sa-range:focus-visible {
+      box-shadow: var(--focus-ring);
+    }
+
+    /* ------------------------------------------------------------------
+       Home Hero
+       ------------------------------------------------------------------ */
+    .sa-home-hero {
+      padding-top: 56px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .sa-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: var(--space-10);
+      align-items: center;
+    }
+
+    .sa-hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+    }
+
+    .sa-hero-title {
+      margin: 0 0 var(--space-5);
+      font-size: clamp(2rem, 3.6vw, 2.85rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: var(--tracking-tight);
+      color: var(--ink-primary);
+    }
+
+    .sa-hero-sub {
+      margin: 0 0 var(--space-8);
+      max-width: 58ch;
+      font-size: var(--text-lg);
+      line-height: 1.55;
+      color: var(--ink-secondary);
+    }
+
+    .sa-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-8);
+    }
+
+    .sa-proof-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-3);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .sa-proof-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sa-proof-val {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .sa-proof-label {
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+      line-height: 1.35;
+    }
+
+    /* Hero Right Column: 3D Metallic StrictPass Showcase Stage */
+    .sa-hero-stage-panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      padding: var(--space-6);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sa-stage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .sa-stage-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--ink-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sa-stage-pills {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .sa-stage-pills > button {
+      flex: 1 1 0;
+    }
+
+    .sa-stage-viewport {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-6) var(--space-4);
+      border-radius: var(--radius-md);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      min-height: 268px;
+      overflow: hidden;
+    }
+
+    .sa-stage-viewport .sa-pass-3d-stage {
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .sa-stage-viewport .sa-pass-3d-card {
+      width: 100%;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .sa-sku-readout {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding-top: var(--space-2);
+    }
+
+    .sa-sku-price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .sa-sku-price-group {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-2);
+    }
+
+    .sa-sku-price {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--ink-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .sa-sku-monthly {
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+    }
+
+    .sa-sku-summary {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+      line-height: 1.45;
+    }
+
+    .sa-sku-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+    }
+
+    /* ------------------------------------------------------------------
+       Section Headings
+       ------------------------------------------------------------------ */
+    .sa-section-head {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      max-width: 68ch;
+      margin-bottom: var(--space-8);
+    }
+
+    .sa-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+    }
+
+    .sa-section-title {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: var(--tracking-tight);
+      color: var(--ink-primary);
+    }
+
+    .sa-section-desc {
+      margin: 0;
+      font-size: var(--text-base);
+      color: var(--ink-secondary);
+      line-height: 1.55;
+    }
+
+    /* ------------------------------------------------------------------
+       NMT Budget Deficit Calculator
+       ------------------------------------------------------------------ */
+    .sa-uni-presets {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+
+    .sa-uni-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-surface);
+      color: var(--ink-primary);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition:
+        border-color var(--dur-ui) var(--ease-out),
+        background-color var(--dur-ui) var(--ease-out),
+        box-shadow var(--dur-ui) var(--ease-out),
+        transform var(--dur-press) var(--ease-out);
+    }
+
+    .sa-uni-btn:active {
+      transform: scale(0.985);
+    }
+
+    .sa-uni-btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .sa-uni-btn[aria-pressed="true"],
+    .sa-uni-btn.is-active {
+      border-color: var(--accent-ink);
+      background-color: var(--bg-subtle);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sa-uni-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+      line-height: 1.3;
+    }
+
+    .sa-uni-meta {
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+    }
+
+    .sa-calc-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: var(--space-6);
+      align-items: stretch;
+    }
+
+    .sa-calc-panel {
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    .sa-slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .sa-slider-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .sa-slider-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+
+    .sa-slider-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--ink-primary);
+    }
+
+    .sa-slider-weight {
+      font-size: 11px;
+      color: var(--ink-muted);
+      padding: 2px 6px;
+      border-radius: var(--radius-xs);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .sa-slider-val {
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--ink-primary);
+      min-width: 48px;
+      text-align: right;
+    }
+
+    .sa-slider-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--ink-subtle);
+    }
+
+    .sa-calc-result-card {
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-6);
+    }
+
+    .sa-score-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+
+    .sa-metric-box {
+      padding: var(--space-4);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sa-metric-label {
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+    }
+
+    .sa-metric-value {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--ink-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .sa-deficit-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+    }
+
+    .sa-deficit-banner.is-danger {
+      background-color: var(--status-danger-bg);
+      border-color: var(--status-danger-border);
+      color: var(--status-danger);
+    }
+
+    .sa-deficit-banner.is-warn {
+      background-color: var(--status-warn-bg);
+      border-color: var(--status-warn-border);
+      color: var(--status-warn);
+    }
+
+    .sa-deficit-banner.is-ok {
+      background-color: var(--status-ok-bg);
+      border-color: var(--status-ok-border);
+      color: var(--status-ok);
+    }
+
+    .sa-deficit-title {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-base);
+      font-weight: 700;
+    }
+
+    .sa-deficit-note {
+      font-size: var(--text-xs);
+      opacity: 0.9;
+    }
+
+    .sa-calc-diagnostics {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .sa-diag-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      font-size: var(--text-sm);
+    }
+
+    .sa-diag-line-key {
+      color: var(--ink-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sa-diag-line-val {
+      font-weight: 600;
+      color: var(--ink-primary);
+      text-align: right;
+    }
+
+    /* ------------------------------------------------------------------
+       Mobile App Handoff Preview Section
+       ------------------------------------------------------------------ */
+    .sa-app-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .sa-pillars-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .sa-pillar-card {
+      padding: var(--space-5);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+
+    .sa-pillar-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-subtle);
+      color: var(--ink-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sa-pillar-title {
+      margin: 0 0 4px;
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-pillar-desc {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+      line-height: 1.5;
+    }
+
+    .sa-handoff-card {
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    .sa-handoff-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+    }
+
+    .sa-handoff-device {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .sa-handoff-payload {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .sa-payload-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+    }
+
+    .sa-payload-key {
+      color: var(--ink-muted);
+    }
+
+    .sa-payload-val {
+      color: var(--ink-primary);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .sa-handoff-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .sa-handoff-steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    .sa-handoff-step {
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hairline);
+      background-color: var(--bg-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sa-handoff-step-num {
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+
+    .sa-handoff-step-text {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--ink-primary);
+      line-height: 1.35;
+    }
+
+    /* ------------------------------------------------------------------
+       Architectural Proof Strip / Comparison Teaser
+       ------------------------------------------------------------------ */
+    .sa-proof-card {
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .sa-proof-card-top {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .sa-proof-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sa-proof-card-title {
+      margin: 0;
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--ink-primary);
+      line-height: 1.3;
+    }
+
+    .sa-proof-card-body {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+      line-height: 1.55;
+    }
+
+    .sa-proof-diff {
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border-hairline);
+      font-size: var(--text-xs);
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .sa-teaser-footer {
+      margin-top: var(--space-8);
+      padding: var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .sa-teaser-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sa-teaser-copy strong {
+      font-size: var(--text-base);
+      color: var(--ink-primary);
+    }
+
+    .sa-teaser-copy span {
+      font-size: var(--text-sm);
+      color: var(--ink-secondary);
+    }
+
+    .sa-teaser-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+
+    /* ------------------------------------------------------------------
+       Responsive Breakpoints
+       ------------------------------------------------------------------ */
+    @media (max-width: 980px) {
+      .sa-hero-grid,
+      .sa-calc-grid,
+      .sa-app-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sa-uni-presets {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .sa-grid-3 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .sa-container {
+        padding-left: var(--space-4);
+        padding-right: var(--space-4);
+      }
+
+      .sa-section {
+        padding-top: 48px;
+        padding-bottom: 48px;
+      }
+
+      .sa-home-hero {
+        padding-top: 32px;
+        padding-bottom: 48px;
+      }
+
+      .sa-proof-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .sa-uni-presets {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sa-score-metrics,
+      .sa-handoff-steps {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sa-hero-actions .sa-btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
-<body>
+<body data-page="home">
+  <header id="sa-header" class="sa-header"></header>
 
-  <!-- Global Header Navigation Rendered by StrictComponents -->
-  <header id="app-header"></header>
-
-  <!-- Focus Alert Notification Banner -->
-  <div id="focus-alert-banner" class="focus-alert-banner"></div>
-
-  <main>
-    <!-- ==================== HERO SECTION ==================== -->
-    <section class="hero-section">
-      <div class="hero-glow-bg"></div>
-      <div class="strict-container hero-grid">
-        <!-- Hero Left: Typography & CTAs -->
-        <div class="hero-content">
-          <div class="hero-badge-pill">
-            <span>🐼</span>
-            <span>ШІ-репетитор нового покоління</span>
-          </div>
-
-          <h1 class="hero-title">
-            Твій персональний репетитор із <span>залізною дисципліною</span>
-          </h1>
-
-          <p class="hero-subtitle">
-            Ми — перший український освітній ШІ-сервіс із власним живим цифровим аватаром Червоної Панди. Панда підлаштовується під твій характер, покроково пояснює кожну помилку за програмою УЦОЯО та не дає прокрастинувати під час уроку.
-          </p>
-
-          <div class="hero-actions">
-            <a href="tutor.html" class="btn btn-primary btn-lg">
-              <span>🚀</span>
-              <span>Почати урок з Пандою</span>
-            </a>
-            <a href="nmt.html" class="btn btn-secondary btn-lg">
-              <span>📝</span>
-              <span>Тренажер НМТ 2025</span>
-            </a>
-          </div>
-
-          <!-- Hero Placement Diagnostic Banner Card -->
-          <a href="placement.html" class="hero-placement-banner" title="Визначити свій точний рівень знань">
-            <div class="hero-placement-icon">🎯</div>
-            <div class="hero-placement-text">
-              <span class="hero-placement-question">Не знаєш свій рівень?</span>
-              <span class="hero-placement-hint">Пройди 3-хвилинний адаптивний тест (CEFR A1–C2 / НМТ)</span>
+  <main class="sa-main">
+    <!-- ================================================================
+         1. HERO SECTION
+         ================================================================ -->
+    <section class="sa-home-hero" aria-labelledby="hero-heading">
+      <div class="sa-container">
+        <div class="sa-hero-grid">
+          <div>
+            <div class="sa-hero-kicker">
+              <span class="sa-badge">
+                <i data-icon="radar" data-size="14"></i>
+                <span>Адаптивна діагностика НМТ 2026</span>
+              </span>
             </div>
-            <div class="hero-placement-action">
-              <span>Визначити рівень</span>
-              <span class="hero-placement-arrow">→</span>
-            </div>
-          </a>
 
-          <!-- Trust & Performance Metrics Bar -->
-          <div class="hero-stats-row">
-            <div class="hero-stat-item">
-              <span class="hero-stat-val">184.2</span>
-              <span class="hero-stat-lbl" data-i18n="index.hero.statPredicted">Сер. прогнозований бал</span>
+            <h1 id="hero-heading" class="sa-hero-title">Дізнайся реальний бал НМТ за 3 хвилини і закрий слабкі теми до іспиту</h1>
+
+            <p class="sa-hero-sub">
+              Шість адаптивних CAT-завдань без підказок і сліпого вгадування точно локалізують прогалини у знаннях, фіксують індекс довіри та синхронізують персональний маршрут виправлення прямо у мобільний додаток StrictAI.
+            </p>
+
+            <div class="sa-hero-actions">
+              <a href="diagnostic.html" class="sa-btn sa-btn-primary sa-btn-lg">
+                <span>Пройти діагностику за 3 хвилини</span>
+                <i data-icon="arrowRight" data-size="18"></i>
+              </a>
+              <a href="strictpass.html" class="sa-btn sa-btn-secondary sa-btn-lg">
+                <i data-icon="creditCard" data-size="18"></i>
+                <span>Тарифи StrictPass</span>
+              </a>
             </div>
-            <div class="hero-stat-item">
-              <span class="hero-stat-val">98.4%</span>
-              <span class="hero-stat-lbl" data-i18n="index.hero.statBudget">Вступників на бюджет</span>
-            </div>
-            <div class="hero-stat-item">
-              <span class="hero-stat-val">0</span>
-              <span class="hero-stat-lbl" data-i18n="index.hero.statCheating">Шансів списати у соцмережах</span>
-            </div>
-            <div class="hero-stat-item">
-              <span class="hero-stat-val">9</span>
-              <span class="hero-stat-lbl" data-i18n="index.hero.statPersonas">Унікальних характерів ШІ</span>
+
+            <div class="sa-proof-bar" aria-label="Ключові параметри платформи">
+              <div class="sa-proof-item">
+                <span class="sa-proof-val sa-mono">3 хв</span>
+                <span class="sa-proof-label">тривалість тесту</span>
+              </div>
+              <div class="sa-proof-item">
+                <span class="sa-proof-val sa-mono">27 конфігурацій</span>
+                <span class="sa-proof-label">картки StrictPass</span>
+              </div>
+              <div class="sa-proof-item">
+                <span class="sa-proof-val sa-mono">3 рівні захисту</span>
+                <span class="sa-proof-label">Anti-OCR + CAT + телеметрія</span>
+              </div>
+              <div class="sa-proof-item">
+                <span class="sa-proof-val sa-mono">iOS · Android · PWA</span>
+                <span class="sa-proof-label">єдиний профіль додатку</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Hero Right: Interactive Red Panda Avatar Showcase -->
-        <div class="hero-avatar-showcase">
-          <div class="hero-avatar-bubble" id="hero-panda-bubble">
-            «Привіт! Я поруч, щоб допомогти тобі скласти НМТ на омріяні 190+ без стресу. Обери мій характер або натисни кнопку нижче!»
-          </div>
+          <div class="sa-hero-stage-panel" aria-label="Інтерактивна вітрина картки StrictPass">
+            <div class="sa-stage-top">
+              <span class="sa-stage-label">
+                <i data-icon="layers" data-size="14"></i>
+                <span>Металева картка доступу · Сезон 90 днів</span>
+              </span>
+              <span id="hero-pass-badge" class="sa-badge sa-badge-ink sa-mono">GOLD FINISH</span>
+            </div>
 
-          <div id="hero-panda-mount" class="panda-avatar-container">
-            <!-- Rendered by window.PandaAvatar -->
-          </div>
+            <div class="sa-segmented sa-stage-pills" role="tablist" aria-label="Оберіть конфігурацію StrictPass">
+              <button type="button" role="tab" aria-selected="false" data-tier-tab="strictpass">StrictPass</button>
+              <button type="button" role="tab" aria-selected="true" class="is-active" data-tier-tab="pro">StrictPass Pro</button>
+              <button type="button" role="tab" aria-selected="false" data-tier-tab="max">StrictPass MAX</button>
+            </div>
 
-          <div style="display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;">
-            <a href="tutor.html" class="btn btn-primary btn-sm" id="hero-open-tutor-btn" style="height: 38px; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; padding: 0 16px; border-radius: var(--radius-md); background: var(--accent-primary, #ffa116); color: #121212;">
-              <span>🚀</span>
-              <span data-i18n="index.hero.openTutor">Відкрити ШІ-Репетитор</span>
-            </a>
-            <a href="nmt.html" class="btn btn-secondary btn-sm" id="hero-demo-anticheat-btn" style="height: 38px; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; padding: 0 16px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle, #333333); background: var(--bg-surface-elevated, #242424); color: var(--text-primary, #eff1f6);">
-              <span>🛡️</span>
-              <span data-i18n="index.hero.demoAnticheat">Демо Анти-Чит Тесту</span>
-            </a>
-          </div>
+            <div class="sa-stage-viewport">
+              <div class="sa-pass-3d-stage">
+                <div id="hero-pass-card" class="sa-pass-3d-card">
+                  <img
+                    id="hero-pass-img"
+                    src="assets/strictpass/StrictPass_Pro_Single_Season.webp"
+                    alt="Металева картка StrictPass Pro Single Season (Gold)"
+                    width="680"
+                    height="428"
+                  >
+                  <div class="sa-pass-glare"></div>
+                </div>
+              </div>
+            </div>
 
-          <!-- 9 Signature Persona Switcher Pills -->
-          <div class="persona-switcher-pills" id="hero-persona-pills">
-            <button class="persona-switcher-btn active" data-persona="friend">🐼 Добрий друг</button>
-            <button class="persona-switcher-btn" data-persona="strict">🧐 Суворий викладач</button>
-            <button class="persona-switcher-btn" data-persona="joker">😜 Жартівник</button>
-            <button class="persona-switcher-btn" data-persona="motivator">🔥 Мотиватор</button>
-            <button class="persona-switcher-btn" data-persona="calm">🧘 Спокійний ментор</button>
-            <button class="persona-switcher-btn" data-persona="socratic">🕵️ Сократівський детектив</button>
-            <button class="persona-switcher-btn" data-persona="examiner">🎓 Екзаменатор</button>
-            <button class="persona-switcher-btn" data-persona="gamemaster">🚀 RPG Гейм-майстер</button>
-            <button class="persona-switcher-btn" data-persona="native">🗣️ Носій мови</button>
+            <div class="sa-sku-readout">
+              <div class="sa-sku-price-row">
+                <div class="sa-sku-price-group">
+                  <span id="hero-sku-price" class="sa-sku-price sa-num">2 399 ₴</span>
+                  <span id="hero-sku-monthly" class="sa-sku-monthly sa-mono">800 ₴ / міс</span>
+                </div>
+                <span id="hero-sku-code" class="sa-badge sa-mono">Single · Season</span>
+              </div>
+              <p id="hero-sku-summary" class="sa-sku-summary">
+                Розширені симуляції НМТ, кластеризація помилок і щотижневий звіт для батьків.
+              </p>
+              <div class="sa-sku-footer">
+                <span class="sa-mono" style="font-size: var(--text-xs); color: var(--ink-muted);">
+                  27 SKU у конструкторі карток
+                </span>
+                <a id="hero-sku-link" href="strictpass.html?tier=pro" class="sa-btn sa-btn-secondary sa-btn-sm">
+                  <span>Обрати конфігурацію</span>
+                  <i data-icon="arrowUpRight" data-size="14"></i>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== NMT ADMISSION CALCULATOR SECTION ==================== -->
-    <section class="section" style="padding: 60px 0;">
-      <div class="strict-container">
-        <div class="calc-card">
-          <div style="text-align: center; max-width: 680px; margin: 0 auto;">
-            <div class="bento-badge orange" style="margin-bottom: 12px;">📊 Офіційні коефіцієнти УЦОЯО 2024–2025</div>
-            <h2>Калькулятор шансів вступу та прогнозу НМТ</h2>
-            <p style="margin-top: 8px;">
-              Дізнайся свій точний конкурсний бал для топових університетів України. Пересувай повзунки балів та дивись розрахунок шансів на бюджет у реальному часі.
-            </p>
-          </div>
+    <!-- ================================================================
+         2. RETENTION HOOK: NMT BUDGET DEFICIT CALCULATOR
+         ================================================================ -->
+    <section class="sa-section" id="calculator-section" aria-labelledby="calc-heading">
+      <div class="sa-container">
+        <div class="sa-section-head">
+          <span class="sa-eyebrow">
+            <i data-icon="sliders" data-size="14"></i>
+            <span>Інтерактивний симулятор вступу</span>
+          </span>
+          <h2 id="calc-heading" class="sa-section-title">Калькулятор конкурсного балу НМТ та дефіциту до бюджету</h2>
+          <p class="sa-section-desc">
+            Оберіть цільову спеціальність та виставте поточні оцінки за пробними тестами, щоб побачити реальний розрив до бюджетного порогу та предмет, який найбільше тягне рейтинг униз.
+          </p>
+        </div>
 
-          <div class="calc-grid">
-            <!-- Left: Settings & Sliders -->
-            <div class="calc-controls">
-              <div class="form-group">
-                <label class="form-label" for="calc-uni-select">Цільовий університет:</label>
-                <select class="form-select" id="calc-uni-select">
-                  <option value="kpi" selected>КПІ ім. Ігоря Сікорського (Київ) — Прохідний ~180-186</option>
-                  <option value="knu">КНУ ім. Тараса Шевченка (Київ) — Прохідний ~182-188</option>
-                  <option value="ukma">НаУКМА (Києво-Могилянська академія) — Прохідний ~185-192</option>
-                  <option value="lnu">ЛНУ ім. Івана Франка (Львів) — Прохідний ~176-184</option>
-                  <option value="khnu">ХНУ ім. В. Н. Каразіна (Харків) — Прохідний ~172-180</option>
-                  <option value="nmu">НМУ ім. О. О. Богомольця (Київ) — Прохідний ~178-185</option>
-                </select>
-              </div>
+        <div class="sa-uni-presets" role="group" aria-label="Цільовий університет і прохідний поріг">
+          <button type="button" class="sa-uni-btn is-active" aria-pressed="true" data-uni="kpi_121">
+            <span class="sa-uni-name">КПІ 121 ІПЗ</span>
+            <span class="sa-uni-meta sa-mono">Поріг: 184.0 б.</span>
+          </button>
+          <button type="button" class="sa-uni-btn" aria-pressed="false" data-uni="knu_cs">
+            <span class="sa-uni-name">КНУ Комп'ютерні науки</span>
+            <span class="sa-uni-meta sa-mono">Поріг: 186.0 б.</span>
+          </button>
+          <button type="button" class="sa-uni-btn" aria-pressed="false" data-uni="lpnu_it">
+            <span class="sa-uni-name">Львівська політехніка ІТ</span>
+            <span class="sa-uni-meta sa-mono">Поріг: 179.0 б.</span>
+          </button>
+          <button type="button" class="sa-uni-btn" aria-pressed="false" data-uni="naukma_law">
+            <span class="sa-uni-name">НаУКМА Право</span>
+            <span class="sa-uni-meta sa-mono">Поріг: 185.0 б.</span>
+          </button>
+        </div>
 
-              <div class="form-group">
-                <label class="form-label" for="calc-spec-select">Спеціальність (Коефіцієнти):</label>
-                <select class="form-select" id="calc-spec-select">
-                  <option value="121" selected>121 Інженерія програмного забезпечення (Матем: 0.5, Мова: 0.3, Історія: 0.2)</option>
-                  <option value="122">122 Комп’ютерні науки (Матем: 0.5, Мова: 0.3, Історія: 0.2)</option>
-                  <option value="081">081 Право (Мова: 0.35, Історія: 0.4, Матем: 0.25)</option>
-                  <option value="222">222 Медицина (Мова: 0.35, Матем: 0.4, Біологія: 0.5)</option>
-                  <option value="073">073 Менеджмент (Мова: 0.35, Матем: 0.35, Історія: 0.3)</option>
-                  <option value="035">035 Філологія (Мова: 0.45, Англійська: 0.4, Історія: 0.25)</option>
-                </select>
-              </div>
-
-              <!-- Subject Sliders -->
-              <div class="form-group">
-                <div class="form-label">
-                  <span>🇺🇦 Українська мова:</span>
-                  <span class="form-label-val" id="val-ukr">176</span>
+        <div class="sa-calc-grid">
+          <div class="sa-card sa-calc-panel">
+            <div class="sa-slider-row">
+              <div class="sa-slider-head">
+                <div class="sa-slider-title-wrap">
+                  <label class="sa-slider-label" for="slider-math">Математика</label>
+                  <span id="weight-math" class="sa-slider-weight sa-mono">k = 0.40</span>
                 </div>
-                <input type="range" class="form-range" id="range-ukr" min="100" max="200" value="176">
+                <output id="val-math" class="sa-slider-val sa-num" for="slider-math">152</output>
               </div>
-
-              <div class="form-group">
-                <div class="form-label">
-                  <span>📐 Математика:</span>
-                  <span class="form-label-val" id="val-math">172</span>
-                </div>
-                <input type="range" class="form-range" id="range-math" min="100" max="200" value="172">
-              </div>
-
-              <div class="form-group">
-                <div class="form-label">
-                  <span>🏛 Історія України:</span>
-                  <span class="form-label-val" id="val-hist">168</span>
-                </div>
-                <input type="range" class="form-range" id="range-hist" min="100" max="200" value="168">
-              </div>
-
-              <div class="form-group">
-                <div class="form-label">
-                  <span id="label-fourth-subject">🇬🇧 Англійська мова (4-й предмет):</span>
-                  <span class="form-label-val" id="val-fourth">181</span>
-                </div>
-                <input type="range" class="form-range" id="range-fourth" min="100" max="200" value="181">
+              <input id="slider-math" class="sa-range" type="range" min="100" max="200" step="1" value="152" data-subject-slider="math">
+              <div class="sa-slider-scale sa-mono">
+                <span>100</span>
+                <span>150</span>
+                <span>200</span>
               </div>
             </div>
 
-            <!-- Right: Live Result Box -->
-            <div class="calc-result-panel">
-              <div>
-                <div style="font-size: 0.88rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">
-                  Прогнозований конкурсний бал (КБ)
+            <div class="sa-slider-row">
+              <div class="sa-slider-head">
+                <div class="sa-slider-title-wrap">
+                  <label class="sa-slider-label" for="slider-ukr">Українська мова</label>
+                  <span id="weight-ukr" class="sa-slider-weight sa-mono">k = 0.25</span>
                 </div>
-                <div class="calc-score-display">
-                  <div class="calc-big-num" id="calc-kb-result">174.6</div>
-                  <div class="calc-score-sub" id="calc-kb-sub">з урахуванням коефіцієнтів обраної спеціальності</div>
-                </div>
+                <output id="val-ukr" class="sa-slider-val sa-num" for="slider-ukr">164</output>
+              </div>
+              <input id="slider-ukr" class="sa-range" type="range" min="100" max="200" step="1" value="164" data-subject-slider="ukr">
+              <div class="sa-slider-scale sa-mono">
+                <span>100</span>
+                <span>150</span>
+                <span>200</span>
+              </div>
+            </div>
 
-                <div style="margin-top: 14px;">
-                  <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600;">
-                    <span>Шанс потрапляння на бюджет:</span>
-                    <span id="calc-chance-pct" style="color: var(--accent-primary); font-family: var(--font-mono);">76%</span>
-                  </div>
-                  <div class="chance-meter-bar">
-                    <div class="chance-meter-fill" id="calc-chance-fill" style="width: 76%;"></div>
-                  </div>
+            <div class="sa-slider-row">
+              <div class="sa-slider-head">
+                <div class="sa-slider-title-wrap">
+                  <label class="sa-slider-label" for="slider-hist">Історія України</label>
+                  <span id="weight-hist" class="sa-slider-weight sa-mono">k = 0.15</span>
                 </div>
+                <output id="val-hist" class="sa-slider-val sa-num" for="slider-hist">158</output>
+              </div>
+              <input id="slider-hist" class="sa-range" type="range" min="100" max="200" step="1" value="158" data-subject-slider="hist">
+              <div class="sa-slider-scale sa-mono">
+                <span>100</span>
+                <span>150</span>
+                <span>200</span>
+              </div>
+            </div>
 
-                <div style="text-align: center; margin-top: 14px;">
-                  <span class="chance-badge-status" id="calc-status-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-success);">
-                    ⚡ Високий шанс на бюджет КПІ
+            <div class="sa-slider-row">
+              <div class="sa-slider-head">
+                <div class="sa-slider-title-wrap">
+                  <label class="sa-slider-label" for="slider-elective">Вибірковий предмет (Англ / Фізика / Біологія)</label>
+                  <span id="weight-elective" class="sa-slider-weight sa-mono">k = 0.20</span>
+                </div>
+                <output id="val-elective" class="sa-slider-val sa-num" for="slider-elective">160</output>
+              </div>
+              <input id="slider-elective" class="sa-range" type="range" min="100" max="200" step="1" value="160" data-subject-slider="elective">
+              <div class="sa-slider-scale sa-mono">
+                <span>100</span>
+                <span>150</span>
+                <span>200</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sa-card sa-calc-result-card" aria-live="polite">
+            <div>
+              <div class="sa-score-metrics">
+                <div class="sa-metric-box">
+                  <span class="sa-metric-label">Конкурсний бал</span>
+                  <span id="calc-score" class="sa-metric-value sa-num">157.5</span>
+                </div>
+                <div class="sa-metric-box">
+                  <span class="sa-metric-label">Поріг бюджету</span>
+                  <span id="calc-target" class="sa-metric-value sa-num">184.0</span>
+                </div>
+              </div>
+
+              <div id="calc-deficit-banner" class="sa-deficit-banner is-danger" style="margin-top: var(--space-4);">
+                <div class="sa-deficit-title">
+                  <i data-icon="alertTriangle" data-size="18"></i>
+                  <span id="calc-deficit-text" class="sa-num">Дефіцит: -26.5 б.</span>
+                </div>
+                <span id="calc-deficit-badge" class="sa-deficit-note sa-mono">Нижче порогу бюджету</span>
+              </div>
+
+              <div class="sa-calc-diagnostics" style="margin-top: var(--space-5);">
+                <div class="sa-diag-line">
+                  <span class="sa-diag-line-key">
+                    <i data-icon="target" data-size="15"></i>
+                    <span>Цільова програма</span>
                   </span>
+                  <span id="calc-uni-label" class="sa-diag-line-val">КПІ 121 ІПЗ</span>
                 </div>
+                <div class="sa-diag-line">
+                  <span class="sa-diag-line-key">
+                    <i data-icon="activity" data-size="15"></i>
+                    <span>Найслабша ланка</span>
+                  </span>
+                  <span id="calc-weakest-label" class="sa-diag-line-val sa-mono">Математика · 152 б.</span>
+                </div>
+                <div class="sa-diag-line">
+                  <span class="sa-diag-line-key">
+                    <i data-icon="clock" data-size="15"></i>
+                    <span>Прогноз компенсації</span>
+                  </span>
+                  <span id="calc-weeks-label" class="sa-diag-line-val sa-mono">~9 тижнів системного треку</span>
+                </div>
+              </div>
+            </div>
 
-                <p id="calc-recommendation-text" style="font-size: 0.86rem; color: var(--text-secondary); margin-top: 14px; text-align: center; line-height: 1.45;">
-                  Для 100% гарантії бюджету рекомендуємо підтягнути <strong>Історію України</strong> на +8 балів за допомогою тренажера помилок.
+            <a id="calc-cta-link" href="diagnostic.html?uni=kpi_121&subject=math" class="sa-btn sa-btn-primary sa-btn-lg" style="width: 100%;">
+              <span>Перевірити мій реальний рівень у тесті</span>
+              <i data-icon="arrowRight" data-size="18"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         3. MOBILE APP PREVIEW & HANDOFF SECTION
+         ================================================================ -->
+    <section class="sa-section" id="app-handoff-section" aria-labelledby="app-heading">
+      <div class="sa-container">
+        <div class="sa-section-head">
+          <span class="sa-eyebrow">
+            <i data-icon="smartphone" data-size="14"></i>
+            <span>Архітектура безшовного переходу</span>
+          </span>
+          <h2 id="app-heading" class="sa-section-title">Від діагностики на сайті до щоденної підготовки в Додатку</h2>
+          <p class="sa-section-desc">
+            Сайт створений для швидкого зрізу знань без реєстрації. Усі щоденні тренування, сократичні діалоги та контроль батьків працюють у додатку StrictAI після автоматичної передачі вашого профілю прогалин.
+          </p>
+        </div>
+
+        <div class="sa-app-grid">
+          <div class="sa-pillars-list">
+            <article class="sa-card sa-pillar-card">
+              <div class="sa-pillar-icon">
+                <i data-icon="messageSquare" data-size="20"></i>
+              </div>
+              <div>
+                <h3 class="sa-pillar-title">Сократичний репетитор</h3>
+                <p class="sa-pillar-desc">
+                  Покроковий розбір саме тих помилок, які виявила 3-хвилинна діагностика. Система веде до рішення питаннями без готових відповідей.
                 </p>
               </div>
+            </article>
 
-              <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn btn-primary" id="calc-save-target-btn">
-                  <span>🎯</span>
-                  <span>Зберегти як ціль та скласти план з Пандою</span>
-                </button>
-                <a href="nmt.html" class="btn btn-secondary btn-sm" style="text-align: center;">
-                  Пройти повний пробний тест НМТ →
-                </a>
+            <article class="sa-card sa-pillar-card">
+              <div class="sa-pillar-icon">
+                <i data-icon="shieldCheck" data-size="20"></i>
+              </div>
+              <div>
+                <h3 class="sa-pillar-title">Рейтинговий симулятор НМТ</h3>
+                <p class="sa-pillar-desc">
+                  Умови, максимально наближені до екзаменаційного центру: жорсткий таймер, захист Anti-OCR та калібрована складність завдань.
+                </p>
+              </div>
+            </article>
+
+            <article class="sa-card sa-pillar-card">
+              <div class="sa-pillar-icon">
+                <i data-icon="users" data-size="20"></i>
+              </div>
+              <div>
+                <h3 class="sa-pillar-title">Батьківський хаб</h3>
+                <p class="sa-pillar-desc">
+                  Щодня о 17:00 батьки отримують верифікований зріз активності, індекс чесності виконання та статус сімейного контракту.
+                </p>
+              </div>
+            </article>
+          </div>
+
+          <aside class="sa-card sa-handoff-card" aria-label="Попередній перегляд синхронізації діагностики в додаток">
+            <div class="sa-handoff-head">
+              <span class="sa-handoff-device">
+                <i data-icon="qrCode" data-size="18"></i>
+                <span>Handoff Snapshot у StrictAI App</span>
+              </span>
+              <span id="handoff-sync-badge" class="sa-badge sa-badge-ok sa-mono">Vault Ready</span>
+            </div>
+
+            <div class="sa-handoff-payload">
+              <div class="sa-payload-row">
+                <span class="sa-payload-key">Ідентифікатор сесії (sid)</span>
+                <span id="handoff-sid" class="sa-payload-val sa-mono">diag_preview_2026</span>
+              </div>
+              <div class="sa-payload-row">
+                <span class="sa-payload-key">Прогноз балу / Ціль</span>
+                <span id="handoff-score" class="sa-payload-val sa-mono">157.5 / 184.0 (КПІ 121)</span>
+              </div>
+              <div class="sa-payload-row">
+                <span class="sa-payload-key">Індекс довіри (Anti-OCR)</span>
+                <span id="handoff-trust" class="sa-payload-val sa-mono">100% Verified</span>
+              </div>
+              <div class="sa-payload-row">
+                <span class="sa-payload-key">Рекомендований StrictPass</span>
+                <span id="handoff-tier" class="sa-payload-val sa-mono">StrictPass Pro</span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- ==================== PLATFORM ARCHITECTURE BENTO GRID ==================== -->
-    <section class="section" style="padding: 60px 0;">
-      <div class="strict-container">
-        <div style="text-align: center; max-width: 680px; margin: 0 auto 40px;">
-          <div class="bento-badge purple" style="margin-bottom: 12px;">🏛 Повноцінна екосистема навчання</div>
-          <h2>5 інтегрованих модулів StrictAI</h2>
-          <p style="margin-top: 8px;">
-            Жодних розрізнених додатків чи хаотичних чатів. Кожен модуль взаємодіє зі спільним профілем учня та базою знань.
-          </p>
-        </div>
-
-        <div class="bento-grid">
-          <!-- Card 1: AI Tutor (Span 8) -->
-          <div class="bento-card bento-col-8">
-            <div class="bento-header">
-              <div class="bento-badge orange">Основний робочий модуль</div>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">tutor.html</span>
-            </div>
-            <div class="bento-icon">🐼</div>
-            <h3 class="bento-title">AI-Репетитор Червона Панда</h3>
-            <p class="bento-desc">
-              9 характерів ШІ-репетитора (від доброго друга до сократівського детектива, RPG гейм-майстра та носія мови). Панда не видає готові відповіді для списування — вона використовує сократичний діалог, направляє запитаннями та пояснює кожен крок розв’язку. Інтерактивний діалог та жива міміка.
-            </p>
-            <div class="bento-footer">
-              <div style="font-size: 0.88rem; color: var(--accent-primary); font-weight: 600;">
-                Обраний характер: <span id="bento-current-persona">Добрий друг 🐼</span>
-              </div>
-              <a href="tutor.html" class="btn btn-secondary btn-sm">Перейти до уроку →</a>
-            </div>
-          </div>
-
-          <!-- Card 2: NMT Simulator (Span 4) -->
-          <div class="bento-card bento-col-4">
-            <div class="bento-header">
-              <div class="bento-badge green">УЦОЯО 2025</div>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">nmt.html</span>
-            </div>
-            <div class="bento-icon">📝</div>
-            <h3 class="bento-title">Тренажер НМТ</h3>
-            <p class="bento-desc">
-              Повна імітація реального тестування: таймер зворотного відліку, шкала 100–200 балів, банк актуальних завдань та генератор аналогічних прикладів на помилки.
-            </p>
-            <div class="bento-footer">
-              <span style="font-size: 0.85rem; color: var(--text-muted);">Прогноз: <strong>176 балів</strong></span>
-              <a href="nmt.html" class="btn btn-secondary btn-sm">Тест →</a>
-            </div>
-          </div>
-
-          <!-- Card 3: Anti-Procrastination Tracker (Span 4) -->
-          <div class="bento-card bento-col-4">
-            <div class="bento-header">
-              <div class="bento-badge blue">Анти-прокрастинація</div>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">tracker.html</span>
-            </div>
-            <div class="bento-icon">⏱</div>
-            <h3 class="bento-title">Контроль фокусу & Помодоро</h3>
-            <p class="bento-desc">
-              Детекція зміни вкладок браузера в режимі реального часу. Якщо учень відволікається на соцмережі — сесія переривається, а Панда видає суворе попередження.
-            </p>
-            <div class="bento-footer">
-              <span style="font-size: 0.85rem; color: var(--text-muted);">Сьогодні: <strong id="bento-focus-mins">65 хв</strong></span>
-              <a href="tracker.html" class="btn btn-secondary btn-sm">Трекер →</a>
-            </div>
-          </div>
-
-          <!-- Card 4: Knowledge Graph (Span 4) -->
-          <div class="bento-card bento-col-4">
-            <div class="bento-header">
-              <div class="bento-badge purple">Аналітика знань</div>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">knowledge.html</span>
-            </div>
-            <div class="bento-icon">🗺</div>
-            <h3 class="bento-title">Карта знань 5–11 класів</h3>
-            <p class="bento-desc">
-              Інтерактивна матриця тем з Математики, Мови, Історії та Англійської. Автоматичне підсвічування прогалин та адресне направлення на повторення.
-            </p>
-            <div class="bento-footer">
-              <span style="font-size: 0.85rem; color: var(--text-muted);">16 тем у базі</span>
-              <a href="knowledge.html" class="btn btn-secondary btn-sm">Карта →</a>
-            </div>
-          </div>
-
-          <!-- Card 5: Parental Control (Span 4) -->
-          <div class="bento-card bento-col-4">
-            <div class="bento-header">
-              <div class="bento-badge orange">Батьківський спокій</div>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">parents.html</span>
-            </div>
-            <div class="bento-icon">🛡</div>
-            <h3 class="bento-title">Батьківський кабінет & Контракт</h3>
-            <p class="bento-desc">
-              Захист PIN-кодом, тижневий договір мотивації («Нагорода за досягнення мети»), спостереження за реальними хвилинами занять без порушення довіри.
-            </p>
-            <div class="bento-footer">
-              <span style="font-size: 0.85rem; color: var(--text-muted);">Контракт: <strong>78%</strong></span>
-              <a href="parents.html" class="btn btn-secondary btn-sm">Кабінет →</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== COMPARISON TABLE SECTION ==================== -->
-    <section class="section" style="padding: 60px 0;">
-      <div class="strict-container">
-        <div style="text-align: center; max-width: 680px; margin: 0 auto 36px;">
-          <div class="bento-badge orange" style="margin-bottom: 12px;">⚖️ Чесне порівняння підходів</div>
-          <h2>Чому StrictAI перевершує звичайні рішення</h2>
-          <p style="margin-top: 8px;">
-            Ми поєднали терплячість індивідуального репетитора, доступність ШІ та залізну дисципліну контролю відволікань.
-          </p>
-        </div>
-
-        <div class="strict-table-container">
-          <table class="strict-table">
-            <thead>
-              <tr>
-                <th style="width: 28%;">Критерій порівняння</th>
-                <th class="col-strict" style="width: 32%;">StrictAI («Панда-репетитор») 🐼</th>
-                <th style="width: 20%;">Звичайний репетитор 👩‍🏫</th>
-                <th style="width: 20%;">Звичайний чат-бот 🤖</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Вартість підготовки</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> <strong>Доступно кожному учню</strong></td>
-                <td><span class="icon-cross">✕</span> Від 4 000 до 12 000 ₴/міс</td>
-                <td><span class="icon-check">✓</span> Безкоштовно / підписка</td>
-              </tr>
-              <tr>
-                <td><strong>Доступність 24/7 без запізнень</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> Завжди на зв’язку в будь-який час</td>
-                <td><span class="icon-cross">✕</span> Тільки за розкладом 1-2 рази/тижд</td>
-                <td><span class="icon-check">✓</span> Цілодобово</td>
-              </tr>
-              <tr>
-                <td><strong>Цифровий аватар та емоції</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> <strong>Жива Червона Панда з 9 характерами</strong></td>
-                <td><span class="icon-check">✓</span> Жива людина (інколи втомлена)</td>
-                <td><span class="icon-cross">✕</span> Сухе текстове полотно без душі</td>
-              </tr>
-              <tr>
-                <td><strong>Контроль відволікань та вкладок</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> <strong>Залізна детекція перемикання вкладок</strong></td>
-                <td><span class="icon-cross">✕</span> Не бачить екран учня онлайн</td>
-                <td><span class="icon-cross">✕</span> Відсутній будь-який контроль</td>
-              </tr>
-              <tr>
-                <td><strong>Програма НМТ та база УЦОЯО</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> Офіційні коефіцієнти та тести 2024–2025</td>
-                <td><span class="icon-check">✓</span> Залежить від кваліфікації</td>
-                <td><span class="icon-cross">✕</span> Галюцинує, плутає програму МОН</td>
-              </tr>
-              <tr>
-                <td><strong>Захист від списання (Метод Сократа)</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> <strong>Покроково веде до відповіді учня</strong></td>
-                <td><span class="icon-check">✓</span> Пояснює хід думок</td>
-                <td><span class="icon-cross">✕</span> Одразу дає готову відповідь</td>
-              </tr>
-              <tr>
-                <td><strong>Батьківський кабінет & Контракт</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> PIN-код, прозорий час та винагороди</td>
-                <td><span class="icon-cross">✕</span> Суб’єктивні короткі дзвінки</td>
-                <td><span class="icon-cross">✕</span> Немає батьківського доступу</td>
-              </tr>
-              <tr>
-                <td><strong>Гейміфікація та мотивація</strong></td>
-                <td class="col-strict"><span class="icon-check">✓</span> Бамбук-коїни, стрік днів, аксесуари</td>
-                <td><span class="icon-cross">✕</span> Зазвичай нудні домашні завдання</td>
-                <td><span class="icon-cross">✕</span> Відсутня гейміфікація</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== PANDA DRESSING ROOM PREVIEW ==================== -->
-    <section class="section" style="padding: 60px 0 90px;">
-      <div class="strict-container">
-        <div class="bento-card" style="background: linear-gradient(135deg, rgba(43,24,74,0.95) 0%, rgba(54,32,91,0.95) 100%);">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center;">
             <div>
-              <div class="bento-badge green" style="margin-bottom: 12px;">🎋 Гардероб Червоної Панди</div>
-              <h2>Навчайся, заробляй бамбук та прокачуй аватар</h2>
-              <p style="margin-top: 12px; margin-bottom: 24px;">
-                За кожні 25 хвилин чесної фокус-сесії без перемикання вкладок та за кожну правильно розібрану помилку ти отримуєш <strong>Бамбук-коїни (🎋)</strong>. Відкривай нові аксесуари та змінюй вигляд своєї Панди!
+              <div class="sa-mono" style="font-size: 11px; color: var(--ink-muted); margin-bottom: var(--space-2);">
+                ПЕРШОЧЕРГОВІ ВУЗЛИ ДЛЯ ЗАКРИТТЯ В ДОДАТКУ
+              </div>
+              <div id="handoff-topics" class="sa-handoff-topics">
+                <span class="sa-badge sa-mono">Показникові нерівності</span>
+                <span class="sa-badge sa-mono">Параметричні рівняння</span>
+                <span class="sa-badge sa-mono">Стереометрія перерізів</span>
+              </div>
+            </div>
+
+            <div class="sa-handoff-steps">
+              <div class="sa-handoff-step">
+                <span class="sa-handoff-step-num sa-mono">01 · ВЕБ</span>
+                <span class="sa-handoff-step-text">6 завдань CAT за 3 хв</span>
+              </div>
+              <div class="sa-handoff-step">
+                <span class="sa-handoff-step-num sa-mono">02 · VAULT</span>
+                <span class="sa-handoff-step-text">HMAC-токен і sid профілю</span>
+              </div>
+              <div class="sa-handoff-step">
+                <span class="sa-handoff-step-num sa-mono">03 · ДОДАТОК</span>
+                <span class="sa-handoff-step-text">Миттєвий старт без повтору</span>
+              </div>
+            </div>
+
+            <a href="auth.html" class="sa-btn sa-btn-primary sa-btn-lg" style="width: 100%;">
+              <i data-icon="userCheck" data-size="18"></i>
+              <span>Створити акаунт і отримати доступ до додатку</span>
+            </a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         4. ARCHITECTURAL PROOF STRIP / COMPARISON TEASER
+         ================================================================ -->
+    <section class="sa-section-sm" aria-labelledby="proof-heading">
+      <div class="sa-container">
+        <div class="sa-section-head">
+          <span class="sa-eyebrow">
+            <i data-icon="cpu" data-size="14"></i>
+            <span>Архітектурні стандарти StrictAI</span>
+          </span>
+          <h2 id="proof-heading" class="sa-section-title">Чому StrictAI перемагає звичайні чат-боти</h2>
+          <p class="sa-section-desc">
+            Звичайні ШІ-чати руйнують підготовку, видаючи готове рішення за секунду. StrictAI спроектований як інженерна система контролю реального розуміння.
+          </p>
+        </div>
+
+        <div class="sa-grid-3">
+          <article class="sa-card sa-proof-card">
+            <div class="sa-proof-card-top">
+              <span class="sa-proof-tag sa-mono">
+                <i data-icon="eyeOff" data-size="14"></i>
+                <span>Рівень 01 · Верифікація</span>
+              </span>
+              <h3 class="sa-proof-card-title">Anti-OCR і адаптивне тестування CAT</h3>
+              <p class="sa-proof-card-body">
+                Алгоритм підбирає складність наступного завдання залежно від попередньої відповіді та фіксує підозрілі паузи або спроби копіювання умови.
               </p>
-
-              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <button class="pill-btn active" id="acc-btn-glasses">👓 Окуляри професора</button>
-                <button class="pill-btn" id="acc-btn-band">🔥 Пов’язка сэнсэя</button>
-                <button class="pill-btn" id="acc-btn-cap">🎓 Шапочка випускника</button>
-                <button class="pill-btn" id="acc-btn-none">🌿 Без аксесуарів</button>
-              </div>
-
-              <div style="margin-top: 24px;">
-                <a href="tutor.html" class="btn btn-primary">
-                  <span>🐼</span>
-                  <span>Перейти до кімнати репетитора</span>
-                </a>
-              </div>
             </div>
-
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-              <div id="wardrobe-avatar-mount" class="panda-avatar-container">
-                <!-- Rendered by window.PandaAvatar -->
-              </div>
-              <div style="margin-top: 12px; font-size: 0.9rem; color: var(--text-secondary); text-align: center;">
-                Поточний баланс: <strong style="color: var(--bamboo-green);" id="wardrobe-bamboo-val">🎋 340 коїнів</strong>
-              </div>
+            <div class="sa-proof-diff sa-mono">
+              <span>Звичайний бот: фото і відповідь</span>
+              <span class="sa-badge sa-badge-ok">Trust Index</span>
             </div>
+          </article>
+
+          <article class="sa-card sa-proof-card">
+            <div class="sa-proof-card-top">
+              <span class="sa-proof-tag sa-mono">
+                <i data-icon="spark" data-size="14"></i>
+                <span>Рівень 02 · Педагогіка</span>
+              </span>
+              <h3 class="sa-proof-card-title">Сократичне виправлення без підказок</h3>
+              <p class="sa-proof-card-body">
+                Якщо учень припустився помилки, рушій розбиває хід думки на короткі контрольні кроки, доки учень сам не сформулює правильний перехід.
+              </p>
+            </div>
+            <div class="sa-proof-diff sa-mono">
+              <span>Звичайний бот: спойлер рішення</span>
+              <span class="sa-badge sa-badge-ink">Zero Spoilers</span>
+            </div>
+          </article>
+
+          <article class="sa-card sa-proof-card">
+            <div class="sa-proof-card-top">
+              <span class="sa-proof-tag sa-mono">
+                <i data-icon="shield" data-size="14"></i>
+                <span>Рівень 03 · Прозорість</span>
+              </span>
+              <h3 class="sa-proof-card-title">Телеметрія о 17:00 і сімейний контракт</h3>
+              <p class="sa-proof-card-body">
+                Батьки бачать не витрачений час у додатку, а реальний приріст балу, закриті слабкі теми та підтверджену дисципліну за день.
+              </p>
+            </div>
+            <div class="sa-proof-diff sa-mono">
+              <span>Звичайний бот: 0 звітності</span>
+              <span class="sa-badge sa-badge-ok">17:00 Digest</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="sa-card sa-card-subtle sa-teaser-footer">
+          <div class="sa-teaser-copy">
+            <strong>Потрібна прозора звітність для родини або персональний StrictPass?</strong>
+            <span>Ознайомтеся з сімейним кабінетом або оберіть одну з 27 конфігурацій металевої картки.</span>
+          </div>
+          <div class="sa-teaser-links">
+            <a href="parents.html" class="sa-btn sa-btn-secondary">
+              <i data-icon="users" data-size="16"></i>
+              <span>Для батьків</span>
+            </a>
+            <a href="strictpass.html" class="sa-btn sa-btn-primary">
+              <i data-icon="creditCard" data-size="16"></i>
+              <span>Обрати StrictPass</span>
+            </a>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="strict-footer">
-    <div class="strict-container">
-      <div class="footer-grid">
-        <div class="footer-col">
-          <div class="nav-brand" style="margin-bottom: 12px;">
-            <div class="nav-brand-badge">🐼</div>
-            <div>Strict<span class="nav-brand-highlight">AI</span></div>
-          </div>
-          <p style="font-size: 0.9rem; max-width: 300px; margin-bottom: 16px;">
-            Перший український EdTech-сервіс із цифровим аватаром Панди та повним контролем підготовки до НМТ і шкільної програми.
-          </p>
-          <div class="ua-badge">
-            <span>🇺🇦</span>
-            <span>Створено в Україні для українських учнів</span>
-          </div>
-        </div>
+  <footer id="sa-footer" class="sa-footer"></footer>
 
-        <div class="footer-col">
-          <h4>Навчальні модулі</h4>
-          <ul class="footer-links">
-            <li><a href="tutor.html">AI-Репетитор Панда</a></li>
-            <li><a href="placement.html">🎯 Тест на визначення рівня</a></li>
-            <li><a href="nmt.html">Тренажер НМТ 2025</a></li>
-            <li><a href="tracker.html">Контроль фокусу & Помодоро</a></li>
-            <li><a href="knowledge.html">Карта знань 5–11 класів</a></li>
-            <li><a href="parents.html">Батьківський кабінет</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>Характери репетитора</h4>
-          <ul class="footer-links">
-            <li><a href="tutor.html?persona=friend">🐼 Добрий друг</a></li>
-            <li><a href="tutor.html?persona=strict">🧐 Суворий викладач</a></li>
-            <li><a href="tutor.html?persona=joker">😜 Жартівник</a></li>
-            <li><a href="tutor.html?persona=motivator">🔥 Мотиватор</a></li>
-            <li><a href="tutor.html?persona=calm">🧘 Спокійний ментор</a></li>
-            <li><a href="tutor.html?persona=socratic">🕵️ Сократівський детектив</a></li>
-            <li><a href="tutor.html?persona=examiner">🎓 Екзаменатор УЦОЯО</a></li>
-            <li><a href="tutor.html?persona=gamemaster">🚀 RPG Гейм-майстер</a></li>
-            <li><a href="tutor.html?persona=native">🗣️ Носій мови (Native)</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <div class="footer-col-title">Контроль & Прозорість</div>
-          <ul class="footer-links">
-            <li><a href="parents.html">Батьківський кабінет</a></li>
-            <li><a href="parents.html#educational-contract">Освітній контракт</a></li>
-            <li><a href="parents.html#anticheat-monitoring">Анти-чит моніторинг</a></li>
-            <li><a href="parents.html#pin-change">Зміна PIN-коду</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <div>
-          &copy; 2025–2026 StrictAI EdTech Platform. Всі права захищено.
-        </div>
-        <div style="display: flex; gap: 16px;">
-          <span>Версія 1.0 (Release Candidate)</span>
-          <span>•</span>
-          <span>Zero Build Step Architecture</span>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Scripts: Store -> i18n -> AntiCheat -> React -> Panda -> Notifications -> Components -> Landing -->
-  <script src="js/store.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/anti-cheat-engine.js"></script>
-  <script src="js/react-runtime.js"></script>
-  <script src="js/panda-avatar.js"></script>
-  <script src="js/notifications.js"></script>
-  <script src="js/components.js"></script>
-  <script src="js/landing.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/strictpass-3d.js"></script>
+  <script src="js/firebase-auth-core.js"></script>
+  <script src="js/site-shell.js"></script>
+  <script src="js/site-home.js"></script>
 </body>
 </html>
