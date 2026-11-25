@@ -532,7 +532,11 @@
         var handoff = await globalScope.StrictAuth.createHandoffToken({ sid: sid });
         uiState.lastHandoff = handoff;
 
-        var appRelHref = '../mobile-app/index.html?ht=' + encodeURIComponent(handoff.token) +
+        var mobileBaseUrl = window.STRICT_MOBILE_APP_URL ||
+          (window.location.port === '8081'
+            ? window.location.protocol + '//' + window.location.hostname + ':8080/index.html'
+            : 'http://localhost:8080/index.html');
+        var appRelHref = mobileBaseUrl + '?ht=' + encodeURIComponent(handoff.token) +
           (handoff.sid ? '&sid=' + encodeURIComponent(handoff.sid) : '');
         var fullAppUrl = appRelHref;
         try {
